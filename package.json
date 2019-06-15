@@ -11,6 +11,7 @@
   "author": "naari3 <naari.named@gmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "@types/pixi.js": "^4.8.8",
     "@typescript-eslint/eslint-plugin": "^1.10.2",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^5.0.0",
@@ -18,5 +19,8 @@
     "parcel": "^1.12.3",
     "prettier": "^1.18.2",
     "typescript": "^3.5.2"
+  },
+  "dependencies": {
+    "pixi.js": "^5.0.4"
   }
 }
