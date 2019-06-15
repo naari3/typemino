@@ -64,13 +64,16 @@ const blockSprites = Array.from(new Array(width), (): (PIXI.Sprite | null)[] =>
 );
 
 app.ticker.add((): void => {
-  field[playerX][playerY] = null;
   if (playerY < height - 1) {
     playerY++;
   }
-  if (pressLeft && playerX > 0) {
+  if (pressLeft && playerX > 0 && field[playerX - 1][playerY] == null) {
     playerX--;
-  } else if (pressRight && playerX < width - 1) {
+  } else if (
+    pressRight &&
+    playerX < width - 1 &&
+    field[playerX + 1][playerY] == null
+  ) {
     playerX++;
   }
   // console.log({ playerX, playerY });
@@ -95,4 +98,10 @@ app.ticker.add((): void => {
       }
     });
   });
+  if (field[playerX][playerY + 1] != null || playerY == height - 1) {
+    playerX = Math.floor(width / 2) - 1;
+    playerY = 0;
+  } else {
+    field[playerX][playerY] = null;
+  }
 });
