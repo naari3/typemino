@@ -4,7 +4,9 @@
   "description": "minomino is puzzle game",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "parcel src/index.html",
+    "watch": "parcel watch src/index.html"
   },
   "author": "naari3 <naari.named@gmail.com>",
   "license": "ISC",
@@ -13,6 +15,7 @@
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^5.0.0",
     "eslint-plugin-prettier": "^3.1.0",
+    "parcel": "^1.12.3",
     "prettier": "^1.18.2",
     "typescript": "^3.5.2"
   }
