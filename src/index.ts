@@ -1,7 +1,8 @@
 /* global document */
 
 import * as PIXI from "pixi.js";
-import blockImage from "./images/n2.png";
+import { BlockFactory } from "./BlockFactory";
+import { BlockColor } from "./BlockColor";
 
 const width = 10;
 const height = 20;
@@ -19,7 +20,13 @@ document.body.appendChild(app.view);
 const container = new PIXI.Container();
 app.stage.addChild(container);
 
-const texture = PIXI.Texture.from(blockImage);
-const tilingSprite = new PIXI.TilingSprite(texture, width * 16, height * 16);
+const field = Array.from(new Array(width), (): BlockColor[] =>
+  new Array(height).fill(BlockColor.Cyan)
+);
 
-container.addChild(tilingSprite);
+field.forEach((yList, x): void => {
+  yList.forEach((color, y): void => {
+    const block = BlockFactory(x, y, color);
+    container.addChild(block);
+  });
+});
