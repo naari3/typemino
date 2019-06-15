@@ -62,6 +62,18 @@ const blockSprites = Array.from(new Array(height), (): (PIXI.Sprite | null)[] =>
   new Array(width).fill(null)
 );
 
+const clearLines = (): number => {
+  let clearCount = 0;
+  field.forEach((xList, y): void => {
+    if (xList.every((x): boolean => !!x)) {
+      delete field[y];
+      field.unshift(Array(width).fill(null));
+      clearCount++;
+    }
+  });
+  return clearCount;
+};
+
 app.ticker.add((): void => {
   if (playerY < height - 1) {
     playerY++;
@@ -88,7 +100,6 @@ app.ticker.add((): void => {
         container.addChild(block);
         if (blockSprites[y][x]) {
           blockSprites[y][x].destroy();
-          blockSprites[y][x] = null;
         }
         blockSprites[y][x] = block;
       } else {
@@ -105,6 +116,7 @@ app.ticker.add((): void => {
   ) {
     playerX = Math.floor(width / 2) - 1;
     playerY = 0;
+    clearLines();
   } else {
     field[playerY][playerX] = null;
   }
