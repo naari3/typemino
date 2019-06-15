@@ -20,10 +20,6 @@ document.body.appendChild(app.view);
 const container = new PIXI.Container();
 app.stage.addChild(container);
 
-const field = Array.from(new Array(width), (): (BlockColor | null)[] =>
-  new Array(height).fill(null)
-);
-
 let pressUp = false;
 let pressDown = false;
 let pressLeft = false;
@@ -59,49 +55,57 @@ const initializeKeyEvents = (): void => {
 };
 initializeKeyEvents();
 
-const blockSprites = Array.from(new Array(width), (): (PIXI.Sprite | null)[] =>
-  new Array(height).fill(null)
+const field = Array.from(new Array(height), (): (BlockColor | null)[] =>
+  new Array(width).fill(null)
+);
+const blockSprites = Array.from(new Array(height), (): (PIXI.Sprite | null)[] =>
+  new Array(width).fill(null)
 );
 
 app.ticker.add((): void => {
   if (playerY < height - 1) {
     playerY++;
   }
-  if (pressLeft && playerX > 0 && field[playerX - 1][playerY] == null) {
+  if (pressLeft && playerX > 0 && field[playerY][playerX - 1] == null) {
     playerX--;
   } else if (
     pressRight &&
     playerX < width - 1 &&
-    field[playerX + 1][playerY] == null
+    field[playerY][playerX + 1] == null
   ) {
     playerX++;
   }
+
+  // console.log({ aa: blockSprites[field.length - 1] });
   // console.log({ playerX, playerY });
   // console.log({ pressUp, pressDown, pressLeft, pressRight });
-  field[playerX][playerY] = BlockColor.Purple;
+  field[playerY][playerX] = BlockColor.Purple;
 
-  field.forEach((yList, x): void => {
-    yList.forEach((color, y): void => {
+  field.forEach((xList, y): void => {
+    xList.forEach((color, x): void => {
       if (color != null) {
         const block = BlockFactory(x, y, color);
         container.addChild(block);
-        if (blockSprites[x][y]) {
-          blockSprites[x][y].destroy();
-          delete blockSprites[x][y];
+        if (blockSprites[y][x]) {
+          blockSprites[y][x].destroy();
+          blockSprites[y][x] = null;
         }
-        blockSprites[x][y] = block;
+        blockSprites[y][x] = block;
       } else {
-        if (blockSprites[x][y]) {
-          blockSprites[x][y].destroy();
-          delete blockSprites[x][y];
+        if (blockSprites[y][x]) {
+          blockSprites[y][x].destroy();
+          blockSprites[y][x] = null;
         }
       }
     });
   });
-  if (field[playerX][playerY + 1] != null || playerY == height - 1) {
+  if (
+    (!!field[playerY + 1] && field[playerY + 1][playerX] != null) ||
+    playerY == height - 1
+  ) {
     playerX = Math.floor(width / 2) - 1;
     playerY = 0;
   } else {
-    field[playerX][playerY] = null;
+    field[playerY][playerX] = null;
   }
 });
