@@ -1,7 +1,6 @@
 /* global document */
 
 import * as PIXI from "pixi.js";
-import { BlockFactory } from "./BlockFactory";
 import { Tetromino } from "./Tetromino";
 import { Field } from "./Field";
 
@@ -12,8 +11,6 @@ export class Game {
   protected window: { w: number; h: number };
   private pressLeft: boolean = false;
   private pressRight: boolean = false;
-  private playerX: number;
-  private playerY: number;
   private blockWidth: number;
   private blockHeight: number;
   private field: Field;
@@ -31,9 +28,6 @@ export class Game {
 
     this.blockWidth = 10;
     this.blockHeight = 20;
-
-    this.playerX = Math.floor(this.blockWidth / 2) - 1;
-    this.playerY = 0;
 
     this.tetromino = Tetromino.getRandom(this.container);
     // this.tetromino = new Tetromino(
@@ -60,23 +54,16 @@ export class Game {
   }
 
   protected animate(): void {
-    if (this.playerY < this.blockHeight - 1) {
-      this.playerY++;
-      this.tetromino.y++;
-    }
+    this.tetromino.y++;
     if (this.pressLeft) {
       this.tetromino.x--;
-      this.playerX--;
       if (this.isCollision()) {
         this.tetromino.x++;
-        this.playerX++;
       }
     } else if (this.pressRight) {
-      this.playerX++;
       this.tetromino.x++;
       if (this.isCollision()) {
         this.tetromino.x--;
-        this.playerX--;
       }
     }
     this.tetromino.remove();
@@ -84,8 +71,6 @@ export class Game {
     if (this.isCollision()) {
       this.tetromino.y--;
       this.putMino();
-      this.playerX = Math.floor(this.blockWidth / 2) - 1;
-      this.playerY = 0;
       this.tetromino = Tetromino.getRandom(this.container);
       this.clearLines();
     }
