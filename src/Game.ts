@@ -2,9 +2,8 @@
 
 import * as PIXI from "pixi.js";
 import { BlockFactory } from "./BlockFactory";
-import { BlockColor } from "./BlockColor";
 import { Tetromino } from "./Tetromino";
-import { TetrominoData, TetrominoType } from "./TetrominoData";
+import { Field } from "./Field";
 
 export class Game {
   protected app: PIXI.Application;
@@ -17,8 +16,7 @@ export class Game {
   private playerY: number;
   private blockWidth: number;
   private blockHeight: number;
-  private field: (BlockColor | null)[][];
-  private blockSprites: (PIXI.Sprite | null)[][];
+  private field: Field;
   private prevMinoSprite: PIXI.Sprite;
   private tetromino: Tetromino;
 
@@ -43,14 +41,7 @@ export class Game {
     //   this.container
     // );
 
-    this.field = Array.from(
-      new Array(this.blockHeight),
-      (): (BlockColor | null)[] => new Array(this.blockWidth).fill(null)
-    );
-    this.blockSprites = Array.from(
-      new Array(this.blockHeight),
-      (): (PIXI.Sprite | null)[] => new Array(this.blockWidth).fill(null)
-    );
+    this.field = new Field();
 
     this.initializeKeyEvents();
 
@@ -127,10 +118,10 @@ export class Game {
 
   private clearLines(): number {
     let clearCount = 0;
-    this.field.forEach((xList, y): void => {
+    this.field.blockColors.forEach((xList, y): void => {
       if (xList.every((x): boolean => !!x)) {
-        this.field.splice(y, 1);
-        this.field.unshift(Array(this.blockWidth).fill(null));
+        this.field.blockColors.splice(y, 1);
+        this.field.blockColors.unshift(Array(this.blockWidth).fill(null));
         clearCount++;
       }
     });
@@ -138,19 +129,19 @@ export class Game {
   }
 
   private renderField(): void {
-    this.field.forEach((xList, y): void => {
+    this.field.blockColors.forEach((xList, y): void => {
       xList.forEach((color, x): void => {
         if (color != null) {
           const block = BlockFactory(x, y, color);
           this.container.addChild(block);
-          if (this.blockSprites[y][x]) {
-            this.blockSprites[y][x].destroy();
+          if (this.field.blockSprites[y][x]) {
+            this.field.blockSprites[y][x].destroy();
           }
-          this.blockSprites[y][x] = block;
+          this.field.blockSprites[y][x] = block;
         } else {
-          if (this.blockSprites[y][x]) {
-            this.blockSprites[y][x].destroy();
-            this.blockSprites[y][x] = null;
+          if (this.field.blockSprites[y][x]) {
+            this.field.blockSprites[y][x].destroy();
+            this.field.blockSprites[y][x] = null;
           }
         }
       });
@@ -179,7 +170,9 @@ export class Game {
             this.tetromino.x < 0 ||
             this.tetromino.x + x > this.blockWidth ||
             this.tetromino.y + y >= this.blockHeight ||
-            this.field[this.tetromino.y + y][this.tetromino.x + x] !== null
+            this.field.blockColors[this.tetromino.y + y][
+              this.tetromino.x + x
+            ] !== null
           ) {
             collided = true;
           }
@@ -193,7 +186,7 @@ export class Game {
     this.tetromino.type.shapes[0].forEach((xList, y): void => {
       xList.forEach((b, x): void => {
         if (b === 1) {
-          this.field[this.tetromino.y + y][
+          this.field.blockColors[this.tetromino.y + y][
             this.tetromino.x + x
           ] = this.tetromino.type.color;
         }
