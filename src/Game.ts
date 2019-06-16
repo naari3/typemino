@@ -81,23 +81,7 @@ export class Game {
     // console.log({ pressUp, pressDown, pressLeft, pressRight });
     this.field[this.playerY][this.playerX] = BlockColor.Purple;
 
-    this.field.forEach((xList, y): void => {
-      xList.forEach((color, x): void => {
-        if (color != null) {
-          const block = BlockFactory(x, y, color);
-          this.container.addChild(block);
-          if (this.blockSprites[y][x]) {
-            this.blockSprites[y][x].destroy();
-          }
-          this.blockSprites[y][x] = block;
-        } else {
-          if (this.blockSprites[y][x]) {
-            this.blockSprites[y][x].destroy();
-            this.blockSprites[y][x] = null;
-          }
-        }
-      });
-    });
+    this.render();
     if (
       (!!this.field[this.playerY + 1] &&
         this.field[this.playerY + 1][this.playerX] != null) ||
@@ -140,5 +124,25 @@ export class Game {
       }
     });
     return clearCount;
+  }
+
+  private render(): void {
+    this.field.forEach((xList, y): void => {
+      xList.forEach((color, x): void => {
+        if (color != null) {
+          const block = BlockFactory(x, y, color);
+          this.container.addChild(block);
+          if (this.blockSprites[y][x]) {
+            this.blockSprites[y][x].destroy();
+          }
+          this.blockSprites[y][x] = block;
+        } else {
+          if (this.blockSprites[y][x]) {
+            this.blockSprites[y][x].destroy();
+            this.blockSprites[y][x] = null;
+          }
+        }
+      });
+    });
   }
 }
