@@ -41,7 +41,7 @@ export class Game {
     //   this.container
     // );
 
-    this.field = new Field();
+    this.field = new Field(this.container);
 
     this.initializeKeyEvents();
 
@@ -81,9 +81,6 @@ export class Game {
     }
     this.tetromino.remove();
 
-    // console.log({ aa: blockSprites[field.length - 1] });
-    // console.log({ playerX, playerY });
-    // console.log({ pressUp, pressDown, pressLeft, pressRight });
     if (this.isCollision()) {
       this.tetromino.y--;
       this.putMino();
@@ -93,8 +90,8 @@ export class Game {
       this.clearLines();
     }
 
-    this.renderField();
-    this.renderMino();
+    this.field.render();
+    this.tetromino.render();
   }
 
   private initializeKeyEvents(): void {
@@ -126,38 +123,6 @@ export class Game {
       }
     });
     return clearCount;
-  }
-
-  private renderField(): void {
-    this.field.blockColors.forEach((xList, y): void => {
-      xList.forEach((color, x): void => {
-        if (color != null) {
-          const block = BlockFactory(x, y, color);
-          this.container.addChild(block);
-          if (this.field.blockSprites[y][x]) {
-            this.field.blockSprites[y][x].destroy();
-          }
-          this.field.blockSprites[y][x] = block;
-        } else {
-          if (this.field.blockSprites[y][x]) {
-            this.field.blockSprites[y][x].destroy();
-            this.field.blockSprites[y][x] = null;
-          }
-        }
-      });
-    });
-  }
-
-  private renderMino(): void {
-    this.tetromino.render();
-
-    const color = this.tetromino.type.color;
-    if (this.prevMinoSprite) {
-      this.prevMinoSprite.destroy();
-    }
-    const block = BlockFactory(this.playerX, this.playerY, color);
-    this.container.addChild(block);
-    this.prevMinoSprite = block;
   }
 
   private isCollision(): boolean {
