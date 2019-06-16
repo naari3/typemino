@@ -39,7 +39,7 @@ export class Game {
 
     this.tetromino = Tetromino.getRandom(this.container);
     // this.tetromino = new Tetromino(
-    //   TetrominoData[TetrominoType.J],
+    //   TetrominoData[TetrominoType.O],
     //   this.container
     // );
 
@@ -73,20 +73,20 @@ export class Game {
       this.playerY++;
       this.tetromino.y++;
     }
-    if (
-      this.pressLeft &&
-      this.playerX > 0 &&
-      this.field[this.playerY][this.playerX - 1] == null
-    ) {
-      this.playerX--;
+    if (this.pressLeft) {
       this.tetromino.x--;
-    } else if (
-      this.pressRight &&
-      this.playerX < this.blockWidth - 1 &&
-      this.field[this.playerY][this.playerX + 1] == null
-    ) {
+      this.playerX--;
+      if (this.isCollision()) {
+        this.tetromino.x++;
+        this.playerX++;
+      }
+    } else if (this.pressRight) {
       this.playerX++;
       this.tetromino.x++;
+      if (this.isCollision()) {
+        this.tetromino.x--;
+        this.playerX--;
+      }
     }
     this.tetromino.remove();
 
@@ -94,6 +94,7 @@ export class Game {
     // console.log({ playerX, playerY });
     // console.log({ pressUp, pressDown, pressLeft, pressRight });
     if (this.isCollision()) {
+      this.tetromino.y--;
       this.putMino();
       this.playerX = Math.floor(this.blockWidth / 2) - 1;
       this.playerY = 0;
@@ -128,7 +129,7 @@ export class Game {
     let clearCount = 0;
     this.field.forEach((xList, y): void => {
       if (xList.every((x): boolean => !!x)) {
-        delete this.field[y];
+        this.field.splice(y, 1);
         this.field.unshift(Array(this.blockWidth).fill(null));
         clearCount++;
       }
@@ -174,8 +175,11 @@ export class Game {
       xList.forEach((b, x): void => {
         if (b === 1) {
           if (
-            this.tetromino.y + y + 1 >= this.blockHeight ||
-            this.field[this.tetromino.y + y + 1][this.tetromino.x + x] !== null
+            collided ||
+            this.tetromino.x < 0 ||
+            this.tetromino.x + x > this.blockWidth ||
+            this.tetromino.y + y >= this.blockHeight ||
+            this.field[this.tetromino.y + y][this.tetromino.x + x] !== null
           ) {
             collided = true;
           }
