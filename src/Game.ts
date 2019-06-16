@@ -55,6 +55,8 @@ export class Game {
   }
 
   protected animate(): void {
+    this.tetromino.clearRendered();
+
     this.tetromino.y++;
     if (this.pressLeft) {
       this.tetromino.x--;
@@ -67,7 +69,6 @@ export class Game {
         this.tetromino.x--;
       }
     }
-    this.tetromino.remove();
 
     if (this.field.isCollision(this.tetromino)) {
       this.tetromino.y--;

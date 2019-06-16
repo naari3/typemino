@@ -43,7 +43,7 @@ export class Tetromino {
     });
   }
 
-  public remove(): void {
+  public clearRendered(): void {
     this.sprites.forEach((s): void => {
       s.destroy();
     });
