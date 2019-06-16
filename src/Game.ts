@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import Constants from "./Constants";
 import { Tetromino } from "./Tetromino";
 import { Field } from "./Field";
+import { Keyboard } from "./Keyboard";
 
 export class Game {
   protected app: PIXI.Application;
@@ -89,6 +90,9 @@ export class Game {
   }
 
   private initializeKeyEvents(): void {
+    const upKey = new Keyboard("ArrowUp");
+    upKey.press = this.hardDrop;
+
     const onKeyDownEvent = (e: KeyboardEvent): void => {
       if (e.key == "ArrowLeft") {
         this.pressLeft = true;
@@ -106,4 +110,15 @@ export class Game {
     };
     document.addEventListener("keyup", onKeyUpEvent);
   }
+
+  private hardDrop = (): void => {
+    while (!this.field.isCollision(this.tetromino)) {
+      this.tetromino.y++;
+    }
+    this.tetromino.y--;
+    this.tetromino.clearRendered();
+    this.field.putMino(this.tetromino);
+    this.tetromino = Tetromino.getRandom(this.container);
+    this.field.clearLines();
+  };
 }
