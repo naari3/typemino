@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import constants from "./Constants";
 import { BlockColor } from "./BlockColor";
 import { BlockFactory } from "./blockFactory";
 import { Tetromino } from "./Tetromino";
@@ -10,12 +11,14 @@ export class Field {
 
   public constructor(container: PIXI.Container) {
     this.container = container;
-    this.blockColors = Array.from(new Array(20), (): (BlockColor | null)[] =>
-      new Array(10).fill(null)
+    this.blockColors = Array.from(
+      new Array(constants.blockHeight),
+      (): (BlockColor | null)[] => new Array(constants.blockWidth).fill(null)
     );
 
-    this.blockSprites = Array.from(new Array(20), (): (PIXI.Sprite | null)[] =>
-      new Array(10).fill(null)
+    this.blockSprites = Array.from(
+      new Array(constants.blockHeight),
+      (): (PIXI.Sprite | null)[] => new Array(constants.blockWidth).fill(null)
     );
   }
 

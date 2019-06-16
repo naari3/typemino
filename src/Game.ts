@@ -1,6 +1,7 @@
 /* global document */
 
 import * as PIXI from "pixi.js";
+import Constants from "./Constants";
 import { Tetromino } from "./Tetromino";
 import { Field } from "./Field";
 
@@ -26,8 +27,8 @@ export class Game {
 
     this.window = { w: w, h: h };
 
-    this.blockWidth = 10;
-    this.blockHeight = 20;
+    this.blockWidth = Constants.blockWidth;
+    this.blockHeight = Constants.blockHeight;
 
     this.tetromino = Tetromino.getRandom(this.container);
     // this.tetromino = new Tetromino(
