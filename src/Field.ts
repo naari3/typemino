@@ -77,4 +77,16 @@ export class Field {
     });
     return collided;
   }
+
+  public clearLines(): number {
+    let clearCount = 0;
+    this.blockColors.forEach((xList, y): void => {
+      if (xList.every((x): boolean => !!x)) {
+        this.blockColors.splice(y, 1);
+        this.blockColors.unshift(Array(this.blockWidth).fill(null));
+        clearCount++;
+      }
+    });
+    return clearCount;
+  }
 }

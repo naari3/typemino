@@ -73,7 +73,7 @@ export class Game {
       this.tetromino.y--;
       this.field.putMino(this.tetromino);
       this.tetromino = Tetromino.getRandom(this.container);
-      this.clearLines();
+      this.field.clearLines();
     }
 
     this.field.render();
@@ -97,17 +97,5 @@ export class Game {
       }
     };
     document.addEventListener("keyup", onKeyUpEvent);
-  }
-
-  private clearLines(): number {
-    let clearCount = 0;
-    this.field.blockColors.forEach((xList, y): void => {
-      if (xList.every((x): boolean => !!x)) {
-        this.field.blockColors.splice(y, 1);
-        this.field.blockColors.unshift(Array(this.blockWidth).fill(null));
-        clearCount++;
-      }
-    });
-    return clearCount;
   }
 }
