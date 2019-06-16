@@ -3,6 +3,7 @@
 import * as PIXI from "pixi.js";
 import { BlockFactory } from "./BlockFactory";
 import { BlockColor } from "./BlockColor";
+import { Tetromino } from "./Tetromino";
 
 export class Game {
   protected app: PIXI.Application;
@@ -18,6 +19,7 @@ export class Game {
   private field: (BlockColor | null)[][];
   private blockSprites: (PIXI.Sprite | null)[][];
   private prevMinoSprite: PIXI.Sprite;
+  private tetromino: Tetromino;
 
   public constructor(w: number, h: number) {
     this.app = new PIXI.Application({ width: w, height: h });
@@ -33,6 +35,8 @@ export class Game {
 
     this.playerX = Math.floor(this.blockWidth / 2) - 1;
     this.playerY = 0;
+
+    this.tetromino = Tetromino.getRandom(this.container);
 
     this.field = Array.from(
       new Array(this.blockHeight),
@@ -62,6 +66,7 @@ export class Game {
   protected animate(): void {
     if (this.playerY < this.blockHeight - 1) {
       this.playerY++;
+      this.tetromino.y++;
     }
     if (
       this.pressLeft &&
@@ -69,20 +74,20 @@ export class Game {
       this.field[this.playerY][this.playerX - 1] == null
     ) {
       this.playerX--;
+      this.tetromino.x--;
     } else if (
       this.pressRight &&
       this.playerX < this.blockWidth - 1 &&
       this.field[this.playerY][this.playerX + 1] == null
     ) {
       this.playerX++;
+      this.tetromino.x++;
     }
+    this.tetromino.remove();
 
     // console.log({ aa: blockSprites[field.length - 1] });
     // console.log({ playerX, playerY });
     // console.log({ pressUp, pressDown, pressLeft, pressRight });
-
-    this.renderField();
-    this.renderMino();
     if (
       (!!this.field[this.playerY + 1] &&
         this.field[this.playerY + 1][this.playerX] != null) ||
@@ -91,10 +96,12 @@ export class Game {
       this.putMino();
       this.playerX = Math.floor(this.blockWidth / 2) - 1;
       this.playerY = 0;
+      this.tetromino = Tetromino.getRandom(this.container);
       this.clearLines();
-    } else {
-      // this.field[this.playerY][this.playerX] = null;
     }
+
+    this.renderField();
+    this.renderMino();
   }
 
   private initializeKeyEvents(): void {
@@ -149,15 +156,18 @@ export class Game {
   }
 
   private renderMino(): void {
+    this.tetromino.render();
+
+    const color = this.tetromino.type.color;
     if (this.prevMinoSprite) {
       this.prevMinoSprite.destroy();
     }
-    const block = BlockFactory(this.playerX, this.playerY, BlockColor.Purple);
+    const block = BlockFactory(this.playerX, this.playerY, color);
     this.container.addChild(block);
     this.prevMinoSprite = block;
   }
 
   private putMino(): void {
-    this.field[this.playerY][this.playerX] = BlockColor.Purple;
+    this.field[this.playerY][this.playerX] = this.tetromino.type.color;
   }
 }

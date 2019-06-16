@@ -1,4 +1,5 @@
 import { TetrominoData, TetrominoType, TetrominoDatum } from "./TetrominoData";
+import { BlockFactory } from "./blockFactory";
 
 function randomEnum<T>(anEnum: T): T[keyof T] {
   const enumValues = (Object.keys(anEnum)
@@ -12,13 +13,40 @@ function randomEnum<T>(anEnum: T): T[keyof T] {
 export class Tetromino {
   public type: TetrominoDatum;
   public angle: number; // 0 (0), 1 (90), 2 (180), 3 (270)
+  public x: number;
+  public y: number;
+  private container: PIXI.Container;
+  private sprites: PIXI.Sprite[];
 
-  public constructor(type: TetrominoDatum) {
+  public constructor(type: TetrominoDatum, container: PIXI.Container) {
     this.type = type;
     this.angle = 0;
+    this.x = Math.floor(Math.floor(10 / 2) - this.type.shapes[0][0].length / 2);
+    this.y = 0;
+    this.container = container;
+    this.sprites = [];
   }
 
-  public static getRandom(): Tetromino {
-    return new Tetromino(TetrominoData[randomEnum(TetrominoType)]);
+  public static getRandom(container: PIXI.Container): Tetromino {
+    return new Tetromino(TetrominoData[randomEnum(TetrominoType)], container);
+  }
+
+  public render(): void {
+    this.type.shapes[0].forEach((xList, y): void => {
+      xList.forEach((b, x): void => {
+        if (b === 1) {
+          const block = BlockFactory(this.x + x, this.y + y, this.type.color);
+          this.container.addChild(block);
+          this.sprites.push(block);
+        }
+      });
+    });
+  }
+
+  public remove(): void {
+    this.sprites.forEach((s): void => {
+      s.destroy();
+    });
+    this.sprites = [];
   }
 }
