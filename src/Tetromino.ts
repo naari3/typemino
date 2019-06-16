@@ -17,6 +17,7 @@ export class Tetromino {
   public y: number;
   private container: PIXI.Container;
   private sprites: PIXI.Sprite[];
+  public lockDelayCounter: number;
 
   public constructor(type: TetrominoDatum, container: PIXI.Container) {
     this.type = type;
@@ -25,6 +26,7 @@ export class Tetromino {
     this.y = 0;
     this.container = container;
     this.sprites = [];
+    this.lockDelayCounter = 0;
   }
 
   public static getRandom(container: PIXI.Container): Tetromino {
@@ -48,5 +50,9 @@ export class Tetromino {
       s.destroy();
     });
     this.sprites = [];
+  }
+
+  public isForcedLock(): boolean {
+    return this.lockDelayCounter > 30;
   }
 }

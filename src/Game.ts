@@ -57,7 +57,8 @@ export class Game {
   protected animate(): void {
     this.tetromino.clearRendered();
 
-    this.tetromino.y++;
+    this.freeFall();
+
     if (this.pressLeft) {
       this.tetromino.x--;
       if (this.field.isCollision(this.tetromino)) {
@@ -70,15 +71,23 @@ export class Game {
       }
     }
 
-    if (this.field.isCollision(this.tetromino)) {
-      this.tetromino.y--;
-      this.field.putMino(this.tetromino);
-      this.tetromino = Tetromino.getRandom(this.container);
-      this.field.clearLines();
-    }
-
     this.field.render();
     this.tetromino.render();
+  }
+
+  private freeFall(): void {
+    this.tetromino.y++;
+    if (this.field.isCollision(this.tetromino)) {
+      this.tetromino.y--;
+      this.tetromino.lockDelayCounter++;
+      if (this.tetromino.isForcedLock()) {
+        this.field.putMino(this.tetromino);
+        this.tetromino = Tetromino.getRandom(this.container);
+        this.field.clearLines();
+      }
+    } else {
+      this.tetromino.lockDelayCounter = 0;
+    }
   }
 
   private initializeKeyEvents(): void {
