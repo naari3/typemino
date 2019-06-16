@@ -17,6 +17,7 @@ export class Game {
   private blockHeight: number;
   private field: (BlockColor | null)[][];
   private blockSprites: (PIXI.Sprite | null)[][];
+  private prevMinoSprite: PIXI.Sprite;
 
   public constructor(w: number, h: number) {
     this.app = new PIXI.Application({ width: w, height: h });
@@ -79,19 +80,20 @@ export class Game {
     // console.log({ aa: blockSprites[field.length - 1] });
     // console.log({ playerX, playerY });
     // console.log({ pressUp, pressDown, pressLeft, pressRight });
-    this.field[this.playerY][this.playerX] = BlockColor.Purple;
 
-    this.render();
+    this.renderField();
+    this.renderMino();
     if (
       (!!this.field[this.playerY + 1] &&
         this.field[this.playerY + 1][this.playerX] != null) ||
       this.playerY == this.blockHeight - 1
     ) {
+      this.putMino();
       this.playerX = Math.floor(this.blockWidth / 2) - 1;
       this.playerY = 0;
       this.clearLines();
     } else {
-      this.field[this.playerY][this.playerX] = null;
+      // this.field[this.playerY][this.playerX] = null;
     }
   }
 
@@ -126,7 +128,7 @@ export class Game {
     return clearCount;
   }
 
-  private render(): void {
+  private renderField(): void {
     this.field.forEach((xList, y): void => {
       xList.forEach((color, x): void => {
         if (color != null) {
@@ -144,5 +146,18 @@ export class Game {
         }
       });
     });
+  }
+
+  private renderMino(): void {
+    if (this.prevMinoSprite) {
+      this.prevMinoSprite.destroy();
+    }
+    const block = BlockFactory(this.playerX, this.playerY, BlockColor.Purple);
+    this.container.addChild(block);
+    this.prevMinoSprite = block;
+  }
+
+  private putMino(): void {
+    this.field[this.playerY][this.playerX] = BlockColor.Purple;
   }
 }
