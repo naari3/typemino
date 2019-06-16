@@ -15,5 +15,8 @@ module.exports = {
     // お好みのルール設定を
     "@typescript-eslint/adjacent-overload-signatures": "error"
     // ...
+  },
+  env: {
+    browser: true
   }
 };

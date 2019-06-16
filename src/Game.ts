@@ -1,5 +1,3 @@
-/* global document */
-
 import * as PIXI from "pixi.js";
 import Constants from "./Constants";
 import { Tetromino } from "./Tetromino";
