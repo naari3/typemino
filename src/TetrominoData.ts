@@ -164,7 +164,7 @@ export const TetrominoData: {
     ]
   },
   [TetrominoType.J]: {
-    color: BlockColor.Red,
+    color: BlockColor.Blue,
     shapes: [
       [
         // 0
