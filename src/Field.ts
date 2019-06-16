@@ -8,17 +8,22 @@ export class Field {
   public blockColors: BlockColor[][];
   public blockSprites: PIXI.Sprite[][];
   private container: PIXI.Container;
+  private blockWidth: number;
+  private blockHeight: number;
 
   public constructor(container: PIXI.Container) {
     this.container = container;
+    this.blockWidth = constants.blockWidth;
+    this.blockHeight = constants.blockHeight;
+
     this.blockColors = Array.from(
-      new Array(constants.blockHeight),
-      (): (BlockColor | null)[] => new Array(constants.blockWidth).fill(null)
+      new Array(this.blockHeight),
+      (): (BlockColor | null)[] => new Array(this.blockWidth).fill(null)
     );
 
     this.blockSprites = Array.from(
-      new Array(constants.blockHeight),
-      (): (PIXI.Sprite | null)[] => new Array(constants.blockWidth).fill(null)
+      new Array(this.blockHeight),
+      (): (PIXI.Sprite | null)[] => new Array(this.blockWidth).fill(null)
     );
   }
 
@@ -51,5 +56,25 @@ export class Field {
         }
       });
     });
+  }
+
+  public isCollision(tetromino: Tetromino): boolean {
+    let collided = false;
+    tetromino.type.shapes[0].forEach((xList, y): void => {
+      xList.forEach((b, x): void => {
+        if (b === 1) {
+          if (
+            collided ||
+            tetromino.x < 0 ||
+            tetromino.x + x > this.blockWidth ||
+            tetromino.y + y >= this.blockHeight ||
+            this.blockColors[tetromino.y + y][tetromino.x + x] !== null
+          ) {
+            collided = true;
+          }
+        }
+      });
+    });
+    return collided;
   }
 }

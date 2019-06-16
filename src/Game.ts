@@ -58,18 +58,18 @@ export class Game {
     this.tetromino.y++;
     if (this.pressLeft) {
       this.tetromino.x--;
-      if (this.isCollision()) {
+      if (this.field.isCollision(this.tetromino)) {
         this.tetromino.x++;
       }
     } else if (this.pressRight) {
       this.tetromino.x++;
-      if (this.isCollision()) {
+      if (this.field.isCollision(this.tetromino)) {
         this.tetromino.x--;
       }
     }
     this.tetromino.remove();
 
-    if (this.isCollision()) {
+    if (this.field.isCollision(this.tetromino)) {
       this.tetromino.y--;
       this.field.putMino(this.tetromino);
       this.tetromino = Tetromino.getRandom(this.container);
@@ -109,27 +109,5 @@ export class Game {
       }
     });
     return clearCount;
-  }
-
-  private isCollision(): boolean {
-    let collided = false;
-    this.tetromino.type.shapes[0].forEach((xList, y): void => {
-      xList.forEach((b, x): void => {
-        if (b === 1) {
-          if (
-            collided ||
-            this.tetromino.x < 0 ||
-            this.tetromino.x + x > this.blockWidth ||
-            this.tetromino.y + y >= this.blockHeight ||
-            this.field.blockColors[this.tetromino.y + y][
-              this.tetromino.x + x
-            ] !== null
-          ) {
-            collided = true;
-          }
-        }
-      });
-    });
-    return collided;
   }
 }
