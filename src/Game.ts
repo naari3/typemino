@@ -4,6 +4,7 @@ import * as PIXI from "pixi.js";
 import { BlockFactory } from "./BlockFactory";
 import { BlockColor } from "./BlockColor";
 import { Tetromino } from "./Tetromino";
+import { TetrominoData, TetrominoType } from "./TetrominoData";
 
 export class Game {
   protected app: PIXI.Application;
@@ -37,6 +38,10 @@ export class Game {
     this.playerY = 0;
 
     this.tetromino = Tetromino.getRandom(this.container);
+    // this.tetromino = new Tetromino(
+    //   TetrominoData[TetrominoType.J],
+    //   this.container
+    // );
 
     this.field = Array.from(
       new Array(this.blockHeight),
@@ -88,11 +93,7 @@ export class Game {
     // console.log({ aa: blockSprites[field.length - 1] });
     // console.log({ playerX, playerY });
     // console.log({ pressUp, pressDown, pressLeft, pressRight });
-    if (
-      (!!this.field[this.playerY + 1] &&
-        this.field[this.playerY + 1][this.playerX] != null) ||
-      this.playerY == this.blockHeight - 1
-    ) {
+    if (this.isCollision()) {
       this.putMino();
       this.playerX = Math.floor(this.blockWidth / 2) - 1;
       this.playerY = 0;
@@ -167,7 +168,32 @@ export class Game {
     this.prevMinoSprite = block;
   }
 
+  private isCollision(): boolean {
+    let collided = false;
+    this.tetromino.type.shapes[0].forEach((xList, y): void => {
+      xList.forEach((b, x): void => {
+        if (b === 1) {
+          if (
+            this.tetromino.y + y + 1 >= this.blockHeight ||
+            this.field[this.tetromino.y + y + 1][this.tetromino.x + x] !== null
+          ) {
+            collided = true;
+          }
+        }
+      });
+    });
+    return collided;
+  }
+
   private putMino(): void {
-    this.field[this.playerY][this.playerX] = this.tetromino.type.color;
+    this.tetromino.type.shapes[0].forEach((xList, y): void => {
+      xList.forEach((b, x): void => {
+        if (b === 1) {
+          this.field[this.tetromino.y + y][
+            this.tetromino.x + x
+          ] = this.tetromino.type.color;
+        }
+      });
+    });
   }
 }
