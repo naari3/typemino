@@ -70,7 +70,7 @@ export class Game {
 
     if (this.isCollision()) {
       this.tetromino.y--;
-      this.putMino();
+      this.field.putMino(this.tetromino);
       this.tetromino = Tetromino.getRandom(this.container);
       this.clearLines();
     }
@@ -130,17 +130,5 @@ export class Game {
       });
     });
     return collided;
-  }
-
-  private putMino(): void {
-    this.tetromino.type.shapes[0].forEach((xList, y): void => {
-      xList.forEach((b, x): void => {
-        if (b === 1) {
-          this.field.blockColors[this.tetromino.y + y][
-            this.tetromino.x + x
-          ] = this.tetromino.type.color;
-        }
-      });
-    });
   }
 }

@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { BlockColor } from "./BlockColor";
 import { BlockFactory } from "./blockFactory";
+import { Tetromino } from "./Tetromino";
 
 export class Field {
   public blockColors: BlockColor[][];
@@ -33,6 +34,17 @@ export class Field {
             this.blockSprites[y][x].destroy();
             this.blockSprites[y][x] = null;
           }
+        }
+      });
+    });
+  }
+
+  public putMino(tetromino: Tetromino): void {
+    tetromino.type.shapes[0].forEach((xList, y): void => {
+      xList.forEach((b, x): void => {
+        if (b === 1) {
+          this.blockColors[tetromino.y + y][tetromino.x + x] =
+            tetromino.type.color;
         }
       });
     });
