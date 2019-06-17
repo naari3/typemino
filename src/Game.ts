@@ -88,13 +88,13 @@ export class Game {
 
   private initializeKeyEvents(): void {
     this.upKey = new Keyboard("ArrowUp");
-    this.upKey.press = this.hardDrop;
+    this.upKey.press = this.hardDrop.bind(this);
 
     this.leftKey = new Keyboard("ArrowLeft");
     this.rightKey = new Keyboard("ArrowRight");
   }
 
-  private hardDrop = (): void => {
+  private hardDrop(): void {
     while (!this.field.isCollision(this.tetromino)) {
       this.tetromino.y++;
     }
@@ -103,7 +103,7 @@ export class Game {
     this.field.putMino(this.tetromino);
     this.tetromino = Tetromino.getRandom(this.container);
     this.field.clearLines();
-  };
+  }
 
   private moveLeft(): void {
     this.tetromino.x--;
