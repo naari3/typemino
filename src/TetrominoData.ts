@@ -164,8 +164,8 @@ export const TetrominoData: {
       ]
     }
   },
-  [TetrominoType.J]: {
-    color: BlockColor.Blue,
+  [TetrominoType.L]: {
+    color: BlockColor.Orange,
     shapes: {
       [AngleType.A]: [
         // 0
@@ -193,8 +193,8 @@ export const TetrominoData: {
       ]
     }
   },
-  [TetrominoType.L]: {
-    color: BlockColor.Orange,
+  [TetrominoType.J]: {
+    color: BlockColor.Blue,
     shapes: {
       [AngleType.A]: [
         // 0
