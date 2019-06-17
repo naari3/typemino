@@ -1,5 +1,6 @@
 import { TetrominoData, TetrominoType, TetrominoDatum } from "./TetrominoData";
 import { BlockFactory } from "./blockFactory";
+import { AngleType } from "./AngleType";
 
 function randomEnum<T>(anEnum: T): T[keyof T] {
   const enumValues = (Object.keys(anEnum)
@@ -12,8 +13,8 @@ function randomEnum<T>(anEnum: T): T[keyof T] {
 
 export class Tetromino {
   public type: TetrominoDatum;
-  public angle: number; // 0 (0), 1 (90), 2 (180), 3 (270)
-  public previousAngle: number; // 0 (0), 1 (90), 2 (180), 3 (270)
+  public angle: AngleType;
+  public previousAngle: AngleType;
   public x: number;
   public y: number;
   private container: PIXI.Container;
@@ -71,8 +72,8 @@ export class Tetromino {
   public rotateRight(): void {
     this.previousAngle = this.angle;
     this.angle -= 1;
-    if (this.angle === -1) {
-      this.angle = 3;
+    if (this.angle === AngleType.A) {
+      this.angle = AngleType.D;
     }
   }
 }
