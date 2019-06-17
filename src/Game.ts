@@ -128,16 +128,16 @@ export class Game {
   }
 
   private rotateLeft(): void {
-    this.tetromino.angle = (((this.tetromino.angle - 1) % 4) + 4) % 4;
+    this.tetromino.rotateLeft();
     if (this.field.isCollision(this.tetromino)) {
-      this.tetromino.angle = (this.tetromino.angle + 1) % 4;
+      this.tetromino.rotateRight();
     }
   }
 
   private rotateRight(): void {
-    this.tetromino.angle = (this.tetromino.angle + 1) % 4;
+    this.tetromino.rotateLeft();
     if (this.field.isCollision(this.tetromino)) {
-      this.tetromino.angle = (((this.tetromino.angle - 1) % 4) + 4) % 4;
+      this.tetromino.rotateRight();
     }
   }
 }

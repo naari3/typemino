@@ -13,6 +13,7 @@ function randomEnum<T>(anEnum: T): T[keyof T] {
 export class Tetromino {
   public type: TetrominoDatum;
   public angle: number; // 0 (0), 1 (90), 2 (180), 3 (270)
+  public previousAngle: number; // 0 (0), 1 (90), 2 (180), 3 (270)
   public x: number;
   public y: number;
   private container: PIXI.Container;
@@ -22,6 +23,7 @@ export class Tetromino {
   public constructor(type: TetrominoDatum, container: PIXI.Container) {
     this.type = type;
     this.angle = 0;
+    this.previousAngle = 0;
     this.x = Math.floor(Math.floor(10 / 2) - this.type.shapes[0][0].length / 2);
     this.y = 0;
     this.container = container;
@@ -58,5 +60,19 @@ export class Tetromino {
 
   public isForcedLock(): boolean {
     return this.lockDelayCounter > 30;
+  }
+
+  public rotateLeft(): void {
+    this.previousAngle = this.angle;
+    this.angle += 1;
+    this.angle %= 4;
+  }
+
+  public rotateRight(): void {
+    this.previousAngle = this.angle;
+    this.angle -= 1;
+    if (this.angle === -1) {
+      this.angle = 3;
+    }
   }
 }
