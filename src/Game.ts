@@ -9,6 +9,9 @@ export class Game {
   protected container: PIXI.Container;
   protected loader: PIXI.loaders.Loader;
   protected window: { w: number; h: number };
+  private upKey: Keyboard;
+  private leftKey: Keyboard;
+  private rightKey: Keyboard;
   private pressLeft: boolean = false;
   private pressRight: boolean = false;
   private blockWidth: number;
@@ -58,16 +61,10 @@ export class Game {
 
     this.freeFall();
 
-    if (this.pressLeft) {
-      this.tetromino.x--;
-      if (this.field.isCollision(this.tetromino)) {
-        this.tetromino.x++;
-      }
-    } else if (this.pressRight) {
-      this.tetromino.x++;
-      if (this.field.isCollision(this.tetromino)) {
-        this.tetromino.x--;
-      }
+    if (this.leftKey.isDown) {
+      this.moveLeft();
+    } else if (this.rightKey.isDown) {
+      this.moveRight();
     }
 
     this.field.render();
@@ -90,25 +87,11 @@ export class Game {
   }
 
   private initializeKeyEvents(): void {
-    const upKey = new Keyboard("ArrowUp");
-    upKey.press = this.hardDrop;
+    this.upKey = new Keyboard("ArrowUp");
+    this.upKey.press = this.hardDrop;
 
-    const onKeyDownEvent = (e: KeyboardEvent): void => {
-      if (e.key == "ArrowLeft") {
-        this.pressLeft = true;
-      } else if (e.key == "ArrowRight") {
-        this.pressRight = true;
-      }
-    };
-    document.addEventListener("keydown", onKeyDownEvent);
-    const onKeyUpEvent = (e: KeyboardEvent): void => {
-      if (e.key == "ArrowLeft") {
-        this.pressLeft = false;
-      } else if (e.key == "ArrowRight") {
-        this.pressRight = false;
-      }
-    };
-    document.addEventListener("keyup", onKeyUpEvent);
+    this.leftKey = new Keyboard("ArrowLeft");
+    this.rightKey = new Keyboard("ArrowRight");
   }
 
   private hardDrop = (): void => {
@@ -121,4 +104,18 @@ export class Game {
     this.tetromino = Tetromino.getRandom(this.container);
     this.field.clearLines();
   };
+
+  private moveLeft(): void {
+    this.tetromino.x--;
+    if (this.field.isCollision(this.tetromino)) {
+      this.tetromino.x++;
+    }
+  }
+
+  private moveRight(): void {
+    this.tetromino.x++;
+    if (this.field.isCollision(this.tetromino)) {
+      this.tetromino.x--;
+    }
+  }
 }
