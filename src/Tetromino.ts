@@ -33,8 +33,12 @@ export class Tetromino {
     return new Tetromino(TetrominoData[randomEnum(TetrominoType)], container);
   }
 
+  public currentShape(): number[][] {
+    return this.type.shapes[this.angle];
+  }
+
   public render(): void {
-    this.type.shapes[0].forEach((xList, y): void => {
+    this.currentShape().forEach((xList, y): void => {
       xList.forEach((b, x): void => {
         if (b === 1) {
           const block = BlockFactory(this.x + x, this.y + y, this.type.color);

@@ -48,7 +48,7 @@ export class Field {
   }
 
   public putMino(tetromino: Tetromino): void {
-    tetromino.type.shapes[0].forEach((xList, y): void => {
+    tetromino.currentShape().forEach((xList, y): void => {
       xList.forEach((b, x): void => {
         if (b === 1) {
           this.blockColors[tetromino.y + y][tetromino.x + x] =
@@ -60,7 +60,7 @@ export class Field {
 
   public isCollision(tetromino: Tetromino): boolean {
     let collided = false;
-    tetromino.type.shapes[0].forEach((xList, y): void => {
+    tetromino.currentShape().forEach((xList, y): void => {
       xList.forEach((b, x): void => {
         if (b === 1) {
           if (
