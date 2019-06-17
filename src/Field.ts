@@ -65,7 +65,7 @@ export class Field {
         if (b === 1) {
           if (
             collided ||
-            tetromino.x < 0 ||
+            tetromino.x + x < 0 ||
             tetromino.x + x > this.blockWidth ||
             tetromino.y + y >= this.blockHeight ||
             this.blockColors[tetromino.y + y][tetromino.x + x] !== null
