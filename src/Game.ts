@@ -12,6 +12,7 @@ export class Game {
   private upKey: Keyboard;
   private leftKey: Keyboard;
   private rightKey: Keyboard;
+  private rotateLeftKey: Keyboard;
   private rotateRightKey: Keyboard;
   private pressLeft: boolean = false;
   private pressRight: boolean = false;
@@ -95,7 +96,10 @@ export class Game {
     this.rightKey = new Keyboard("ArrowRight");
 
     this.rotateRightKey = new Keyboard("x");
-    this.rotateRightKey.press = this.rotate.bind(this);
+    this.rotateRightKey.press = this.rotateRight.bind(this);
+
+    this.rotateLeftKey = new Keyboard("z");
+    this.rotateLeftKey.press = this.rotateLeft.bind(this);
   }
 
   private hardDrop(): void {
@@ -123,10 +127,17 @@ export class Game {
     }
   }
 
-  private rotate(): void {
+  private rotateLeft(): void {
+    this.tetromino.angle = (((this.tetromino.angle - 1) % 4) + 4) % 4;
+    if (this.field.isCollision(this.tetromino)) {
+      this.tetromino.angle = (this.tetromino.angle + 1) % 4;
+    }
+  }
+
+  private rotateRight(): void {
     this.tetromino.angle = (this.tetromino.angle + 1) % 4;
     if (this.field.isCollision(this.tetromino)) {
-      this.tetromino.angle = (this.tetromino.angle - 1) % 4;
+      this.tetromino.angle = (((this.tetromino.angle - 1) % 4) + 4) % 4;
     }
   }
 }
