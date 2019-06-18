@@ -52,7 +52,7 @@ export class Field {
       xList.forEach((b, x): void => {
         if (b === 1) {
           this.blockColors[tetromino.y + y][tetromino.x + x] =
-            tetromino.type.color;
+            tetromino.data.color;
         }
       });
     });

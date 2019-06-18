@@ -12,7 +12,7 @@ function randomEnum<T>(anEnum: T): T[keyof T] {
 }
 
 export class Tetromino {
-  public type: TetrominoDatum;
+  public data: TetrominoDatum;
   public angle: AngleType;
   public previousAngle: AngleType;
   public x: number;
@@ -21,11 +21,11 @@ export class Tetromino {
   private sprites: PIXI.Sprite[];
   public lockDelayCounter: number;
 
-  public constructor(type: TetrominoDatum, container: PIXI.Container) {
-    this.type = type;
+  public constructor(data: TetrominoDatum, container: PIXI.Container) {
+    this.data = data;
     this.angle = 0;
     this.previousAngle = 0;
-    this.x = Math.floor(Math.floor(10 / 2) - this.type.shapes[0][0].length / 2);
+    this.x = Math.floor(Math.floor(10 / 2) - this.data.shapes[0][0].length / 2);
     this.y = 0;
     this.container = container;
     this.sprites = [];
@@ -37,14 +37,14 @@ export class Tetromino {
   }
 
   public currentShape(): number[][] {
-    return this.type.shapes[this.angle];
+    return this.data.shapes[this.angle];
   }
 
   public render(): void {
     this.currentShape().forEach((xList, y): void => {
       xList.forEach((b, x): void => {
         if (b === 1) {
-          const block = BlockFactory(this.x + x, this.y + y, this.type.color);
+          const block = BlockFactory(this.x + x, this.y + y, this.data.color);
           this.container.addChild(block);
           this.sprites.push(block);
         }
@@ -75,5 +75,9 @@ export class Tetromino {
     if (this.angle === -1) {
       this.angle = AngleType.D;
     }
+  }
+
+  public isType(type: TetrominoType): boolean {
+    return this.data === TetrominoData[type];
   }
 }
