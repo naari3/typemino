@@ -8,6 +8,7 @@ import { Wallkick } from "./Wallkick";
 export class Game {
   protected app: PIXI.Application;
   protected container: PIXI.Container;
+  protected holdContainer: PIXI.Container;
   protected loader: PIXI.loaders.Loader;
   protected window: { w: number; h: number };
   private upKey: Keyboard;
@@ -39,6 +40,15 @@ export class Game {
     this.container.position = fieldBackground.position;
     this.app.stage.addChild(fieldBackground);
     this.app.stage.addChild(this.container);
+
+    const holdBackground = this.holdBackground();
+    this.holdContainer = new PIXI.Container();
+    const holdPositionX = 16 * 1;
+    const holdPositionY = 16 * 7;
+    holdBackground.position.x = holdPositionX;
+    holdBackground.position.y = holdPositionY;
+    this.app.stage.addChild(holdBackground);
+    this.app.stage.addChild(this.holdContainer);
 
     document.body.appendChild(this.app.view);
 
@@ -85,6 +95,18 @@ export class Game {
       graphics.moveTo(0, 16 * (y + 1));
       graphics.lineTo(16 * 10, 16 * (y + 1));
     }
+
+    return graphics;
+  }
+
+  protected holdBackground(): PIXI.Graphics {
+    const graphics = new PIXI.Graphics();
+
+    // hold frame
+    graphics.lineStyle(4, 0xffffff, 1, 1);
+    graphics.beginFill(0x000000, 0.5);
+    graphics.drawRect(0, 0, 16 * 4, 16 * 4);
+    graphics.endFill();
 
     return graphics;
   }
