@@ -1,7 +1,6 @@
 import { TetrominoData, TetrominoType, TetrominoDatum } from "./TetrominoData";
 import { BlockFactory } from "./blockFactory";
 import { AngleType } from "./AngleType";
-import Constants from "./Constants";
 
 function randomEnum<T>(anEnum: T): T[keyof T] {
   const enumValues = (Object.keys(anEnum)
