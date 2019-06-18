@@ -31,25 +31,8 @@ export class Game {
       height: h,
       backgroundColor: 0xdddddd
     });
-    const fieldBackground = this.fieldBackground();
-    this.container = new PIXI.Container();
-    const fieldPositionX = 16 * 7;
-    const fieldPositionY = 16 * 3;
-    fieldBackground.position.x = fieldPositionX;
-    fieldBackground.position.y = fieldPositionY;
-    this.container.position = fieldBackground.position;
-    this.app.stage.addChild(fieldBackground);
-    this.app.stage.addChild(this.container);
 
-    const holdBackground = this.holdBackground();
-    this.holdContainer = new PIXI.Container();
-    const holdPositionX = 16 * 1;
-    const holdPositionY = 16 * 7;
-    holdBackground.position.x = holdPositionX;
-    holdBackground.position.y = holdPositionY;
-    this.app.stage.addChild(holdBackground);
-    this.app.stage.addChild(this.holdContainer);
-
+    this.adjustFrames();
     document.body.appendChild(this.app.view);
 
     this.window = { w: w, h: h };
@@ -73,6 +56,27 @@ export class Game {
     this.app.ticker.add((): void => {
       this.animate();
     });
+  }
+
+  protected adjustFrames(): void {
+    const fieldBackground = this.fieldBackground();
+    this.container = new PIXI.Container();
+    const fieldPositionX = 16 * 7;
+    const fieldPositionY = 16 * 3;
+    fieldBackground.position.x = fieldPositionX;
+    fieldBackground.position.y = fieldPositionY;
+    this.container.position = fieldBackground.position;
+    this.app.stage.addChild(fieldBackground);
+    this.app.stage.addChild(this.container);
+
+    const holdBackground = this.holdBackground();
+    this.holdContainer = new PIXI.Container();
+    const holdPositionX = 16 * 1;
+    const holdPositionY = 16 * 7;
+    holdBackground.position.x = holdPositionX;
+    holdBackground.position.y = holdPositionY;
+    this.app.stage.addChild(holdBackground);
+    this.app.stage.addChild(this.holdContainer);
   }
 
   protected fieldBackground(): PIXI.Graphics {
