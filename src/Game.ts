@@ -7,6 +7,8 @@ import { Wallkick } from "./Wallkick";
 import { Holder } from "./Holder";
 import { NextTetrominoRenderer } from "./NextTetrominoRenderer";
 
+type exclusionFlagType = "left" | "right";
+
 export class Game {
   protected app: PIXI.Application;
   protected container: PIXI.Container;
@@ -37,6 +39,8 @@ export class Game {
   private gravityTimer: number;
 
   private rotateCount: number;
+
+  private moveExclusionFlag: exclusionFlagType;
 
   private nextRenderer: NextTetrominoRenderer;
   private nextnext1Renderer: NextTetrominoRenderer;
@@ -77,6 +81,8 @@ export class Game {
     this.gravityTimer = 0;
 
     this.rotateCount = 0;
+
+    this.moveExclusionFlag = null;
 
     this.initializeKeyEvents();
 
@@ -232,7 +238,9 @@ export class Game {
       this.tetromino = this.popTetrominoQueue();
     }
     if (this.tetromino !== null) {
-      if (this.leftKey.isDown) {
+      if (this.leftKey.isDown && this.rightKey.isDown) {
+        this.moveExclusionFlag === "left" ? this.moveLeft() : this.moveRight();
+      } else if (this.leftKey.isDown) {
         this.moveLeft();
       } else if (this.rightKey.isDown) {
         this.moveRight();
@@ -256,6 +264,10 @@ export class Game {
 
     this.holdKey = new Keyboard(Constants.controller.hold);
     this.holdKey.press = this.holdMino.bind(this);
+  }
+
+  private setControllerExclusion(direction: exclusionFlagType): void {
+    this.moveExclusionFlag = direction;
   }
 
   private freeFall(): void {
@@ -302,6 +314,7 @@ export class Game {
   }
 
   private moveLeft(): void {
+    this.setControllerExclusion("left");
     if (this.dasTimer === 0 || this.dasTimer >= Constants.dasTime) {
       this.tetromino.x--;
       if (this.field.isCollision(this.tetromino)) {
@@ -311,6 +324,7 @@ export class Game {
   }
 
   private moveRight(): void {
+    this.setControllerExclusion("right");
     if (this.dasTimer === 0 || this.dasTimer >= Constants.dasTime) {
       this.tetromino.x++;
       if (this.field.isCollision(this.tetromino)) {
