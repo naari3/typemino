@@ -31,6 +31,7 @@ export class Game {
   private isHolded: boolean;
 
   private areTimer: number;
+  private lineClearTimer: number;
 
   private nextRenderer: NextTetrominoRenderer;
   private nextnext1Renderer: NextTetrominoRenderer;
@@ -61,6 +62,7 @@ export class Game {
     this.holder = new Holder(this.holdContainer);
 
     this.areTimer = 0;
+    this.lineClearTimer = 0;
 
     this.initializeKeyEvents();
 
@@ -270,7 +272,10 @@ export class Game {
 
   private fixMino(): void {
     this.field.putMino(this.tetromino);
-    this.field.clearLines();
+    if (this.field.transparentLines() !== 0) {
+      this.lineClearTimer = Constants.lineClearTime;
+    }
+    // this.field.clearLines();
     this.field.render();
     this.tetromino.clearRendered();
     this.tetromino = null;
@@ -341,10 +346,22 @@ export class Game {
   }
 
   private tickTimer(): void {
-    if (this.areTimer > 0) this.areTimer -= 1;
+    if (this.lineClearTimer > 0) {
+      if (this.lineClearTimer === 1) {
+        this.field.clearLines();
+        this.field.render();
+      }
+      this.lineClearTimer -= 1;
+    } else {
+      if (this.areTimer > 0) this.areTimer -= 1;
+    }
   }
 
   private isLockTime(): boolean {
     return this.areTimer !== 0;
+  }
+
+  private isClearWaitTime(): boolean {
+    return this.lineClearTimer !== 0;
   }
 }

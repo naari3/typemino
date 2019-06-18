@@ -3,6 +3,7 @@ import constants from "./Constants";
 import { BlockColor } from "./BlockColor";
 import { BlockFactory } from "./blockFactory";
 import { Tetromino } from "./Tetromino";
+import Constants from "./Constants";
 
 export class Field {
   public blockColors: BlockColor[][];
@@ -84,6 +85,21 @@ export class Field {
       if (xList.every((x): boolean => !!x)) {
         this.blockColors.splice(y, 1);
         this.blockColors.unshift(Array(this.blockWidth).fill(null));
+        clearCount++;
+      }
+    });
+    return clearCount;
+  }
+
+  // this method just make blocks transparent
+  // you must call clearLines() if you need pack field
+  public transparentLines(): number {
+    let clearCount = 0;
+    this.blockColors.forEach((xList, y): void => {
+      if (xList.every((x): boolean => !!x)) {
+        this.blockColors[y] = new Array(this.blockWidth).fill(
+          BlockColor.Invisible
+        );
         clearCount++;
       }
     });
