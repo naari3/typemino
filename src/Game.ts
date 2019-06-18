@@ -22,6 +22,7 @@ export class Game {
   private field: Field;
   private prevMinoSprite: PIXI.Sprite;
   private tetromino: Tetromino;
+  private tetrominoQueue: Tetromino[];
 
   public constructor(w: number, h: number) {
     this.app = new PIXI.Application({ width: w, height: h });
@@ -35,7 +36,8 @@ export class Game {
     this.blockWidth = Constants.blockWidth;
     this.blockHeight = Constants.blockHeight;
 
-    this.tetromino = Tetromino.getRandom(this.container);
+    this.tetrominoQueue = Tetromino.getRandomQueue(this.container);
+    this.tetromino = this.popTetrominoQueue();
     // this.tetromino = new Tetromino(
     //   TetrominoData[TetrominoType.O],
     //   this.container
@@ -78,10 +80,10 @@ export class Game {
     this.tetromino.y++;
     if (this.field.isCollision(this.tetromino)) {
       this.tetromino.y--;
-      this.tetromino.lockDelayCounter++;
+      // this.tetromino.lockDelayCounter++;
       if (this.tetromino.isForcedLock()) {
         this.field.putMino(this.tetromino);
-        this.tetromino = Tetromino.getRandom(this.container);
+        this.tetromino = this.popTetrominoQueue();
         this.field.clearLines();
       }
     } else {
@@ -110,7 +112,7 @@ export class Game {
     this.tetromino.y--;
     this.tetromino.clearRendered();
     this.field.putMino(this.tetromino);
-    this.tetromino = Tetromino.getRandom(this.container);
+    this.tetromino = this.popTetrominoQueue();
     this.field.clearLines();
   }
 
@@ -144,5 +146,13 @@ export class Game {
         this.tetromino.rotateLeft();
       }
     }
+  }
+
+  private popTetrominoQueue(): Tetromino {
+    console.log(this.tetrominoQueue);
+    if (this.tetrominoQueue.length === 0) {
+      this.tetrominoQueue = Tetromino.getRandomQueue(this.container);
+    }
+    return this.tetrominoQueue.pop();
   }
 }

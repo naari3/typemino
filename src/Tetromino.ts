@@ -11,6 +11,15 @@ function randomEnum<T>(anEnum: T): T[keyof T] {
   return randomEnumValue;
 }
 
+function shuffle<T>(arr: T[]): T[] {
+  let m = arr.length;
+  while (m) {
+    const i = Math.floor(Math.random() * m--);
+    [arr[m], arr[i]] = [arr[i], arr[m]];
+  }
+  return arr;
+}
+
 export class Tetromino {
   public data: TetrominoDatum;
   public angle: AngleType;
@@ -34,6 +43,20 @@ export class Tetromino {
 
   public static getRandom(container: PIXI.Container): Tetromino {
     return new Tetromino(TetrominoData[randomEnum(TetrominoType)], container);
+  }
+
+  public static getRandomQueue(container: PIXI.Container): Tetromino[] {
+    return shuffle(
+      [
+        TetrominoType.I,
+        TetrominoType.J,
+        TetrominoType.L,
+        TetrominoType.O,
+        TetrominoType.S,
+        TetrominoType.T,
+        TetrominoType.Z
+      ].map((type): Tetromino => new Tetromino(TetrominoData[type], container))
+    );
   }
 
   public currentShape(): number[][] {
