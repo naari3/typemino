@@ -68,6 +68,7 @@ export class Game {
     );
     this.holder = new Holder(this.holdContainer);
 
+    this.lockDelayTimer = 0;
     this.areTimer = 0;
     this.lineClearTimer = 0;
     this.dasTimer = 0;
@@ -255,8 +256,12 @@ export class Game {
 
   private freeFall(): void {
     if (this.isFallOneBlock()) {
-      this.tetromino.y++;
-      this.field.render();
+      for (let i = 0; i < Math.ceil(Constants.gravity / 65536); i++) {
+        this.tetromino.y++;
+        if (this.field.isCollision(this.tetromino)) {
+          break;
+        }
+      }
       if (this.field.isCollision(this.tetromino)) {
         this.tetromino.y--;
         if (this.lockDelayTimer > Constants.lockDelayTime) {
@@ -394,6 +399,7 @@ export class Game {
   }
 
   private isFallOneBlock(): boolean {
+    if (Constants.gravity >= 65536) return true;
     if (this.gravityTimer >= 65536) {
       this.gravityTimer = 0;
       return true;
