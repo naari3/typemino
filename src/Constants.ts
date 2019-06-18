@@ -7,6 +7,7 @@ export default {
   areTime: 16,
   lineClearTime: 12,
   dasTime: 8,
+  gravity: 1024, // 1/65536 G
   controller: {
     up: "w",
     left: "a",

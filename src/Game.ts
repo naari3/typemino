@@ -34,6 +34,7 @@ export class Game {
   private areTimer: number;
   private lineClearTimer: number;
   private dasTimer: number;
+  private gravityTimer: number;
 
   private nextRenderer: NextTetrominoRenderer;
   private nextnext1Renderer: NextTetrominoRenderer;
@@ -70,6 +71,7 @@ export class Game {
     this.areTimer = 0;
     this.lineClearTimer = 0;
     this.dasTimer = 0;
+    this.gravityTimer = 0;
 
     this.initializeKeyEvents();
 
@@ -252,15 +254,18 @@ export class Game {
   }
 
   private freeFall(): void {
-    this.tetromino.clearRendered();
-    this.tetromino.y++;
-    this.field.render();
-    if (this.field.isCollision(this.tetromino)) {
-      this.tetromino.y--;
-      if (this.lockDelayTimer > Constants.lockDelayTime) {
-        return this.fixMino();
+    if (this.isFallOneBlock()) {
+      this.tetromino.y++;
+      this.field.render();
+      if (this.field.isCollision(this.tetromino)) {
+        this.tetromino.y--;
+        if (this.lockDelayTimer > Constants.lockDelayTime) {
+          return this.fixMino();
+        }
       }
     }
+
+    this.tetromino.clearRendered();
     this.tetromino.render();
   }
 
@@ -378,9 +383,22 @@ export class Game {
     } else {
       this.dasTimer = 0;
     }
+
+    if (Constants.gravity < 65536) {
+      this.gravityTimer += Constants.gravity;
+    }
   }
 
   private isLockTime(): boolean {
     return this.areTimer !== 0;
+  }
+
+  private isFallOneBlock(): boolean {
+    if (this.gravityTimer >= 65536) {
+      this.gravityTimer = 0;
+      return true;
+    } else {
+      return false;
+    }
   }
 }
