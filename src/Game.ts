@@ -36,6 +36,8 @@ export class Game {
   private dasTimer: number;
   private gravityTimer: number;
 
+  private rotateCount: number;
+
   private nextRenderer: NextTetrominoRenderer;
   private nextnext1Renderer: NextTetrominoRenderer;
   private nextnext2Renderer: NextTetrominoRenderer;
@@ -73,6 +75,8 @@ export class Game {
     this.lineClearTimer = 0;
     this.dasTimer = 0;
     this.gravityTimer = 0;
+
+    this.rotateCount = 0;
 
     this.initializeKeyEvents();
 
@@ -294,6 +298,7 @@ export class Game {
     this.tetromino = null;
     this.areTimer = Constants.areTime;
     this.isHolded = false;
+    this.rotateCount = 0;
   }
 
   private moveLeft(): void {
@@ -320,6 +325,12 @@ export class Game {
     if (this.field.isCollision(this.tetromino)) {
       if (!new Wallkick().executeWallkick(this.tetromino, this.field)) {
         this.tetromino.rotateRight();
+      } else {
+        console.log("rotate success");
+        if (this.isLockDelayReset()) {
+          this.lockDelayTimer = 0;
+        }
+        this.rotateCount += 1;
       }
     }
   }
@@ -330,8 +341,19 @@ export class Game {
     if (this.field.isCollision(this.tetromino)) {
       if (!new Wallkick().executeWallkick(this.tetromino, this.field)) {
         this.tetromino.rotateLeft();
+      } else {
+        this.increaseRotateCount();
       }
+    } else {
+      this.increaseRotateCount();
     }
+  }
+
+  private increaseRotateCount(): void {
+    if (this.isLockDelayReset()) {
+      this.lockDelayTimer = 0;
+    }
+    this.rotateCount += 1;
   }
 
   private holdMino(): boolean {
@@ -368,6 +390,7 @@ export class Game {
       if (this.field.isCollision(this.tetromino)) {
         this.lockDelayTimer += 1;
       } else {
+        this.rotateCount = 0;
         this.lockDelayTimer = 0;
       }
       this.tetromino.y--;
@@ -406,5 +429,9 @@ export class Game {
     } else {
       return false;
     }
+  }
+
+  private isLockDelayReset(): boolean {
+    return this.rotateCount < Constants.rotateLockResetLimitMove;
   }
 }

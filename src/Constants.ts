@@ -7,7 +7,8 @@ export default {
   areTime: 16,
   lineClearTime: 12,
   dasTime: 8,
-  gravity: 1310720, // 1/65536 G
+  gravity: 65536 * 20, // 1/65536 G
+  rotateLockResetLimitMove: 10,
   controller: {
     up: "w",
     left: "a",
