@@ -59,7 +59,11 @@ export class Game {
     );
     this.tetromino = this.popTetrominoQueue();
 
-    this.field = new Field(this.container);
+    this.field = new Field(
+      Constants.blockWidth,
+      Constants.blockHeight,
+      this.container
+    );
     this.holder = new Holder(this.holdContainer);
 
     this.areTimer = 0;

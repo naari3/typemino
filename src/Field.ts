@@ -1,9 +1,7 @@
 import * as PIXI from "pixi.js";
-import constants from "./Constants";
 import { BlockColor } from "./BlockColor";
 import { BlockFactory } from "./blockFactory";
 import { Tetromino } from "./Tetromino";
-import Constants from "./Constants";
 
 export class Field {
   public blockColors: BlockColor[][];
@@ -12,10 +10,10 @@ export class Field {
   private blockWidth: number;
   private blockHeight: number;
 
-  public constructor(container: PIXI.Container) {
+  public constructor(width: number, height: number, container: PIXI.Container) {
     this.container = container;
-    this.blockWidth = constants.blockWidth;
-    this.blockHeight = constants.blockHeight;
+    this.blockWidth = width;
+    this.blockHeight = height;
 
     this.blockColors = Array.from(
       new Array(this.blockHeight),
