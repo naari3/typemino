@@ -1,6 +1,7 @@
 import { TetrominoData, TetrominoType, TetrominoDatum } from "./TetrominoData";
 import { BlockFactory } from "./blockFactory";
 import { AngleType } from "./AngleType";
+import Constants from "./Constants";
 
 function randomEnum<T>(anEnum: T): T[keyof T] {
   const enumValues = (Object.keys(anEnum)
@@ -85,7 +86,7 @@ export class Tetromino {
   }
 
   public isForcedLock(): boolean {
-    return this.lockDelayCounter > 30;
+    return this.lockDelayCounter > Constants.lockDelayThreashold;
   }
 
   public rotateRight(): void {
