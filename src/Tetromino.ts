@@ -63,16 +63,16 @@ export class Tetromino {
     return this.lockDelayCounter > 30;
   }
 
-  public rotateLeft(): void {
+  public rotateRight(): void {
     this.previousAngle = this.angle;
     this.angle += 1;
     this.angle %= 4;
   }
 
-  public rotateRight(): void {
+  public rotateLeft(): void {
     this.previousAngle = this.angle;
     this.angle -= 1;
-    if (this.angle === AngleType.A) {
+    if (this.angle === -1) {
       this.angle = AngleType.D;
     }
   }

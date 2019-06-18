@@ -135,9 +135,9 @@ export class Game {
   }
 
   private rotateRight(): void {
-    this.tetromino.rotateLeft();
+    this.tetromino.rotateRight();
     if (this.field.isCollision(this.tetromino)) {
-      this.tetromino.rotateRight();
+      this.tetromino.rotateLeft();
     }
   }
 }
