@@ -12,18 +12,15 @@ export class Game {
   protected holdContainer: PIXI.Container;
   protected loader: PIXI.loaders.Loader;
   protected window: { w: number; h: number };
+
   private upKey: Keyboard;
   private leftKey: Keyboard;
   private rightKey: Keyboard;
   private rotateLeftKey: Keyboard;
   private rotateRightKey: Keyboard;
   private holdKey: Keyboard;
-  private pressLeft: boolean = false;
-  private pressRight: boolean = false;
-  private blockWidth: number;
-  private blockHeight: number;
+
   private field: Field;
-  private prevMinoSprite: PIXI.Sprite;
   private tetromino: Tetromino;
   private tetrominoQueue: Tetromino[];
   private holder: Holder;
@@ -46,10 +43,6 @@ export class Game {
 
     this.tetrominoQueue = Tetromino.getRandomQueue(this.container);
     this.tetromino = this.popTetrominoQueue();
-    // this.tetromino = new Tetromino(
-    //   TetrominoData[TetrominoType.O],
-    //   this.container
-    // );
 
     this.field = new Field(this.container);
     this.holder = new Holder(this.holdContainer);
