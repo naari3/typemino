@@ -5,6 +5,8 @@ import blockImage from "./images/n2.png";
 const blockSize = 16;
 
 const BlockFactory = (x: number, y: number, color: BlockColor): PIXI.Sprite => {
+  if (color === BlockColor.Invisible) return new PIXI.Sprite();
+
   const baseTexture = PIXI.BaseTexture.from(blockImage);
   const texture = new PIXI.Texture(
     baseTexture,
