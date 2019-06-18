@@ -32,6 +32,7 @@ export class Game {
 
   private areTimer: number;
   private lineClearTimer: number;
+  private dasTimer: number;
 
   private nextRenderer: NextTetrominoRenderer;
   private nextnext1Renderer: NextTetrominoRenderer;
@@ -63,6 +64,7 @@ export class Game {
 
     this.areTimer = 0;
     this.lineClearTimer = 0;
+    this.dasTimer = 0;
 
     this.initializeKeyEvents();
 
@@ -284,16 +286,20 @@ export class Game {
   }
 
   private moveLeft(): void {
-    this.tetromino.x--;
-    if (this.field.isCollision(this.tetromino)) {
-      this.tetromino.x++;
+    if (this.dasTimer === 0 || this.dasTimer >= Constants.dasTime) {
+      this.tetromino.x--;
+      if (this.field.isCollision(this.tetromino)) {
+        this.tetromino.x++;
+      }
     }
   }
 
   private moveRight(): void {
-    this.tetromino.x++;
-    if (this.field.isCollision(this.tetromino)) {
-      this.tetromino.x--;
+    if (this.dasTimer === 0 || this.dasTimer >= Constants.dasTime) {
+      this.tetromino.x++;
+      if (this.field.isCollision(this.tetromino)) {
+        this.tetromino.x--;
+      }
     }
   }
 
@@ -354,6 +360,12 @@ export class Game {
       this.lineClearTimer -= 1;
     } else {
       if (this.areTimer > 0) this.areTimer -= 1;
+    }
+
+    if (this.leftKey.isDown || this.rightKey.isDown) {
+      this.dasTimer += 1;
+    } else {
+      this.dasTimer = 0;
     }
   }
 

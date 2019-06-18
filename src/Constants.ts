@@ -6,6 +6,7 @@ export default {
   lockDelayThreashold: 30,
   areTime: 16,
   lineClearTime: 12,
+  dasTime: 8,
   controller: {
     up: "w",
     left: "a",
