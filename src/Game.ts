@@ -5,14 +5,15 @@ import { Field } from "./Field";
 import { Keyboard } from "./Keyboard";
 import { Wallkick } from "./Wallkick";
 import { Holder } from "./Holder";
-import { TetrominoType } from "./TetrominoData";
-import { NextTetrominoRenderer } from "./renderers/nextTetrominoRenderer";
+import { NextTetrominoRenderer } from "./NextTetrominoRenderer";
 
 export class Game {
   protected app: PIXI.Application;
   protected container: PIXI.Container;
   protected holdContainer: PIXI.Container;
   protected nextContainer: PIXI.Container;
+  protected nextnext1Container: PIXI.Container;
+  protected nextnext2Container: PIXI.Container;
   protected loader: PIXI.loaders.Loader;
   protected window: { w: number; h: number };
 
@@ -30,6 +31,8 @@ export class Game {
   private isHolded: boolean;
 
   private nextRenderer: NextTetrominoRenderer;
+  private nextnext1Renderer: NextTetrominoRenderer;
+  private nextnext2Renderer: NextTetrominoRenderer;
 
   public constructor(w: number, h: number) {
     this.app = new PIXI.Application({
@@ -49,6 +52,8 @@ export class Game {
     this.tetromino = this.popTetrominoQueue();
 
     this.nextRenderer = new NextTetrominoRenderer(this.nextContainer);
+    this.nextnext1Renderer = new NextTetrominoRenderer(this.nextnext1Container);
+    this.nextnext2Renderer = new NextTetrominoRenderer(this.nextnext2Container);
     this.renderNext();
 
     this.field = new Field(this.container);
@@ -98,17 +103,31 @@ export class Game {
     this.app.stage.addChild(nextBackground);
     this.app.stage.addChild(this.nextContainer);
 
-    const nextnextBackground1 = this.nextnextBackground();
-    const nextnextBackground2 = this.nextnextBackground();
+    const nextnext1Background = this.nextnextBackground();
+    const nextnext2Background = this.nextnextBackground();
+    this.nextnext1Container = new PIXI.Container();
+    this.nextnext2Container = new PIXI.Container();
     const nextnextPositionX = 16 * 18 + 8;
     const nextnextPosition1Y = 16 * 10;
     const nextnextPosition2Y = 16 * 15;
-    nextnextBackground1.x = nextnextPositionX;
-    nextnextBackground1.y = nextnextPosition1Y;
-    nextnextBackground2.x = nextnextPositionX;
-    nextnextBackground2.y = nextnextPosition2Y;
-    this.app.stage.addChild(nextnextBackground1);
-    this.app.stage.addChild(nextnextBackground2);
+    nextnext1Background.position.x = nextnextPositionX;
+    nextnext1Background.position.y = nextnextPosition1Y;
+    this.nextnext1Container.position = nextnext1Background.position;
+    this.nextnext1Container.position.x += 16 - 4;
+    this.nextnext1Container.position.y += 16 * 1;
+    nextnext2Background.x = nextnextPositionX;
+    nextnext2Background.y = nextnextPosition2Y;
+    this.nextnext2Container.position = nextnext2Background.position;
+    this.nextnext2Container.position.x += 16 - 4;
+    this.nextnext2Container.position.y += 16 * 1;
+    this.nextnext1Container.scale.x = this.nextnext1Container.scale.y =
+      Constants.nextnextMinoScale;
+    this.nextnext2Container.scale.x = this.nextnext2Container.scale.y =
+      Constants.nextnextMinoScale;
+    this.app.stage.addChild(nextnext1Background);
+    this.app.stage.addChild(nextnext2Background);
+    this.app.stage.addChild(this.nextnext1Container);
+    this.app.stage.addChild(this.nextnext2Container);
   }
 
   protected fieldBackground(): PIXI.Graphics {
@@ -176,6 +195,14 @@ export class Game {
   protected renderNext(): void {
     this.nextRenderer.render(
       this.tetrominoQueue[this.tetrominoQueue.length - 1].type
+    );
+
+    this.nextnext1Renderer.render(
+      this.tetrominoQueue[this.tetrominoQueue.length - 2].type
+    );
+
+    this.nextnext2Renderer.render(
+      this.tetrominoQueue[this.tetrominoQueue.length - 3].type
     );
   }
 
