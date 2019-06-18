@@ -4,6 +4,7 @@ import { Tetromino } from "./Tetromino";
 import { Field } from "./Field";
 import { Keyboard } from "./Keyboard";
 import { Wallkick } from "./Wallkick";
+import { Holder } from "./Holder";
 
 export class Game {
   protected app: PIXI.Application;
@@ -16,6 +17,7 @@ export class Game {
   private rightKey: Keyboard;
   private rotateLeftKey: Keyboard;
   private rotateRightKey: Keyboard;
+  private holdKey: Keyboard;
   private pressLeft: boolean = false;
   private pressRight: boolean = false;
   private blockWidth: number;
@@ -24,6 +26,8 @@ export class Game {
   private prevMinoSprite: PIXI.Sprite;
   private tetromino: Tetromino;
   private tetrominoQueue: Tetromino[];
+  private holder: Holder;
+  private isHolded: boolean;
 
   public constructor(w: number, h: number) {
     this.app = new PIXI.Application({
@@ -48,6 +52,7 @@ export class Game {
     // );
 
     this.field = new Field(this.container);
+    this.holder = new Holder(this.holdContainer);
 
     this.initializeKeyEvents();
 
@@ -75,6 +80,7 @@ export class Game {
     const holdPositionY = 16 * 7;
     holdBackground.position.x = holdPositionX;
     holdBackground.position.y = holdPositionY;
+    this.holdContainer.position = holdBackground.position;
     this.app.stage.addChild(holdBackground);
     this.app.stage.addChild(this.holdContainer);
   }
@@ -116,8 +122,6 @@ export class Game {
   }
 
   protected animate(): void {
-    this.tetromino.clearRendered();
-
     this.freeFall();
 
     if (this.leftKey.isDown) {
@@ -126,23 +130,7 @@ export class Game {
       this.moveRight();
     }
 
-    this.field.render();
     this.tetromino.render();
-  }
-
-  private freeFall(): void {
-    this.tetromino.y++;
-    if (this.field.isCollision(this.tetromino)) {
-      this.tetromino.y--;
-      // this.tetromino.lockDelayCounter++;
-      if (this.tetromino.isForcedLock()) {
-        this.field.putMino(this.tetromino);
-        this.tetromino = this.popTetrominoQueue();
-        this.field.clearLines();
-      }
-    } else {
-      this.tetromino.lockDelayCounter = 0;
-    }
   }
 
   private initializeKeyEvents(): void {
@@ -157,6 +145,24 @@ export class Game {
 
     this.rotateLeftKey = new Keyboard("z");
     this.rotateLeftKey.press = this.rotateLeft.bind(this);
+
+    this.holdKey = new Keyboard("c");
+    this.holdKey.press = this.holdMino.bind(this);
+  }
+
+  private freeFall(): void {
+    this.tetromino.clearRendered();
+    this.tetromino.y++;
+    this.field.render();
+    if (this.field.isCollision(this.tetromino)) {
+      this.tetromino.y--;
+      this.tetromino.lockDelayCounter++;
+      if (this.tetromino.isForcedLock()) {
+        this.fixMino();
+      }
+    } else {
+      this.tetromino.lockDelayCounter = 0;
+    }
   }
 
   private hardDrop(): void {
@@ -164,10 +170,16 @@ export class Game {
       this.tetromino.y++;
     }
     this.tetromino.y--;
-    this.tetromino.clearRendered();
+    this.fixMino();
+  }
+
+  private fixMino(): void {
     this.field.putMino(this.tetromino);
     this.tetromino = this.popTetrominoQueue();
     this.field.clearLines();
+    this.field.render();
+    this.tetromino.clearRendered();
+    this.isHolded = false;
   }
 
   private moveLeft(): void {
@@ -200,6 +212,23 @@ export class Game {
         this.tetromino.rotateLeft();
       }
     }
+  }
+
+  private holdMino(): boolean {
+    if (this.isHolded) return false;
+    this.isHolded = true;
+
+    this.tetromino.clearRendered();
+    const previousHoldedTetrominoType = this.holder.hold(this.tetromino.type);
+    if (previousHoldedTetrominoType !== null) {
+      this.tetromino = new Tetromino(
+        previousHoldedTetrominoType,
+        this.container
+      );
+    } else {
+      this.tetromino = this.popTetrominoQueue();
+    }
+    return true;
   }
 
   private popTetrominoQueue(): Tetromino {
