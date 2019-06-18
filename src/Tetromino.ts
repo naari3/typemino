@@ -63,11 +63,16 @@ export class Tetromino {
     return this.data.shapes[this.angle];
   }
 
-  public render(): void {
+  public render(ghost?: boolean): void {
     this.currentShape().forEach((xList, y): void => {
       xList.forEach((b, x): void => {
         if (b === 1) {
-          const block = BlockFactory(this.x + x, this.y + y, this.data.color);
+          let block: PIXI.Sprite;
+          if (ghost === true) {
+            block = BlockFactory(this.x + x, this.y + y, this.data.color, true);
+          } else {
+            block = BlockFactory(this.x + x, this.y + y, this.data.color);
+          }
           this.container.addChild(block);
           this.sprites.push(block);
         }

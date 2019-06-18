@@ -6,6 +6,7 @@ import { Keyboard } from "./Keyboard";
 import { Wallkick } from "./Wallkick";
 import { Holder } from "./Holder";
 import { NextTetrominoRenderer } from "./NextTetrominoRenderer";
+import { GhostRenderer } from "./GhostRenderer";
 
 type exclusionFlagType = "left" | "right";
 
@@ -46,6 +47,8 @@ export class Game {
   private nextnext1Renderer: NextTetrominoRenderer;
   private nextnext2Renderer: NextTetrominoRenderer;
 
+  private ghostRenderer: GhostRenderer;
+
   public constructor(w: number, h: number) {
     this.app = new PIXI.Application({
       width: w,
@@ -61,6 +64,8 @@ export class Game {
     this.nextRenderer = new NextTetrominoRenderer(this.nextContainer);
     this.nextnext1Renderer = new NextTetrominoRenderer(this.nextnext1Container);
     this.nextnext2Renderer = new NextTetrominoRenderer(this.nextnext2Container);
+
+    this.ghostRenderer = new GhostRenderer(this.container);
 
     this.tetrominoQueue = Tetromino.getRandomQueue(this.container).concat(
       Tetromino.getRandomQueue(this.container)
@@ -231,7 +236,16 @@ export class Game {
     );
   }
 
+  private renderGhost(): void {
+    if (Constants.ghost) this.ghostRenderer.render(this.tetromino, this.field);
+  }
+
+  private clearGhost(): void {
+    if (Constants.ghost) this.ghostRenderer.clearRendered();
+  }
+
   protected animate(): void {
+    this.clearGhost();
     if (this.tetromino !== null) {
       this.freeFall();
     } else if (!this.isLockTime()) {
@@ -245,6 +259,7 @@ export class Game {
       } else if (this.rightKey.isDown) {
         this.moveRight();
       }
+      this.renderGhost();
     }
     this.tickTimer();
   }

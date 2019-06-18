@@ -9,6 +9,7 @@ export default {
   dasTime: 8,
   gravity: 65536 * 20, // 1/65536 G
   rotateLockResetLimitMove: 10,
+  ghost: true,
   controller: {
     up: "w",
     left: "a",
