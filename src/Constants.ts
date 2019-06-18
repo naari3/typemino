@@ -4,6 +4,7 @@ export default {
   holdMinoScale: 0.8,
   nextnextMinoScale: 0.8,
   lockDelayThreashold: 30,
+  areTime: 25,
   controller: {
     up: "w",
     left: "a",

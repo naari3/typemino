@@ -30,6 +30,8 @@ export class Game {
   private holder: Holder;
   private isHolded: boolean;
 
+  private areTimer: number;
+
   private nextRenderer: NextTetrominoRenderer;
   private nextnext1Renderer: NextTetrominoRenderer;
   private nextnext2Renderer: NextTetrominoRenderer;
@@ -46,18 +48,19 @@ export class Game {
 
     this.window = { w: w, h: h };
 
+    this.nextRenderer = new NextTetrominoRenderer(this.nextContainer);
+    this.nextnext1Renderer = new NextTetrominoRenderer(this.nextnext1Container);
+    this.nextnext2Renderer = new NextTetrominoRenderer(this.nextnext2Container);
+
     this.tetrominoQueue = Tetromino.getRandomQueue(this.container).concat(
       Tetromino.getRandomQueue(this.container)
     );
     this.tetromino = this.popTetrominoQueue();
 
-    this.nextRenderer = new NextTetrominoRenderer(this.nextContainer);
-    this.nextnext1Renderer = new NextTetrominoRenderer(this.nextnext1Container);
-    this.nextnext2Renderer = new NextTetrominoRenderer(this.nextnext2Container);
-    this.renderNext();
-
     this.field = new Field(this.container);
     this.holder = new Holder(this.holdContainer);
+
+    this.areTimer = 0;
 
     this.initializeKeyEvents();
 
@@ -207,15 +210,19 @@ export class Game {
   }
 
   protected animate(): void {
-    this.freeFall();
-
-    if (this.leftKey.isDown) {
-      this.moveLeft();
-    } else if (this.rightKey.isDown) {
-      this.moveRight();
+    if (this.tetromino !== null) {
+      this.freeFall();
+    } else if (!this.isLockTime()) {
+      this.tetromino = this.popTetrominoQueue();
     }
-
-    this.tetromino.render();
+    if (this.tetromino !== null) {
+      if (this.leftKey.isDown) {
+        this.moveLeft();
+      } else if (this.rightKey.isDown) {
+        this.moveRight();
+      }
+    }
+    this.tickTimer();
   }
 
   private initializeKeyEvents(): void {
@@ -243,14 +250,16 @@ export class Game {
       this.tetromino.y--;
       this.tetromino.lockDelayCounter++;
       if (this.tetromino.isForcedLock()) {
-        this.fixMino();
+        return this.fixMino();
       }
     } else {
       this.tetromino.lockDelayCounter = 0;
     }
+    this.tetromino.render();
   }
 
   private hardDrop(): void {
+    if (this.isLockTime()) return;
     this.tetromino.clearRendered();
     while (!this.field.isCollision(this.tetromino)) {
       this.tetromino.y++;
@@ -261,12 +270,12 @@ export class Game {
 
   private fixMino(): void {
     this.field.putMino(this.tetromino);
-    this.tetromino = this.popTetrominoQueue();
     this.field.clearLines();
     this.field.render();
     this.tetromino.clearRendered();
+    this.tetromino = null;
+    this.areTimer = Constants.areTime;
     this.isHolded = false;
-    this.renderNext();
   }
 
   private moveLeft(): void {
@@ -284,6 +293,7 @@ export class Game {
   }
 
   private rotateLeft(): void {
+    if (this.isLockTime()) return;
     this.tetromino.rotateLeft();
     if (this.field.isCollision(this.tetromino)) {
       if (!new Wallkick().executeWallkick(this.tetromino, this.field)) {
@@ -293,6 +303,7 @@ export class Game {
   }
 
   private rotateRight(): void {
+    if (this.isLockTime()) return;
     this.tetromino.rotateRight();
     if (this.field.isCollision(this.tetromino)) {
       if (!new Wallkick().executeWallkick(this.tetromino, this.field)) {
@@ -302,7 +313,7 @@ export class Game {
   }
 
   private holdMino(): boolean {
-    if (this.isHolded) return false;
+    if (this.isHolded || this.isLockTime()) return false;
     this.isHolded = true;
 
     this.tetromino.clearRendered();
@@ -324,6 +335,16 @@ export class Game {
         this.tetrominoQueue
       );
     }
-    return this.tetrominoQueue.pop();
+    const tetromino = this.tetrominoQueue.pop();
+    this.renderNext();
+    return tetromino;
+  }
+
+  private tickTimer(): void {
+    if (this.areTimer > 0) this.areTimer -= 1;
+  }
+
+  private isLockTime(): boolean {
+    return this.areTimer !== 0;
   }
 }
