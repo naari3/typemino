@@ -320,27 +320,29 @@ export class Game {
   }
 
   private rotateLeft(): void {
-    if (this.isLockTime()) return;
-    this.tetromino.rotateLeft();
-    if (this.field.isCollision(this.tetromino)) {
-      if (!new Wallkick().executeWallkick(this.tetromino, this.field)) {
-        this.tetromino.rotateRight();
-      } else {
-        console.log("rotate success");
-        if (this.isLockDelayReset()) {
-          this.lockDelayTimer = 0;
-        }
-        this.rotateCount += 1;
-      }
+    if (this.tetromino !== null) {
+      this.rotateCurry(
+        this.tetromino.rotateLeft.bind(this.tetromino),
+        this.tetromino.rotateRight.bind(this.tetromino)
+      );
     }
   }
 
   private rotateRight(): void {
+    if (this.tetromino !== null) {
+      this.rotateCurry(
+        this.tetromino.rotateRight.bind(this.tetromino),
+        this.tetromino.rotateLeft.bind(this.tetromino)
+      );
+    }
+  }
+
+  private rotateCurry(expect: Function, recover: Function): void {
     if (this.isLockTime()) return;
-    this.tetromino.rotateRight();
+    expect();
     if (this.field.isCollision(this.tetromino)) {
       if (!new Wallkick().executeWallkick(this.tetromino, this.field)) {
-        this.tetromino.rotateLeft();
+        recover();
       } else {
         this.increaseRotateCount();
       }
