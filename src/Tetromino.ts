@@ -22,6 +22,7 @@ function shuffle<T>(arr: T[]): T[] {
 
 export class Tetromino {
   public data: TetrominoDatum;
+  public type: TetrominoType;
   public angle: AngleType;
   public previousAngle: AngleType;
   public x: number;
@@ -30,8 +31,9 @@ export class Tetromino {
   private sprites: PIXI.Sprite[];
   public lockDelayCounter: number;
 
-  public constructor(data: TetrominoDatum, container: PIXI.Container) {
-    this.data = data;
+  public constructor(type: TetrominoType, container: PIXI.Container) {
+    this.type = type;
+    this.data = TetrominoData[type];
     this.angle = 0;
     this.previousAngle = 0;
     this.x = Math.floor(Math.floor(10 / 2) - this.data.shapes[0][0].length / 2);
@@ -42,7 +44,7 @@ export class Tetromino {
   }
 
   public static getRandom(container: PIXI.Container): Tetromino {
-    return new Tetromino(TetrominoData[randomEnum(TetrominoType)], container);
+    return new Tetromino(randomEnum(TetrominoType), container);
   }
 
   public static getRandomQueue(container: PIXI.Container): Tetromino[] {
@@ -55,7 +57,7 @@ export class Tetromino {
         TetrominoType.S,
         TetrominoType.T,
         TetrominoType.Z
-      ].map((type): Tetromino => new Tetromino(TetrominoData[type], container))
+      ].map((type): Tetromino => new Tetromino(type, container))
     );
   }
 
