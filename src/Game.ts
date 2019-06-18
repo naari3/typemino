@@ -30,6 +30,7 @@ export class Game {
   private holder: Holder;
   private isHolded: boolean;
 
+  private lockDelayTimer: number;
   private areTimer: number;
   private lineClearTimer: number;
   private dasTimer: number;
@@ -256,12 +257,9 @@ export class Game {
     this.field.render();
     if (this.field.isCollision(this.tetromino)) {
       this.tetromino.y--;
-      this.tetromino.lockDelayCounter++;
-      if (this.tetromino.isForcedLock()) {
+      if (this.lockDelayTimer > Constants.lockDelayTime) {
         return this.fixMino();
       }
-    } else {
-      this.tetromino.lockDelayCounter = 0;
     }
     this.tetromino.render();
   }
@@ -281,7 +279,6 @@ export class Game {
     if (this.field.transparentLines() !== 0) {
       this.lineClearTimer = Constants.lineClearTime;
     }
-    // this.field.clearLines();
     this.field.render();
     this.tetromino.clearRendered();
     this.tetromino = null;
@@ -356,6 +353,16 @@ export class Game {
   }
 
   private tickTimer(): void {
+    if (this.tetromino !== null) {
+      this.tetromino.y++;
+      if (this.field.isCollision(this.tetromino)) {
+        this.lockDelayTimer += 1;
+      } else {
+        this.lockDelayTimer = 0;
+      }
+      this.tetromino.y--;
+    }
+
     if (this.lineClearTimer > 0) {
       if (this.lineClearTimer === 1) {
         this.field.clearLines();
@@ -375,9 +382,5 @@ export class Game {
 
   private isLockTime(): boolean {
     return this.areTimer !== 0;
-  }
-
-  private isClearWaitTime(): boolean {
-    return this.lineClearTimer !== 0;
   }
 }

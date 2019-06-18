@@ -3,7 +3,7 @@ export default {
   blockHeight: 20,
   holdMinoScale: 0.8,
   nextnextMinoScale: 0.8,
-  lockDelayThreashold: 30,
+  lockDelayTime: 30,
   areTime: 16,
   lineClearTime: 12,
   dasTime: 8,
