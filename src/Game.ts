@@ -127,19 +127,19 @@ export class Game {
   }
 
   private initializeKeyEvents(): void {
-    this.upKey = new Keyboard("ArrowUp");
+    this.upKey = new Keyboard(Constants.controller.up);
     this.upKey.press = this.hardDrop.bind(this);
 
-    this.leftKey = new Keyboard("ArrowLeft");
-    this.rightKey = new Keyboard("ArrowRight");
+    this.leftKey = new Keyboard(Constants.controller.left);
+    this.rightKey = new Keyboard(Constants.controller.right);
 
-    this.rotateRightKey = new Keyboard("x");
-    this.rotateRightKey.press = this.rotateRight.bind(this);
-
-    this.rotateLeftKey = new Keyboard("z");
+    this.rotateLeftKey = new Keyboard(Constants.controller.rotateLeft);
     this.rotateLeftKey.press = this.rotateLeft.bind(this);
 
-    this.holdKey = new Keyboard("c");
+    this.rotateRightKey = new Keyboard(Constants.controller.rotateRight);
+    this.rotateRightKey.press = this.rotateRight.bind(this);
+
+    this.holdKey = new Keyboard(Constants.controller.hold);
     this.holdKey.press = this.holdMino.bind(this);
   }
 
