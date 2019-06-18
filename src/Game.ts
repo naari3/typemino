@@ -54,13 +54,6 @@ export class Game {
     });
   }
 
-  protected setSpirte(sprite: PIXI.Sprite, x: number, y: number): void {
-    sprite.anchor.set(0.5);
-    sprite.x = x;
-    sprite.y = y;
-    this.app.stage.addChild(sprite);
-  }
-
   protected animate(): void {
     this.tetromino.clearRendered();
 
