@@ -86,8 +86,8 @@ export class Game {
     holdBackground.position.x = holdPositionX;
     holdBackground.position.y = holdPositionY;
     this.holdContainer.position = holdBackground.position;
-    this.holdContainer.position.y += 16 * 1 + 8;
-    this.holdContainer.position.x -= 4;
+    this.holdContainer.position.x += 16 - 4;
+    this.holdContainer.position.y += 16 * 1;
     this.app.stage.addChild(holdBackground);
     this.app.stage.addChild(this.holdContainer);
 

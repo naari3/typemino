@@ -31,6 +31,13 @@ export class Holder {
       this.holdedTetrominoType,
       this.container
     );
+    if (this.holdedTetrominoType === TetrominoType.I) {
+      this.holdedTetromino.x = -0.5;
+    } else if (this.holdedTetrominoType === TetrominoType.O) {
+      this.holdedTetromino.x = 0.5;
+    } else {
+      this.holdedTetromino.x = 0.0;
+    }
     this.holdedTetromino.render();
   }
 }
