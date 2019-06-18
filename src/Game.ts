@@ -159,6 +159,7 @@ export class Game {
   }
 
   private hardDrop(): void {
+    this.tetromino.clearRendered();
     while (!this.field.isCollision(this.tetromino)) {
       this.tetromino.y++;
     }
