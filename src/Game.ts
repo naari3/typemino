@@ -3,6 +3,7 @@ import Constants from "./Constants";
 import { Tetromino } from "./Tetromino";
 import { Field } from "./Field";
 import { Keyboard } from "./Keyboard";
+import { Wallkick } from "./Wallkick";
 
 export class Game {
   protected app: PIXI.Application;
@@ -130,14 +131,18 @@ export class Game {
   private rotateLeft(): void {
     this.tetromino.rotateLeft();
     if (this.field.isCollision(this.tetromino)) {
-      this.tetromino.rotateRight();
+      if (!new Wallkick().executeWallkick(this.tetromino, this.field)) {
+        this.tetromino.rotateRight();
+      }
     }
   }
 
   private rotateRight(): void {
     this.tetromino.rotateRight();
     if (this.field.isCollision(this.tetromino)) {
-      this.tetromino.rotateLeft();
+      if (!new Wallkick().executeWallkick(this.tetromino, this.field)) {
+        this.tetromino.rotateLeft();
+      }
     }
   }
 }
