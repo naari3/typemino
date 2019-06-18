@@ -78,6 +78,25 @@ export class Game {
     this.holdContainer.position.x -= 4;
     this.app.stage.addChild(holdBackground);
     this.app.stage.addChild(this.holdContainer);
+
+    const nextBackground = this.nextBackground();
+    const nextPositionX = 16 * 18;
+    const nextPositionY = 16 * 4;
+    nextBackground.x = nextPositionX;
+    nextBackground.y = nextPositionY;
+    this.app.stage.addChild(nextBackground);
+
+    const nextnextBackground1 = this.nextnextBackground();
+    const nextnextBackground2 = this.nextnextBackground();
+    const nextnextPositionX = 16 * 18 + 8;
+    const nextnextPosition1Y = 16 * 10;
+    const nextnextPosition2Y = 16 * 15;
+    nextnextBackground1.x = nextnextPositionX;
+    nextnextBackground1.y = nextnextPosition1Y;
+    nextnextBackground2.x = nextnextPositionX;
+    nextnextBackground2.y = nextnextPosition2Y;
+    this.app.stage.addChild(nextnextBackground1);
+    this.app.stage.addChild(nextnextBackground2);
   }
 
   protected fieldBackground(): PIXI.Graphics {
@@ -105,6 +124,30 @@ export class Game {
   }
 
   protected holdBackground(): PIXI.Graphics {
+    const graphics = new PIXI.Graphics();
+
+    // hold frame
+    graphics.lineStyle(4, 0xffffff, 1, 1);
+    graphics.beginFill(0x000000, 0.5);
+    graphics.drawRect(0, 0, 16 * 4, 16 * 4);
+    graphics.endFill();
+
+    return graphics;
+  }
+
+  protected nextBackground(): PIXI.Graphics {
+    const graphics = new PIXI.Graphics();
+
+    // hold frame
+    graphics.lineStyle(4, 0xffffff, 1, 1);
+    graphics.beginFill(0x000000, 0.5);
+    graphics.drawRect(0, 0, 16 * 5, 16 * 5);
+    graphics.endFill();
+
+    return graphics;
+  }
+
+  protected nextnextBackground(): PIXI.Graphics {
     const graphics = new PIXI.Graphics();
 
     // hold frame
