@@ -1,3 +1,3 @@
 import { Game } from "./Game";
 
-new Game(10 * 16, 20 * 16);
+new Game(640, 480);

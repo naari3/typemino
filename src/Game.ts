@@ -25,8 +25,19 @@ export class Game {
   private tetrominoQueue: Tetromino[];
 
   public constructor(w: number, h: number) {
-    this.app = new PIXI.Application({ width: w, height: h });
+    this.app = new PIXI.Application({
+      width: w,
+      height: h,
+      backgroundColor: 0xdddddd
+    });
+    const fieldBackground = this.fieldBackground();
     this.container = new PIXI.Container();
+    const fieldPositionX = 16 * 7;
+    const fieldPositionY = 16 * 3;
+    fieldBackground.position.x = fieldPositionX;
+    fieldBackground.position.y = fieldPositionY;
+    this.container.position = fieldBackground.position;
+    this.app.stage.addChild(fieldBackground);
     this.app.stage.addChild(this.container);
 
     document.body.appendChild(this.app.view);
@@ -52,6 +63,30 @@ export class Game {
     this.app.ticker.add((): void => {
       this.animate();
     });
+  }
+
+  protected fieldBackground(): PIXI.Graphics {
+    const graphics = new PIXI.Graphics();
+
+    // field frame
+    graphics.lineStyle(4, 0xffffff, 1, 1);
+    graphics.beginFill(0x000000, 0.5);
+    graphics.drawRect(0, 0, 16 * 10, 16 * 20);
+    graphics.endFill();
+
+    // lattice
+    for (let x = 0; x < Constants.blockWidth; x++) {
+      graphics.lineStyle(1, 0xffffffff, 0.1);
+      graphics.moveTo(16 * (x + 1), 0);
+      graphics.lineTo(16 * (x + 1), 16 * 20);
+    }
+    for (let y = 0; y < Constants.blockHeight; y++) {
+      graphics.lineStyle(1, 0xffffffff, 0.1);
+      graphics.moveTo(0, 16 * (y + 1));
+      graphics.lineTo(16 * 10, 16 * (y + 1));
+    }
+
+    return graphics;
   }
 
   protected animate(): void {
@@ -142,7 +177,6 @@ export class Game {
   }
 
   private popTetrominoQueue(): Tetromino {
-    console.log(this.tetrominoQueue);
     if (this.tetrominoQueue.length === 0) {
       this.tetrominoQueue = Tetromino.getRandomQueue(this.container);
     }
