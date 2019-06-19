@@ -60,7 +60,7 @@ export class Game {
       backgroundColor: 0xdddddd
     });
 
-    this.settings = Constants;
+    this.settings = Constants.defaultSettings;
 
     this.adjustFrames();
     document.body.appendChild(this.app.view);

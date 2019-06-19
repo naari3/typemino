@@ -25,4 +25,4 @@ const defaultSettings: SettingData = {
   }
 };
 
-export default defaultSettings;
+export default { defaultSettings };
