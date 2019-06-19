@@ -2,12 +2,16 @@ import { TetrominoData, TetrominoType, TetrominoDatum } from "./TetrominoData";
 import { BlockFactory } from "./blockFactory";
 import { AngleType } from "./AngleType";
 
-function randomEnum<T>(anEnum: T): T[keyof T] {
-  const enumValues = (Object.keys(anEnum)
+function enumValues<T>(anEnum: T): T[keyof T][] {
+  return (Object.keys(anEnum)
     .map((n): number => Number.parseInt(n))
     .filter((n): boolean => !Number.isNaN(n)) as unknown) as T[keyof T][];
-  const randomIndex = Math.floor(Math.random() * enumValues.length);
-  const randomEnumValue = enumValues[randomIndex];
+}
+
+function randomEnum<T>(anEnum: T): T[keyof T] {
+  const values = enumValues(anEnum);
+  const randomIndex = Math.floor(Math.random() * values.length);
+  const randomEnumValue = values[randomIndex];
   return randomEnumValue;
 }
 
@@ -47,15 +51,9 @@ export class Tetromino {
 
   public static getRandomQueue(container: PIXI.Container): Tetromino[] {
     return shuffle(
-      [
-        TetrominoType.I,
-        TetrominoType.J,
-        TetrominoType.L,
-        TetrominoType.O,
-        TetrominoType.S,
-        TetrominoType.T,
-        TetrominoType.Z
-      ].map((type): Tetromino => new Tetromino(type, container))
+      enumValues(TetrominoType).map(
+        (type): Tetromino => new Tetromino(type, container)
+      )
     );
   }
 
