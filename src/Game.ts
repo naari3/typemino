@@ -403,7 +403,8 @@ export class Game {
   }
 
   private holdMino(): boolean {
-    if (this.isHolded || this.isLockTime()) return false;
+    if (this.tetromino === null || this.isHolded || this.isLockTime())
+      return false;
     this.isHolded = true;
 
     this.tetromino.clearRendered();
@@ -426,6 +427,7 @@ export class Game {
       );
     }
     const tetromino = this.tetrominoQueue.pop();
+    this.lockDelayTimer = 0;
     this.renderNext();
     return tetromino;
   }
