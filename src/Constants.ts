@@ -1,4 +1,6 @@
-export default {
+import { SettingData } from "./Settings";
+
+const defaultSettings: SettingData = {
   blockWidth: 10,
   blockHeight: 20,
   invisibleHeight: 1,
@@ -8,7 +10,7 @@ export default {
   areTime: 16,
   lineClearTime: 12,
   dasTime: 8,
-  gravity: 65536 * 20, // 1 / gravityDenominator G
+  gravity: 65536 / 64, // gravity / gravityDenominator G
   gravityDenominator: 65536,
   rotateLockResetLimitMove: 10,
   ghost: true,
@@ -22,3 +24,5 @@ export default {
     hold: " "
   }
 };
+
+export default defaultSettings;
