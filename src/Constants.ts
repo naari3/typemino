@@ -13,6 +13,7 @@ export default {
   ghost: true,
   controller: {
     up: "w",
+    down: "s",
     left: "a",
     right: "d",
     rotateLeft: "j",

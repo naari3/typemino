@@ -21,6 +21,7 @@ export class Game {
   protected window: { w: number; h: number };
 
   private upKey: Keyboard;
+  private downKey: Keyboard;
   private leftKey: Keyboard;
   private rightKey: Keyboard;
   private rotateLeftKey: Keyboard;
@@ -268,6 +269,7 @@ export class Game {
     this.upKey = new Keyboard(Constants.controller.up);
     this.upKey.press = this.hardDrop.bind(this);
 
+    this.downKey = new Keyboard(Constants.controller.down);
     this.leftKey = new Keyboard(Constants.controller.left);
     this.rightKey = new Keyboard(Constants.controller.right);
 
@@ -299,7 +301,10 @@ export class Game {
       }
       if (this.field.isCollision(this.tetromino)) {
         this.tetromino.y--;
-        if (this.lockDelayTimer > Constants.lockDelayTime) {
+        if (
+          this.lockDelayTimer > Constants.lockDelayTime ||
+          this.downKey.isDown
+        ) {
           return this.fixMino();
         }
       }
@@ -448,7 +453,11 @@ export class Game {
     }
 
     if (Constants.gravity < Constants.gravityDenominator) {
-      this.gravityTimer += Constants.gravity;
+      if (this.downKey.isDown) {
+        this.gravityTimer += Constants.gravityDenominator;
+      } else {
+        this.gravityTimer += Constants.gravity;
+      }
     }
   }
 
