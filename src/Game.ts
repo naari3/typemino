@@ -287,7 +287,11 @@ export class Game {
 
   private freeFall(): void {
     if (this.isFallOneBlock()) {
-      for (let i = 0; i < Math.ceil(Constants.gravity / 65536); i++) {
+      for (
+        let i = 0;
+        i < Math.ceil(Constants.gravity / Constants.gravityDenominator);
+        i++
+      ) {
         this.tetromino.y++;
         if (this.field.isCollision(this.tetromino)) {
           break;
@@ -443,7 +447,7 @@ export class Game {
       this.dasTimer = 0;
     }
 
-    if (Constants.gravity < 65536) {
+    if (Constants.gravity < Constants.gravityDenominator) {
       this.gravityTimer += Constants.gravity;
     }
   }
@@ -453,8 +457,8 @@ export class Game {
   }
 
   private isFallOneBlock(): boolean {
-    if (Constants.gravity >= 65536) return true;
-    if (this.gravityTimer >= 65536) {
+    if (Constants.gravity >= Constants.gravityDenominator) return true;
+    if (this.gravityTimer >= Constants.gravityDenominator) {
       this.gravityTimer = 0;
       return true;
     } else {
