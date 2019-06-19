@@ -1,6 +1,5 @@
 import * as PIXI from "pixi.js";
 import { TetrominoType } from "./TetrominoData";
-import Constants from "./Constants";
 import { Tetromino } from "./Tetromino";
 
 export class Holder {
@@ -12,7 +11,6 @@ export class Holder {
     this.container = container;
     this.holdedTetrominoType = null;
     this.holdedTetromino = null;
-    container.scale.x = container.scale.y = Constants.holdMinoScale;
   }
 
   public hold(type: TetrominoType): TetrominoType | null {

@@ -76,6 +76,7 @@ export class Game {
     this.field = new Field(
       Constants.blockWidth,
       Constants.blockHeight,
+      Constants.invisibleHeight,
       this.container
     );
     this.holder = new Holder(this.holdContainer);
@@ -119,6 +120,7 @@ export class Game {
     this.holdContainer.position = holdBackground.position;
     this.holdContainer.position.x += 16 - 4;
     this.holdContainer.position.y += 16 * 1;
+    this.holdContainer.scale.set(Constants.holdMinoScale);
     this.app.stage.addChild(holdBackground);
     this.app.stage.addChild(this.holdContainer);
 

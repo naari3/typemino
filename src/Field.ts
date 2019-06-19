@@ -2,7 +2,6 @@ import * as PIXI from "pixi.js";
 import { BlockColor } from "./BlockColor";
 import { BlockFactory } from "./blockFactory";
 import { Tetromino } from "./Tetromino";
-import Constants from "./Constants";
 
 export class Field {
   public blockColors: BlockColor[][];
@@ -13,12 +12,17 @@ export class Field {
   private invisibleHeight: number; // if block is setted above this, it will be ignored
   private actualBlockHeight: number;
 
-  public constructor(width: number, height: number, container: PIXI.Container) {
+  public constructor(
+    width: number,
+    height: number,
+    invisibleHeight: number,
+    container: PIXI.Container
+  ) {
     this.container = container;
     this.blockWidth = width;
     this.blockHeight = height;
 
-    this.invisibleHeight = Constants.invisibleHeight;
+    this.invisibleHeight = invisibleHeight;
 
     this.actualBlockHeight = this.blockHeight + this.invisibleHeight;
 
