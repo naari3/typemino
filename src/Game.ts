@@ -7,6 +7,7 @@ import { Wallkick } from "./Wallkick";
 import { Holder } from "./Holder";
 import { NextTetrominoRenderer } from "./NextTetrominoRenderer";
 import { GhostRenderer } from "./GhostRenderer";
+import { SettingData } from "./Settings";
 
 type exclusionFlagType = "left" | "right";
 
@@ -19,6 +20,8 @@ export class Game {
   protected nextnext2Container: PIXI.Container;
   protected loader: PIXI.loaders.Loader;
   protected window: { w: number; h: number };
+
+  private settings: SettingData;
 
   private upKey: Keyboard;
   private downKey: Keyboard;
@@ -57,6 +60,8 @@ export class Game {
       backgroundColor: 0xdddddd
     });
 
+    this.settings = Constants;
+
     this.adjustFrames();
     document.body.appendChild(this.app.view);
 
@@ -74,9 +79,9 @@ export class Game {
     this.tetromino = this.popTetrominoQueue();
 
     this.field = new Field(
-      Constants.blockWidth,
-      Constants.blockHeight,
-      Constants.invisibleHeight,
+      this.settings.blockWidth,
+      this.settings.blockHeight,
+      this.settings.invisibleHeight,
       this.container
     );
     this.holder = new Holder(this.holdContainer);
@@ -120,7 +125,7 @@ export class Game {
     this.holdContainer.position = holdBackground.position;
     this.holdContainer.position.x += 16 - 4;
     this.holdContainer.position.y += 16 * 1;
-    this.holdContainer.scale.set(Constants.holdMinoScale);
+    this.holdContainer.scale.set(this.settings.holdMinoScale);
     this.app.stage.addChild(holdBackground);
     this.app.stage.addChild(this.holdContainer);
 
@@ -153,10 +158,8 @@ export class Game {
     this.nextnext2Container.position = nextnext2Background.position;
     this.nextnext2Container.position.x += 16 - 4;
     this.nextnext2Container.position.y += 16 * 1;
-    this.nextnext1Container.scale.x = this.nextnext1Container.scale.y =
-      Constants.nextnextMinoScale;
-    this.nextnext2Container.scale.x = this.nextnext2Container.scale.y =
-      Constants.nextnextMinoScale;
+    this.nextnext1Container.scale.x = this.nextnext1Container.scale.y = this.settings.nextnextMinoScale;
+    this.nextnext2Container.scale.x = this.nextnext2Container.scale.y = this.settings.nextnextMinoScale;
     this.app.stage.addChild(nextnext1Background);
     this.app.stage.addChild(nextnext2Background);
     this.app.stage.addChild(this.nextnext1Container);
@@ -173,12 +176,12 @@ export class Game {
     graphics.endFill();
 
     // lattice
-    for (let x = 0; x < Constants.blockWidth; x++) {
+    for (let x = 0; x < this.settings.blockWidth; x++) {
       graphics.lineStyle(1, 0xffffffff, 0.1);
       graphics.moveTo(16 * (x + 1), 0);
       graphics.lineTo(16 * (x + 1), 16 * 20);
     }
-    for (let y = 0; y < Constants.blockHeight; y++) {
+    for (let y = 0; y < this.settings.blockHeight; y++) {
       graphics.lineStyle(1, 0xffffffff, 0.1);
       graphics.moveTo(0, 16 * (y + 1));
       graphics.lineTo(16 * 10, 16 * (y + 1));
@@ -240,11 +243,12 @@ export class Game {
   }
 
   private renderGhost(): void {
-    if (Constants.ghost) this.ghostRenderer.render(this.tetromino, this.field);
+    if (this.settings.ghost)
+      this.ghostRenderer.render(this.tetromino, this.field);
   }
 
   private clearGhost(): void {
-    if (Constants.ghost) this.ghostRenderer.clearRendered();
+    if (this.settings.ghost) this.ghostRenderer.clearRendered();
   }
 
   protected animate(): void {
@@ -268,20 +272,20 @@ export class Game {
   }
 
   private initializeKeyEvents(): void {
-    this.upKey = new Keyboard(Constants.controller.up);
+    this.upKey = new Keyboard(this.settings.controller.up);
     this.upKey.press = this.hardDrop.bind(this);
 
-    this.downKey = new Keyboard(Constants.controller.down);
-    this.leftKey = new Keyboard(Constants.controller.left);
-    this.rightKey = new Keyboard(Constants.controller.right);
+    this.downKey = new Keyboard(this.settings.controller.down);
+    this.leftKey = new Keyboard(this.settings.controller.left);
+    this.rightKey = new Keyboard(this.settings.controller.right);
 
-    this.rotateLeftKey = new Keyboard(Constants.controller.rotateLeft);
+    this.rotateLeftKey = new Keyboard(this.settings.controller.rotateLeft);
     this.rotateLeftKey.press = this.rotateLeft.bind(this);
 
-    this.rotateRightKey = new Keyboard(Constants.controller.rotateRight);
+    this.rotateRightKey = new Keyboard(this.settings.controller.rotateRight);
     this.rotateRightKey.press = this.rotateRight.bind(this);
 
-    this.holdKey = new Keyboard(Constants.controller.hold);
+    this.holdKey = new Keyboard(this.settings.controller.hold);
     this.holdKey.press = this.holdMino.bind(this);
   }
 
@@ -293,7 +297,7 @@ export class Game {
     if (this.isFallOneBlock()) {
       for (
         let i = 0;
-        i < Math.ceil(Constants.gravity / Constants.gravityDenominator);
+        i < Math.ceil(this.settings.gravity / this.settings.gravityDenominator);
         i++
       ) {
         this.tetromino.y++;
@@ -304,7 +308,7 @@ export class Game {
       if (this.field.isCollision(this.tetromino)) {
         this.tetromino.y--;
         if (
-          this.lockDelayTimer > Constants.lockDelayTime ||
+          this.lockDelayTimer > this.settings.lockDelayTime ||
           this.downKey.isDown
         ) {
           return this.fixMino();
@@ -329,19 +333,19 @@ export class Game {
   private fixMino(): void {
     this.field.putMino(this.tetromino);
     if (this.field.transparentLines() !== 0) {
-      this.lineClearTimer = Constants.lineClearTime;
+      this.lineClearTimer = this.settings.lineClearTime;
     }
     this.field.render();
     this.tetromino.clearRendered();
     this.tetromino = null;
-    this.areTimer = Constants.areTime;
+    this.areTimer = this.settings.areTime;
     this.isHolded = false;
     this.rotateCount = 0;
   }
 
   private moveLeft(): void {
     this.setControllerExclusion("left");
-    if (this.dasTimer === 0 || this.dasTimer >= Constants.dasTime) {
+    if (this.dasTimer === 0 || this.dasTimer >= this.settings.dasTime) {
       this.tetromino.x--;
       if (this.field.isCollision(this.tetromino)) {
         this.tetromino.x++;
@@ -351,7 +355,7 @@ export class Game {
 
   private moveRight(): void {
     this.setControllerExclusion("right");
-    if (this.dasTimer === 0 || this.dasTimer >= Constants.dasTime) {
+    if (this.dasTimer === 0 || this.dasTimer >= this.settings.dasTime) {
       this.tetromino.x++;
       if (this.field.isCollision(this.tetromino)) {
         this.tetromino.x--;
@@ -454,11 +458,11 @@ export class Game {
       this.dasTimer = 0;
     }
 
-    if (Constants.gravity < Constants.gravityDenominator) {
+    if (this.settings.gravity < this.settings.gravityDenominator) {
       if (this.downKey.isDown) {
-        this.gravityTimer += Constants.gravityDenominator;
+        this.gravityTimer += this.settings.gravityDenominator;
       } else {
-        this.gravityTimer += Constants.gravity;
+        this.gravityTimer += this.settings.gravity;
       }
     }
   }
@@ -468,8 +472,8 @@ export class Game {
   }
 
   private isFallOneBlock(): boolean {
-    if (Constants.gravity >= Constants.gravityDenominator) return true;
-    if (this.gravityTimer >= Constants.gravityDenominator) {
+    if (this.settings.gravity >= this.settings.gravityDenominator) return true;
+    if (this.gravityTimer >= this.settings.gravityDenominator) {
       this.gravityTimer = 0;
       return true;
     } else {
@@ -478,6 +482,6 @@ export class Game {
   }
 
   private isLockDelayReset(): boolean {
-    return this.rotateCount < Constants.rotateLockResetLimitMove;
+    return this.rotateCount < this.settings.rotateLockResetLimitMove;
   }
 }
