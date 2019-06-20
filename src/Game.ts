@@ -1,5 +1,4 @@
 import * as PIXI from "pixi.js";
-import Constants from "./Constants";
 import { Tetromino } from "./Tetromino";
 import { Field } from "./Field";
 import { Keyboard } from "./Keyboard";
@@ -337,6 +336,9 @@ export class Game {
     this.field.putMino(this.tetromino);
     if (this.field.transparentLines() !== 0) {
       this.lineClearTimer = this.settings.lineClearTime;
+      if (this.lineClearTimer === 0) {
+        this.field.clearLines();
+      }
     }
     this.field.render();
     this.tetromino.clearRendered();
