@@ -1,16 +1,17 @@
 import * as PIXI from "pixi.js";
 import { TetrominoType } from "./TetrominoData";
 import { Tetromino } from "./Tetromino";
+import { TetrominoRenderer } from "./TetrominoRenderer";
 
 export class Holder {
   private container: PIXI.Container;
+  private tetrominoRenderer: TetrominoRenderer;
   public holdedTetrominoType: TetrominoType;
-  public holdedTetromino: Tetromino;
 
   public constructor(container: PIXI.Container) {
     this.container = container;
+    this.tetrominoRenderer = new TetrominoRenderer(this.container);
     this.holdedTetrominoType = null;
-    this.holdedTetromino = null;
   }
 
   public hold(type: TetrominoType): TetrominoType | null {
@@ -24,18 +25,14 @@ export class Holder {
   }
 
   public render(): void {
-    if (this.holdedTetromino) this.holdedTetromino.clearRendered();
-    this.holdedTetromino = new Tetromino(
-      this.holdedTetrominoType,
-      this.container
-    );
+    const holdedTetromino = new Tetromino(this.holdedTetrominoType);
     if (this.holdedTetrominoType === TetrominoType.I) {
-      this.holdedTetromino.x = -0.5;
+      holdedTetromino.x = -0.5;
     } else if (this.holdedTetrominoType === TetrominoType.O) {
-      this.holdedTetromino.x = 0.5;
+      holdedTetromino.x = 0.5;
     } else {
-      this.holdedTetromino.x = 0.0;
+      holdedTetromino.x = 0.0;
     }
-    this.holdedTetromino.render();
+    this.tetrominoRenderer.render(holdedTetromino);
   }
 }

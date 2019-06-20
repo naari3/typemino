@@ -8,6 +8,7 @@ import { NextTetrominoRenderer } from "./NextTetrominoRenderer";
 import { GhostRenderer } from "./GhostRenderer";
 import { SettingData } from "./Settings";
 import { FieldRenderer } from "./FieldRenderer";
+import { TetrominoRenderer } from "./TetrominoRenderer";
 
 type exclusionFlagType = "left" | "right";
 
@@ -49,6 +50,7 @@ export class Game {
   private moveExclusionFlag: exclusionFlagType;
 
   private fieldRenderer: FieldRenderer;
+  private tetrominoRenderer: TetrominoRenderer;
   private nextRenderer: NextTetrominoRenderer;
   private nextnext1Renderer: NextTetrominoRenderer;
   private nextnext2Renderer: NextTetrominoRenderer;
@@ -75,8 +77,8 @@ export class Game {
 
     this.ghostRenderer = new GhostRenderer(this.container);
 
-    this.tetrominoQueue = Tetromino.getRandomQueue(this.container).concat(
-      Tetromino.getRandomQueue(this.container)
+    this.tetrominoQueue = Tetromino.getRandomQueue().concat(
+      Tetromino.getRandomQueue()
     );
     this.tetromino = this.popTetrominoQueue();
 
@@ -89,6 +91,8 @@ export class Game {
 
     this.fieldContainer = new PIXI.Container();
     this.fieldRenderer = new FieldRenderer(this.fieldContainer, this.field);
+
+    this.tetrominoRenderer = new TetrominoRenderer(this.fieldContainer);
 
     this.lockDelayTimer = 0;
     this.areTimer = 0;
@@ -333,8 +337,7 @@ export class Game {
       }
     }
 
-    this.tetromino.clearRendered();
-    this.tetromino.render();
+    this.tetrominoRenderer.render(this.tetromino);
   }
 
   private hardDrop(): void {
@@ -355,7 +358,6 @@ export class Game {
       }
     }
     this.fieldRenderer.render();
-    this.tetromino.clearRendered();
     this.tetromino = null;
     this.areTimer = this.settings.areTime;
     this.isHolded = false;
@@ -430,13 +432,9 @@ export class Game {
       return false;
     this.isHolded = true;
 
-    this.tetromino.clearRendered();
     const previousHoldedTetrominoType = this.holder.hold(this.tetromino.type);
     if (previousHoldedTetrominoType !== null) {
-      this.tetromino = new Tetromino(
-        previousHoldedTetrominoType,
-        this.container
-      );
+      this.tetromino = new Tetromino(previousHoldedTetrominoType);
     } else {
       this.tetromino = this.popTetrominoQueue();
     }
@@ -445,7 +443,7 @@ export class Game {
 
   private popTetrominoQueue(): Tetromino {
     if (this.tetrominoQueue.length < 7) {
-      this.tetrominoQueue = Tetromino.getRandomQueue(this.container).concat(
+      this.tetrominoQueue = Tetromino.getRandomQueue().concat(
         this.tetrominoQueue
       );
     }

@@ -1,19 +1,19 @@
 import * as PIXI from "pixi.js";
 import { Tetromino } from "./Tetromino";
 import { TetrominoType } from "./TetrominoData";
+import { TetrominoRenderer } from "./TetrominoRenderer";
 
 export class NextTetrominoRenderer {
   public container: PIXI.Container;
-  public prevMino: Tetromino;
+  private tetrominoRenderer: TetrominoRenderer;
 
   public constructor(container: PIXI.Container) {
     this.container = container;
-    this.prevMino = null;
+    this.tetrominoRenderer = new TetrominoRenderer(this.container);
   }
 
   public render(type: TetrominoType): void {
-    if (this.prevMino !== null) this.prevMino.clearRendered();
-    const mino = new Tetromino(type, this.container);
+    const mino = new Tetromino(type);
     if (type === TetrominoType.I) {
       mino.x = -0.5;
     } else if (type === TetrominoType.O) {
@@ -21,7 +21,6 @@ export class NextTetrominoRenderer {
     } else {
       mino.x = 0.0;
     }
-    mino.render();
-    this.prevMino = mino;
+    this.tetrominoRenderer.render(mino);
   }
 }
