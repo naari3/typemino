@@ -1,30 +1,42 @@
 <template>
   <div>
-    <p>
-      <label>gravity:</label>
-      <input v-model.number="settingsGravity" type="number" min="0" />
-      <label>{{ Math.round((settingsGravity / 65536) * 100) / 100 }} G</label>
-    </p>
+    <form>
+      <p>
+        <label>gravity:</label>
+        <input
+          v-model.number="settingsGravity"
+          type="number"
+          min="0"
+          max="1310720"
+        />
+        <label>{{ Math.round((settingsGravity / 65536) * 100) / 100 }} G</label>
+      </p>
 
-    <p>
-      <label>lock delay time:</label>
-      <input v-model.number="settingsLockDelayTime" type="number" min="0" />
-      <label>frame(s)</label>
-    </p>
+      <p>
+        <label>lock delay time:</label>
+        <input v-model.number="settingsLockDelayTime" type="number" min="0" />
+        <label>frame(s)</label>
+      </p>
 
-    <p>
-      <label>ARE time:</label>
-      <input v-model.number="settingsAreTime" type="number" min="0" />
-      <label>frame(s)</label>
-    </p>
+      <p>
+        <label>ARE time:</label>
+        <input v-model.number="settingsAreTime" type="number" min="0" />
+        <label>frame(s)</label>
+      </p>
 
-    <p>
-      <label>line clear time:</label>
-      <input v-model.number="settingsLineClearTime" type="number" min="0" />
-      <label>frame(s)</label>
-    </p>
+      <p>
+        <label>line clear time:</label>
+        <input v-model.number="settingsLineClearTime" type="number" min="0" />
+        <label>frame(s)</label>
+      </p>
 
-    <button @click="doGameStart" v-if="!started">game start</button>
+      <input
+        type="submit"
+        value="game start"
+        @click="doGameStart"
+        v-if="!started"
+      />
+    </form>
   </div>
 </template>
 
@@ -42,7 +54,8 @@ export default class Setting extends Vue {
   started: boolean = false;
 
   @Emit()
-  public input(key: string, value: any) {
+  public inputNumber(key: string, value: number | string) {
+    if (value < 0 || value === "") value = 0;
     this.settings[key] = value;
   }
 
@@ -51,7 +64,7 @@ export default class Setting extends Vue {
   }
 
   private set settingsGravity(value: number) {
-    this.input("gravity", value);
+    this.inputNumber("gravity", value);
   }
 
   private get settingsLockDelayTime(): number {
@@ -59,7 +72,7 @@ export default class Setting extends Vue {
   }
 
   private set settingsLockDelayTime(value: number) {
-    this.input("lockDelayTime", value);
+    this.inputNumber("lockDelayTime", value);
   }
 
   private get settingsAreTime(): number {
@@ -67,7 +80,7 @@ export default class Setting extends Vue {
   }
 
   private set settingsAreTime(value: number) {
-    this.input("areTime", value);
+    this.inputNumber("areTime", value);
   }
 
   private get settingsLineClearTime(): number {
@@ -75,7 +88,7 @@ export default class Setting extends Vue {
   }
 
   private set settingsLineClearTime(value: number) {
-    this.input("lineClearTime", value);
+    this.inputNumber("lineClearTime", value);
   }
 
   doGameStart() {
