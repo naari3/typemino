@@ -53,14 +53,14 @@ export class Game {
 
   private ghostRenderer: GhostRenderer;
 
-  public constructor(w: number, h: number) {
+  public constructor(w: number, h: number, settings: SettingData) {
     this.app = new PIXI.Application({
       width: w,
       height: h,
       backgroundColor: 0xdddddd
     });
 
-    this.settings = Constants.defaultSettings;
+    this.settings = settings;
 
     this.adjustFrames();
     document.querySelector("#minomino").appendChild(this.app.view);

@@ -1,43 +1,40 @@
 <template>
   <div>
-    <input v-model="msg" />
-    <p>prop: {{ propMessage }}</p>
-    <p>msg: {{ msg }}</p>
-    <p>helloMsg: {{ helloMsg }}</p>
-    <p>computed msg: {{ computedMsg }}</p>
-    <button @click="greet">Greet</button>
+    <label for="settingsGravity">gravity: </label>
+    <input v-model.number="settingsGravity" type="number" />
+    <label>{{ Math.round((settingsGravity / 65536) * 100) / 100 }} G</label>
+
+    <button @click="updateSettings">update settings</button>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import Component from "vue-class-component";
+import { Component, Emit, Vue } from "vue-property-decorator";
 
-@Component({
-  props: {
-    propMessage: String
-  }
-})
+import { SettingData } from "../Settings";
+
+@Component
 export default class Setting extends Vue {
-  // initial data
-  msg = 123;
+  private settingsDefault: Function;
 
-  // use prop values for initial data
-  helloMsg = "Hello, " + this.propMessage;
+  settings: SettingData;
+  gameStart: Function;
 
-  // lifecycle hook
-  mounted() {
-    // this.greet();
+  @Emit()
+  public input(key: string, value: number) {
+    this.settings[key] = value;
   }
 
-  // computed
-  get computedMsg() {
-    return "computed " + this.msg;
+  private get settingsGravity(): number {
+    return this.settings.gravity;
   }
 
-  // method
-  greet() {
-    alert("greeting: " + this.msg);
+  private set settingsGravity(value: number) {
+    this.input("gravity", value);
+  }
+
+  updateSettings() {
+    this.gameStart(this.settings);
   }
 }
 </script>
