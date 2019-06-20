@@ -380,33 +380,36 @@ export class Game {
 
   private rotateLeft(): void {
     if (this.tetromino !== null) {
-      this.rotateCurry(
+      const result = this.doRotate(
         this.tetromino.rotateLeft.bind(this.tetromino),
         this.tetromino.rotateRight.bind(this.tetromino)
       );
+      if (result) this.increaseRotateCount();
     }
   }
 
   private rotateRight(): void {
     if (this.tetromino !== null) {
-      this.rotateCurry(
+      const result = this.doRotate(
         this.tetromino.rotateRight.bind(this.tetromino),
         this.tetromino.rotateLeft.bind(this.tetromino)
       );
+      if (result) this.increaseRotateCount();
     }
   }
 
-  private rotateCurry(expect: Function, recover: Function): void {
-    if (this.isLockTime()) return;
+  private doRotate(expect: Function, recover: Function): boolean {
+    if (this.isLockTime()) return false;
     expect();
     if (this.field.isCollision(this.tetromino)) {
       if (!new Wallkick().executeWallkick(this.tetromino, this.field)) {
         recover();
+        return false;
       } else {
-        this.increaseRotateCount();
+        return true;
       }
     } else {
-      this.increaseRotateCount();
+      return true;
     }
   }
 
