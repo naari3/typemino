@@ -309,10 +309,7 @@ export class Game {
       }
       if (this.field.isCollision(this.tetromino)) {
         this.tetromino.y--;
-        if (
-          this.lockDelayTimer > this.settings.lockDelayTime ||
-          this.downKey.isDown
-        ) {
+        if (this.lockDelayTimer > this.settings.lockDelayTime) {
           return this.fixMino();
         }
       }
