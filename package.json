@@ -1,7 +1,7 @@
 {
-  "name": "minomino",
+  "name": "typemino",
   "version": "0.0.1",
-  "description": "minomino is puzzle game",
+  "description": "typemino is action puzzle game",
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
