@@ -5,7 +5,9 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "parcel build src/index.html",
+    "build": "parcel build src/index.html --public-url ./ --no-source-maps",
+    "predeploy": "rm -rf ./.cache ./dist && npm run build",
+    "deploy": "npm run predeploy && gh-pages -d dist",
     "watch": "parcel src/index.html"
   },
   "author": "naari3 <naari.named@gmail.com>",
@@ -18,6 +20,7 @@
     "eslint-config-prettier": "^5.0.0",
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-vue": "^5.2.2",
+    "gh-pages": "^2.0.1",
     "parcel": "^1.12.3",
     "prettier": "^1.18.2",
     "typescript": "^3.5.2",
