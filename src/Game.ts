@@ -63,7 +63,7 @@ export class Game {
     this.settings = Constants.defaultSettings;
 
     this.adjustFrames();
-    document.body.appendChild(this.app.view);
+    document.querySelector("#minomino").appendChild(this.app.view);
 
     this.window = { w: w, h: h };
 
