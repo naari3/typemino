@@ -251,20 +251,26 @@ export class Game {
   }
 
   protected animate(): void {
+    this.tickTimer();
     this.clearGhost();
+
     if (this.tetromino !== null) {
       this.freeFall();
     } else if (!this.isLockTime()) {
       this.tetromino = this.popTetrominoQueue();
+      // initial hold system
       if (this.holdKey.isDown) {
         this.holdMino();
       }
+
+      // initial rotate system
       if (this.rotateLeftKey.isDown) {
         this.rotateLeft();
       } else if (this.rotateRightKey.isDown) {
         this.rotateRight();
       }
     }
+
     if (this.tetromino !== null) {
       if (this.leftKey.isDown && this.rightKey.isDown) {
         this.moveExclusionFlag === "left" ? this.moveLeft() : this.moveRight();
@@ -275,7 +281,6 @@ export class Game {
       }
       this.renderGhost();
     }
-    this.tickTimer();
   }
 
   private initializeKeyEvents(): void {
@@ -329,7 +334,6 @@ export class Game {
 
   private hardDrop(): void {
     if (this.isLockTime()) return;
-    this.tetromino.clearRendered();
     while (!this.field.isCollision(this.tetromino)) {
       this.tetromino.y++;
     }
@@ -482,6 +486,7 @@ export class Game {
     }
   }
 
+  // Can't move anything if this return true
   private isLockTime(): boolean {
     return this.lineClearTimer !== 0 || this.areTimer !== 0;
   }
