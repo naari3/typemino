@@ -30,6 +30,75 @@
         <label>frame(s)</label>
       </p>
 
+      <h5>key config</h5>
+
+      <p>
+        <label>↑:</label>
+        <button
+          @click="setControllerKey('up')"
+          type="button"
+          v-bind:disabled="started"
+        >
+          {{ settings.controller.up }}
+        </button>
+
+        <label>↓:</label>
+        <button
+          @click="setControllerKey('down')"
+          type="button"
+          v-bind:disabled="started"
+        >
+          {{ settings.controller.down }}
+        </button>
+
+        <label>←:</label>
+        <button
+          @click="setControllerKey('left')"
+          type="button"
+          v-bind:disabled="started"
+        >
+          {{ settings.controller.left }}
+        </button>
+
+        <label>→:</label>
+        <button
+          @click="setControllerKey('right')"
+          type="button"
+          v-bind:disabled="started"
+        >
+          {{ settings.controller.right }}
+        </button>
+      </p>
+
+      <p>
+        <label>left rotate:</label>
+        <button
+          @click="setControllerKey('rotateLeft')"
+          type="button"
+          v-bind:disabled="started"
+        >
+          {{ settings.controller.rotateLeft }}
+        </button>
+
+        <label>right rotate:</label>
+        <button
+          @click="setControllerKey('rotateRight')"
+          type="button"
+          v-bind:disabled="started"
+        >
+          {{ settings.controller.rotateRight }}
+        </button>
+
+        <label>hold:</label>
+        <button
+          @click="setControllerKey('hold')"
+          type="button"
+          v-bind:disabled="started"
+        >
+          {{ settings.controller.hold }}
+        </button>
+      </p>
+
       <input
         type="submit"
         value="game start"
@@ -57,6 +126,11 @@ export default class Setting extends Vue {
   public inputNumber(key: string, value: number | string) {
     if (value < 0 || value === "") value = 0;
     this.settings[key] = value;
+  }
+
+  @Emit()
+  public inputControllerKey(key: string, value: string) {
+    this.settings.controller[key] = value;
   }
 
   private get settingsGravity(): number {
@@ -89,6 +163,23 @@ export default class Setting extends Vue {
 
   private set settingsLineClearTime(value: number) {
     this.inputNumber("lineClearTime", value);
+  }
+
+  private setControllerKey(key: string) {
+    let keyboardKey = "please press key";
+    this.inputControllerKey(key, keyboardKey);
+    this.getKeyboardKey((keyboardKey: string) => {
+      this.inputControllerKey(key, keyboardKey);
+    });
+  }
+
+  private getKeyboardKey(callback: Function): void {
+    const waitKeyEvent = e => {
+      e.preventDefault();
+      callback(e.key);
+      document.removeEventListener("keydown", waitKeyEvent);
+    };
+    document.addEventListener("keydown", waitKeyEvent);
   }
 
   doGameStart() {
