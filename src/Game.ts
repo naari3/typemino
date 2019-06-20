@@ -301,7 +301,7 @@ export class Game {
     this.holdKey.press = this.holdMino.bind(this);
   }
 
-  private setControllerExclusion(direction: exclusionFlagType): void {
+  private set moveExclusionFlag(direction: exclusionFlagType) {
     if (this.moveExclusionFlag !== direction) {
       this.moveExclusionFlag = direction;
       this.dasTimer = 0;
@@ -359,7 +359,7 @@ export class Game {
   }
 
   private moveLeft(): void {
-    this.setControllerExclusion("left");
+    this.moveExclusionFlag = "left";
     if (this.dasTimer === 0 || this.dasTimer >= this.settings.dasTime) {
       this.tetromino.x--;
       if (this.field.isCollision(this.tetromino)) {
@@ -369,7 +369,7 @@ export class Game {
   }
 
   private moveRight(): void {
-    this.setControllerExclusion("right");
+    this.moveExclusionFlag = "right";
     if (this.dasTimer === 0 || this.dasTimer >= this.settings.dasTime) {
       this.tetromino.x++;
       if (this.field.isCollision(this.tetromino)) {
