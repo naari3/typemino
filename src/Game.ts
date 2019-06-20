@@ -5,17 +5,14 @@ import { Keyboard } from "./Keyboard";
 import { Wallkick } from "./Wallkick";
 import { Holder } from "./Holder";
 import { NextTetrominoRenderer } from "./NextTetrominoRenderer";
-import { GhostRenderer } from "./GhostRenderer";
 import { SettingData } from "./Settings";
-import { FieldRenderer } from "./FieldRenderer";
-import { TetrominoRenderer } from "./TetrominoRenderer";
+import { GameRenderer } from "./GameRenderer";
 
 type exclusionFlagType = "left" | "right";
 
 export class Game {
   protected app: PIXI.Application;
   protected container: PIXI.Container;
-  protected fieldContainer: PIXI.Container;
   protected holdContainer: PIXI.Container;
   protected nextContainer: PIXI.Container;
   protected nextnext1Container: PIXI.Container;
@@ -49,13 +46,11 @@ export class Game {
 
   private moveExclusionFlag: exclusionFlagType;
 
-  private fieldRenderer: FieldRenderer;
-  private tetrominoRenderer: TetrominoRenderer;
   private nextRenderer: NextTetrominoRenderer;
   private nextnext1Renderer: NextTetrominoRenderer;
   private nextnext2Renderer: NextTetrominoRenderer;
 
-  private ghostRenderer: GhostRenderer;
+  private gameRenderer: GameRenderer;
 
   public constructor(w: number, h: number, settings: SettingData) {
     this.app = new PIXI.Application({
@@ -75,8 +70,6 @@ export class Game {
     this.nextnext1Renderer = new NextTetrominoRenderer(this.nextnext1Container);
     this.nextnext2Renderer = new NextTetrominoRenderer(this.nextnext2Container);
 
-    this.ghostRenderer = new GhostRenderer(this.container);
-
     this.tetrominoQueue = Tetromino.getRandomQueue().concat(
       Tetromino.getRandomQueue()
     );
@@ -89,11 +82,6 @@ export class Game {
     );
     this.holder = new Holder(this.holdContainer);
 
-    this.fieldContainer = new PIXI.Container();
-    this.fieldRenderer = new FieldRenderer(this.fieldContainer, this.field);
-
-    this.tetrominoRenderer = new TetrominoRenderer(this.fieldContainer);
-
     this.lockDelayTimer = 0;
     this.areTimer = 0;
     this.lineClearTimer = 0;
@@ -105,6 +93,8 @@ export class Game {
     this.moveExclusionFlag = null;
 
     this.initializeKeyEvents();
+
+    this.gameRenderer = new GameRenderer(this.container, this.field);
 
     this.loader = new PIXI.Loader();
 
@@ -120,7 +110,7 @@ export class Game {
     const fieldPositionY = 16 * 3;
     fieldBackground.position.x = fieldPositionX;
     fieldBackground.position.y = fieldPositionY;
-    this.container.position = fieldBackground.position;
+    // this.container.position = fieldBackground.position;
     this.app.stage.addChild(fieldBackground);
     this.app.stage.addChild(this.container);
 
@@ -252,17 +242,10 @@ export class Game {
 
   private renderGhost(): void {
     if (this.settings.ghost)
-      this.ghostRenderer.render(this.tetromino, this.field);
-  }
-
-  private clearGhost(): void {
-    if (this.settings.ghost) this.ghostRenderer.clearRendered();
+      this.gameRenderer.renderGhost(this.tetromino, this.field);
   }
 
   protected animate(): void {
-    this.tickTimer();
-    this.clearGhost();
-
     if (this.tetromino !== null) {
       this.freeFall();
     } else if (!this.isLockTime()) {
@@ -290,6 +273,8 @@ export class Game {
       }
       this.renderGhost();
     }
+
+    this.tickTimer();
   }
 
   private initializeKeyEvents(): void {
@@ -337,7 +322,7 @@ export class Game {
       }
     }
 
-    this.tetrominoRenderer.render(this.tetromino);
+    this.gameRenderer.renderTetromino(this.tetromino);
   }
 
   private hardDrop(): void {
@@ -357,7 +342,9 @@ export class Game {
         this.field.clearLines();
       }
     }
-    this.fieldRenderer.render();
+    this.gameRenderer.clearRenderedTetromino();
+    this.gameRenderer.clearRenderedGhost();
+    this.gameRenderer.renderField();
     this.tetromino = null;
     this.areTimer = this.settings.areTime;
     this.isHolded = false;
@@ -468,7 +455,7 @@ export class Game {
     if (this.lineClearTimer > 0) {
       if (this.lineClearTimer === 1) {
         this.field.clearLines();
-        this.fieldRenderer.render();
+        this.gameRenderer.renderField();
       }
       this.lineClearTimer -= 1;
     } else {

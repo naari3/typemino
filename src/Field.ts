@@ -3,7 +3,6 @@ import { Tetromino } from "./Tetromino";
 
 export class Field {
   public blockColors: BlockColor[][];
-  public blockSprites: PIXI.Sprite[][];
   public blockWidth: number;
   public blockHeight: number;
   public invisibleHeight: number; // if block is setted above this, it will be ignored
@@ -20,11 +19,6 @@ export class Field {
     this.blockColors = Array.from(
       new Array(this.actualBlockHeight),
       (): (BlockColor | null)[] => new Array(this.blockWidth).fill(null)
-    );
-
-    this.blockSprites = Array.from(
-      new Array(this.actualBlockHeight),
-      (): (PIXI.Sprite | null)[] => new Array(this.blockWidth).fill(null)
     );
   }
 

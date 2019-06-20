@@ -10,6 +10,10 @@ export class FieldRenderer {
   public constructor(contaienr: PIXI.Container, field: Field) {
     this.container = contaienr;
     this.field = field;
+    this.blockSprites = Array.from(
+      new Array(field.actualBlockHeight),
+      (): (PIXI.Sprite | null)[] => new Array(field.blockWidth).fill(null)
+    );
   }
 
   public render(): void {
