@@ -290,7 +290,10 @@ export class Game {
   }
 
   private setControllerExclusion(direction: exclusionFlagType): void {
-    this.moveExclusionFlag = direction;
+    if (this.moveExclusionFlag !== direction) {
+      this.moveExclusionFlag = direction;
+      this.dasTimer = 0;
+    }
   }
 
   private freeFall(): void {
