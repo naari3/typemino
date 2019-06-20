@@ -473,7 +473,7 @@ export class Game {
   }
 
   private isLockTime(): boolean {
-    return this.areTimer !== 0;
+    return this.lineClearTimer !== 0 || this.areTimer !== 0;
   }
 
   private isFallOneBlock(): boolean {
