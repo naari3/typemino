@@ -1,10 +1,10 @@
 <template>
   <div>
-    <label for="settingsGravity">gravity: </label>
+    <label for="settingsGravity">gravity:</label>
     <input v-model.number="settingsGravity" type="number" />
     <label>{{ Math.round((settingsGravity / 65536) * 100) / 100 }} G</label>
 
-    <button @click="updateSettings">update settings</button>
+    <button @click="doGameStart" v-if="!started">game start</button>
   </div>
 </template>
 
@@ -19,6 +19,7 @@ export default class Setting extends Vue {
 
   settings: SettingData;
   gameStart: Function;
+  started: boolean = false;
 
   @Emit()
   public input(key: string, value: number) {
@@ -33,8 +34,9 @@ export default class Setting extends Vue {
     this.input("gravity", value);
   }
 
-  updateSettings() {
+  doGameStart() {
     this.gameStart(this.settings);
+    this.started = true;
   }
 }
 </script>
