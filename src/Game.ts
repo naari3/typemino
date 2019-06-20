@@ -348,6 +348,7 @@ export class Game {
     this.areTimer = this.settings.areTime;
     this.isHolded = false;
     this.rotateCount = 0;
+    this.gravityTimer = 0;
   }
 
   private moveLeft(): void {
@@ -468,10 +469,12 @@ export class Game {
     }
 
     if (this.settings.gravity < this.settings.gravityDenominator) {
-      if (this.downKey.isDown) {
-        this.gravityTimer += this.settings.gravityDenominator;
-      } else {
-        this.gravityTimer += this.settings.gravity;
+      if (this.tetromino !== null) {
+        if (this.downKey.isDown) {
+          this.gravityTimer += this.settings.gravityDenominator;
+        } else {
+          this.gravityTimer += this.settings.gravity;
+        }
       }
     }
   }
