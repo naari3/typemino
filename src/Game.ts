@@ -7,12 +7,14 @@ import { Holder } from "./Holder";
 import { NextTetrominoRenderer } from "./NextTetrominoRenderer";
 import { GhostRenderer } from "./GhostRenderer";
 import { SettingData } from "./Settings";
+import { FieldRenderer } from "./FieldRenderer";
 
 type exclusionFlagType = "left" | "right";
 
 export class Game {
   protected app: PIXI.Application;
   protected container: PIXI.Container;
+  protected fieldContainer: PIXI.Container;
   protected holdContainer: PIXI.Container;
   protected nextContainer: PIXI.Container;
   protected nextnext1Container: PIXI.Container;
@@ -46,6 +48,7 @@ export class Game {
 
   private moveExclusionFlag: exclusionFlagType;
 
+  private fieldRenderer: FieldRenderer;
   private nextRenderer: NextTetrominoRenderer;
   private nextnext1Renderer: NextTetrominoRenderer;
   private nextnext2Renderer: NextTetrominoRenderer;
@@ -80,10 +83,12 @@ export class Game {
     this.field = new Field(
       this.settings.blockWidth,
       this.settings.blockHeight,
-      this.settings.invisibleHeight,
-      this.container
+      this.settings.invisibleHeight
     );
     this.holder = new Holder(this.holdContainer);
+
+    this.fieldContainer = new PIXI.Container();
+    this.fieldRenderer = new FieldRenderer(this.fieldContainer, this.field);
 
     this.lockDelayTimer = 0;
     this.areTimer = 0;
@@ -349,7 +354,7 @@ export class Game {
         this.field.clearLines();
       }
     }
-    this.field.render();
+    this.fieldRenderer.render();
     this.tetromino.clearRendered();
     this.tetromino = null;
     this.areTimer = this.settings.areTime;
@@ -465,7 +470,7 @@ export class Game {
     if (this.lineClearTimer > 0) {
       if (this.lineClearTimer === 1) {
         this.field.clearLines();
-        this.field.render();
+        this.fieldRenderer.render();
       }
       this.lineClearTimer -= 1;
     } else {

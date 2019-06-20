@@ -1,24 +1,15 @@
-import * as PIXI from "pixi.js";
 import { BlockColor } from "./BlockColor";
-import { BlockFactory } from "./blockFactory";
 import { Tetromino } from "./Tetromino";
 
 export class Field {
   public blockColors: BlockColor[][];
   public blockSprites: PIXI.Sprite[][];
-  private container: PIXI.Container;
-  private blockWidth: number;
-  private blockHeight: number;
-  private invisibleHeight: number; // if block is setted above this, it will be ignored
-  private actualBlockHeight: number;
+  public blockWidth: number;
+  public blockHeight: number;
+  public invisibleHeight: number; // if block is setted above this, it will be ignored
+  public actualBlockHeight: number;
 
-  public constructor(
-    width: number,
-    height: number,
-    invisibleHeight: number,
-    container: PIXI.Container
-  ) {
-    this.container = container;
+  public constructor(width: number, height: number, invisibleHeight: number) {
     this.blockWidth = width;
     this.blockHeight = height;
 
@@ -35,28 +26,6 @@ export class Field {
       new Array(this.actualBlockHeight),
       (): (PIXI.Sprite | null)[] => new Array(this.blockWidth).fill(null)
     );
-  }
-
-  public render(): void {
-    this.blockColors.forEach((xList, y): void => {
-      xList.forEach((color, x): void => {
-        if (!(this.actualBlockHeight - y > this.blockHeight)) {
-          if (color != null) {
-            const block = BlockFactory(x, y - this.invisibleHeight, color);
-            this.container.addChild(block);
-            if (this.blockSprites[y][x]) {
-              this.blockSprites[y][x].destroy();
-            }
-            this.blockSprites[y][x] = block;
-          } else {
-            if (this.blockSprites[y][x]) {
-              this.blockSprites[y][x].destroy();
-              this.blockSprites[y][x] = null;
-            }
-          }
-        }
-      });
-    });
   }
 
   public putMino(tetromino: Tetromino): void {
