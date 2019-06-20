@@ -256,6 +256,9 @@ export class Game {
       this.freeFall();
     } else if (!this.isLockTime()) {
       this.tetromino = this.popTetrominoQueue();
+      if (this.holdKey.isDown) {
+        this.holdMino();
+      }
       if (this.rotateLeftKey.isDown) {
         this.rotateLeft();
       } else if (this.rotateRightKey.isDown) {
