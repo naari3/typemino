@@ -2,25 +2,25 @@
   <div>
     <p>
       <label>gravity:</label>
-      <input v-model.number="settingsGravity" type="number" />
+      <input v-model.number="settingsGravity" type="number" min="0" />
       <label>{{ Math.round((settingsGravity / 65536) * 100) / 100 }} G</label>
     </p>
 
     <p>
       <label>lock delay time:</label>
-      <input v-model.number="settingsLockDelayTime" type="number" />
+      <input v-model.number="settingsLockDelayTime" type="number" min="0" />
       <label>frame(s)</label>
     </p>
 
     <p>
       <label>ARE time:</label>
-      <input v-model.number="settingsAreTime" type="number" />
+      <input v-model.number="settingsAreTime" type="number" min="0" />
       <label>frame(s)</label>
     </p>
 
     <p>
       <label>line clear time:</label>
-      <input v-model.number="settingsLineClearTime" type="number" />
+      <input v-model.number="settingsLineClearTime" type="number" min="0" />
       <label>frame(s)</label>
     </p>
 
@@ -63,7 +63,7 @@ export default class Setting extends Vue {
   }
 
   private get settingsAreTime(): number {
-    return this.settings.lockDelayTime;
+    return this.settings.areTime;
   }
 
   private set settingsAreTime(value: number) {
