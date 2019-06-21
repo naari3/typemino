@@ -4,7 +4,6 @@ import { Field } from "./Field";
 import { Keyboard } from "./Keyboard";
 import { Wallkick } from "./Wallkick";
 import { Holder } from "./Holder";
-import { NextTetrominoRenderer } from "./NextTetrominoRenderer";
 import { SettingData } from "./Settings";
 import { GameRenderer } from "./GameRenderer";
 
@@ -13,10 +12,8 @@ type exclusionFlagType = "left" | "right";
 export class Game {
   protected app: PIXI.Application;
   protected container: PIXI.Container;
+  protected gameContainer: PIXI.Container;
   protected holdContainer: PIXI.Container;
-  protected nextContainer: PIXI.Container;
-  protected nextnext1Container: PIXI.Container;
-  protected nextnext2Container: PIXI.Container;
   protected loader: PIXI.loaders.Loader;
   protected window: { w: number; h: number };
 
@@ -46,10 +43,6 @@ export class Game {
 
   private moveExclusionFlag: exclusionFlagType;
 
-  private nextRenderer: NextTetrominoRenderer;
-  private nextnext1Renderer: NextTetrominoRenderer;
-  private nextnext2Renderer: NextTetrominoRenderer;
-
   private gameRenderer: GameRenderer;
 
   public constructor(w: number, h: number, settings: SettingData) {
@@ -66,14 +59,9 @@ export class Game {
 
     this.window = { w: w, h: h };
 
-    this.nextRenderer = new NextTetrominoRenderer(this.nextContainer);
-    this.nextnext1Renderer = new NextTetrominoRenderer(this.nextnext1Container);
-    this.nextnext2Renderer = new NextTetrominoRenderer(this.nextnext2Container);
-
     this.tetrominoQueue = Tetromino.getRandomQueue().concat(
       Tetromino.getRandomQueue()
     );
-    this.tetromino = this.popTetrominoQueue();
 
     this.field = new Field(
       this.settings.blockWidth,
@@ -81,6 +69,16 @@ export class Game {
       this.settings.invisibleHeight
     );
     this.holder = new Holder(this.holdContainer);
+
+    this.gameContainer = new PIXI.Container();
+    this.gameRenderer = new GameRenderer(
+      this.gameContainer,
+      this.field,
+      this.tetrominoQueue
+    );
+    this.app.stage.addChild(this.gameContainer);
+
+    this.tetromino = this.popTetrominoQueue();
 
     this.lockDelayTimer = 0;
     this.areTimer = 0;
@@ -93,8 +91,6 @@ export class Game {
     this.moveExclusionFlag = null;
 
     this.initializeKeyEvents();
-
-    this.gameRenderer = new GameRenderer(this.container, this.field);
 
     this.loader = new PIXI.Loader();
 
@@ -110,7 +106,6 @@ export class Game {
     const fieldPositionY = 16 * 3;
     fieldBackground.position.x = fieldPositionX;
     fieldBackground.position.y = fieldPositionY;
-    // this.container.position = fieldBackground.position;
     this.app.stage.addChild(fieldBackground);
     this.app.stage.addChild(this.container);
 
@@ -128,40 +123,23 @@ export class Game {
     this.app.stage.addChild(this.holdContainer);
 
     const nextBackground = this.nextBackground();
-    this.nextContainer = new PIXI.Container();
     const nextPositionX = 16 * 18;
     const nextPositionY = 16 * 4;
     nextBackground.position.x = nextPositionX;
     nextBackground.position.y = nextPositionY;
-    this.nextContainer.position = nextBackground.position;
-    this.nextContainer.position.y += 16 * 1 + 8;
-    this.nextContainer.position.x += 16;
     this.app.stage.addChild(nextBackground);
-    this.app.stage.addChild(this.nextContainer);
 
     const nextnext1Background = this.nextnextBackground();
     const nextnext2Background = this.nextnextBackground();
-    this.nextnext1Container = new PIXI.Container();
-    this.nextnext2Container = new PIXI.Container();
     const nextnextPositionX = 16 * 18 + 8;
     const nextnextPosition1Y = 16 * 10;
     const nextnextPosition2Y = 16 * 15;
     nextnext1Background.position.x = nextnextPositionX;
     nextnext1Background.position.y = nextnextPosition1Y;
-    this.nextnext1Container.position = nextnext1Background.position;
-    this.nextnext1Container.position.x += 16 - 4;
-    this.nextnext1Container.position.y += 16 * 1;
     nextnext2Background.x = nextnextPositionX;
     nextnext2Background.y = nextnextPosition2Y;
-    this.nextnext2Container.position = nextnext2Background.position;
-    this.nextnext2Container.position.x += 16 - 4;
-    this.nextnext2Container.position.y += 16 * 1;
-    this.nextnext1Container.scale.x = this.nextnext1Container.scale.y = this.settings.nextnextMinoScale;
-    this.nextnext2Container.scale.x = this.nextnext2Container.scale.y = this.settings.nextnextMinoScale;
     this.app.stage.addChild(nextnext1Background);
     this.app.stage.addChild(nextnext2Background);
-    this.app.stage.addChild(this.nextnext1Container);
-    this.app.stage.addChild(this.nextnext2Container);
   }
 
   protected fieldBackground(): PIXI.Graphics {
@@ -224,20 +202,6 @@ export class Game {
     graphics.endFill();
 
     return graphics;
-  }
-
-  protected renderNext(): void {
-    this.nextRenderer.render(
-      this.tetrominoQueue[this.tetrominoQueue.length - 1].type
-    );
-
-    this.nextnext1Renderer.render(
-      this.tetrominoQueue[this.tetrominoQueue.length - 2].type
-    );
-
-    this.nextnext2Renderer.render(
-      this.tetrominoQueue[this.tetrominoQueue.length - 3].type
-    );
   }
 
   private renderGhost(): void {
@@ -430,13 +394,14 @@ export class Game {
 
   private popTetrominoQueue(): Tetromino {
     if (this.tetrominoQueue.length < 7) {
-      this.tetrominoQueue = Tetromino.getRandomQueue().concat(
-        this.tetrominoQueue
+      Array.prototype.push.apply(
+        this.tetrominoQueue,
+        Tetromino.getRandomQueue()
       );
     }
-    const tetromino = this.tetrominoQueue.pop();
+    const tetromino = this.tetrominoQueue.shift();
     this.lockDelayTimer = 0;
-    this.renderNext();
+    this.gameRenderer.renderNext();
     return tetromino;
   }
 

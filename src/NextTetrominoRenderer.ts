@@ -16,6 +16,7 @@ export class NextTetrominoRenderer {
     const mino = new Tetromino(type);
     if (type === TetrominoType.I) {
       mino.x = -0.5;
+      mino.y = -0.25;
     } else if (type === TetrominoType.O) {
       mino.x = 0.5;
     } else {
