@@ -49,6 +49,7 @@ export class Master3Game extends Game {
   private currentLevel: number;
   private currentInternalLevel: number;
   private sectionTimer: number;
+  private getCoolFlag: boolean;
 
   public constructor(w: number, h: number, settings: SettingData) {
     super(w, h, Object.assign(settings, defaultSettings));
@@ -56,6 +57,7 @@ export class Master3Game extends Game {
     this.currentLevel = 0;
     this.currentInternalLevel = 0;
     this.sectionTimer = 0;
+    this.getCoolFlag = false;
     this.adjustSettingsValue(this.currentLevel);
   }
 
@@ -76,7 +78,7 @@ export class Master3Game extends Game {
       if (
         coolTimeTable[Math.floor(this.currentLevel / 100)] > this.sectionTimer
       ) {
-        this.currentInternalLevel += 100;
+        this.getCoolFlag = true;
         console.log("%cCOOL!!", "font-weight: bold;font-size: 20px;"); // eslint-disable-line no-console
       }
     }
@@ -88,9 +90,10 @@ export class Master3Game extends Game {
       ) {
         console.log("%cREGRET!!", "font-weight: bold;font-size: 20px;"); // eslint-disable-line no-console
       }
-      this.sectionTimer = 0;
+      if (this.getCoolFlag) this.currentInternalLevel += 100;
     }
 
+    this.sectionTimer = 0;
     this.adjustSettingsValue(this.currentInternalLevel);
 
     console.log(this.currentLevel); // eslint-disable-line no-console
