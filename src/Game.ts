@@ -45,6 +45,8 @@ export class Game {
   protected moveExclusionFlag: exclusionFlagType;
   protected gameState: gameStateType;
 
+  protected startTime: Date;
+
   protected gameRenderer: GameRenderer;
 
   public constructor(w: number, h: number, settings: SettingData) {
@@ -92,6 +94,8 @@ export class Game {
 
     this.moveExclusionFlag = null;
     this.gameState = null;
+
+    this.startTime = new Date();
 
     this.initializeKeyEvents();
 
@@ -361,6 +365,10 @@ export class Game {
         }
       }
     }
+
+    this.gameRenderer.renderTimer(
+      new Date(+new Date() - +this.startTime).toJSON().substr(11, 11)
+    );
   }
 
   // Can't move anything if this return true

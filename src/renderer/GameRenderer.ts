@@ -17,6 +17,7 @@ export class GameRenderer {
   private nextnext1Container: PIXI.Container;
   private nextnext2Container: PIXI.Container;
   private holderContainer: PIXI.Container;
+  private timerContainer: PIXI.Container;
 
   private fieldRenderer: FieldRenderer;
   private tetrominoRenderer: TetrominoRenderer;
@@ -25,6 +26,7 @@ export class GameRenderer {
   private nextnext1Renderer: NextTetrominoRenderer;
   private nextnext2Renderer: NextTetrominoRenderer;
   private holderRenderer: HolderRenderer;
+  private timerText: PIXI.Text;
 
   private tetrominoQueue: Tetromino[];
 
@@ -91,12 +93,18 @@ export class GameRenderer {
     this.holderContainer.position.y = 16 * 8;
     this.holderContainer.scale.set(0.8);
 
+    this.timerContainer = new PIXI.Container();
+    this.timerContainer.position.x = 16 * 18;
+    this.timerContainer.position.y = 16 * 22;
+    this.timerText = null;
+
     this.container.addChild(this.bgContainer);
     this.container.addChild(this.fieldContainer);
     this.container.addChild(this.nextContainer);
     this.container.addChild(this.nextnext1Container);
     this.container.addChild(this.nextnext2Container);
     this.container.addChild(this.holderContainer);
+    this.container.addChild(this.timerContainer);
   }
 
   public renderTetromino(tetromino: Tetromino): void {
@@ -121,6 +129,12 @@ export class GameRenderer {
     this.nextRenderer.render(this.tetrominoQueue[0].type);
     this.nextnext1Renderer.render(this.tetrominoQueue[1].type);
     this.nextnext2Renderer.render(this.tetrominoQueue[2].type);
+  }
+
+  public renderTimer(time: string): void {
+    if (this.timerText !== null) this.timerText.destroy();
+    this.timerText = new PIXI.Text(time, { fontSize: 18 });
+    this.timerContainer.addChild(this.timerText);
   }
 
   protected fieldBackground(): PIXI.Graphics {
