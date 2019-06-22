@@ -137,14 +137,14 @@ export class Game {
       }
     }
 
+    if (this.leftKey.isDown && this.rightKey.isDown) {
+      this.moveExclusionFlag === "left" ? this.moveLeft() : this.moveRight();
+    } else if (this.leftKey.isDown) {
+      this.moveLeft();
+    } else if (this.rightKey.isDown) {
+      this.moveRight();
+    }
     if (this.tetromino !== null) {
-      if (this.leftKey.isDown && this.rightKey.isDown) {
-        this.moveExclusionFlag === "left" ? this.moveLeft() : this.moveRight();
-      } else if (this.leftKey.isDown) {
-        this.moveLeft();
-      } else if (this.rightKey.isDown) {
-        this.moveRight();
-      }
       this.renderGhost();
     }
 
@@ -234,6 +234,7 @@ export class Game {
 
   protected moveLeft(): void {
     this.setControllerExclusion("left");
+    if (this.tetromino === null) return;
     if (this.dasTimer === 0 || this.dasTimer >= this.settings.dasTime) {
       this.tetromino.x--;
       if (this.field.isCollision(this.tetromino)) {
@@ -244,6 +245,7 @@ export class Game {
 
   protected moveRight(): void {
     this.setControllerExclusion("right");
+    if (this.tetromino === null) return;
     if (this.dasTimer === 0 || this.dasTimer >= this.settings.dasTime) {
       this.tetromino.x++;
       if (this.field.isCollision(this.tetromino)) {
