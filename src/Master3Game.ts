@@ -49,6 +49,7 @@ export class Master3Game extends Game {
     super(w, h, Object.assign(settings, defaultSettings));
 
     this.currentLevel = 0;
+    this.adjustSettingsValue(this.currentLevel);
   }
 
   protected fixMino(): void {
@@ -90,8 +91,8 @@ export class Master3Game extends Game {
   }
 
   private beforeLevel(currentLevel: number, levelKeys: number[]): number {
-    for (let i = 0; i < levelKeys.length; i++) {
-      if (levelKeys[i] < currentLevel) continue;
+    for (let i = 0; i < levelKeys.length + 1; i++) {
+      if (levelKeys[i] <= currentLevel) continue;
       return levelKeys[i - 1] !== undefined
         ? levelKeys[i - 1]
         : levelKeys[levelKeys.length - 1];
