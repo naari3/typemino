@@ -37,7 +37,7 @@ export class Tetromino {
     this.angle = 0;
     this.previousAngle = 0;
     this.x = Math.floor(Math.floor(10 / 2) - this.data.shapes[0][0].length / 2);
-    this.y = 0;
+    this.y = type === TetrominoType.I ? -1 : 0;
   }
 
   public static getRandom(): Tetromino {

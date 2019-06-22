@@ -18,6 +18,7 @@ export class HolderRenderer {
   public render(): void {
     const holdedTetromino = new Tetromino(this.holder.holdedTetrominoType);
     if (this.holder.holdedTetrominoType === TetrominoType.I) {
+      holdedTetromino.y = -0.5;
       holdedTetromino.x = -0.5;
     } else if (this.holder.holdedTetrominoType === TetrominoType.O) {
       holdedTetromino.x = 0.5;
