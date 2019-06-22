@@ -7,8 +7,10 @@ import { Holder } from "./Holder";
 import { SettingData } from "./Settings";
 import { GameRenderer } from "./GameRenderer";
 import Constants from "./Constants";
+import { BlockColor } from "./BlockColor";
 
 type exclusionFlagType = "left" | "right";
+type gameStateType = "playing" | "gameover";
 
 export class Game {
   protected app: PIXI.Application;
@@ -42,6 +44,7 @@ export class Game {
   private rotateCount: number;
 
   private moveExclusionFlag: exclusionFlagType;
+  private gameState: gameStateType;
 
   private gameRenderer: GameRenderer;
 
@@ -205,6 +208,7 @@ export class Game {
   }
 
   protected animate(): void {
+    if (this.gameState === "gameover") return;
     if (this.tetromino !== null) {
       this.freeFall();
     } else if (!this.isLockTime()) {
@@ -219,6 +223,17 @@ export class Game {
         this.rotateLeft();
       } else if (this.rotateRightKey.isDown) {
         this.rotateRight();
+      }
+
+      // check gameover
+      if (this.field.isCollision(this.tetromino)) {
+        this.gameState = "gameover";
+        this.fixMino();
+        this.field.fillAllBlock(BlockColor.Glay);
+        this.gameRenderer.clearRenderedGhost();
+        this.gameRenderer.clearRenderedTetromino();
+        this.gameRenderer.renderField();
+        return;
       }
     }
 

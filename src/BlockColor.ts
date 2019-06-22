@@ -8,5 +8,6 @@ export enum BlockColor {
   Cyan,
   Blue,
   Purple,
+  Glay,
   Invisible
 }

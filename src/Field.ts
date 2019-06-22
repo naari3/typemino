@@ -88,4 +88,15 @@ export class Field {
     });
     return clearCount;
   }
+
+  public fillAllBlock(fillColor: BlockColor): void {
+    this.blockColors = this.blockColors.map((xList): BlockColor[] => {
+      return xList.map(
+        (color): BlockColor => {
+          if (color !== null) return fillColor;
+          else return null;
+        }
+      );
+    });
+  }
 }
