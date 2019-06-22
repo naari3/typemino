@@ -5,6 +5,8 @@ import { TetrominoRenderer } from "./TetrominoRenderer";
 import { Tetromino } from "./Tetromino";
 import { GhostRenderer } from "./GhostRenderer";
 import { NextTetrominoRenderer } from "./NextTetrominoRenderer";
+import { Holder } from "./Holder";
+import { HolderRenderer } from "./HolderRenderer";
 
 export class GameRenderer {
   private container: PIXI.Container;
@@ -12,6 +14,7 @@ export class GameRenderer {
   private nextContainer: PIXI.Container;
   private nextnext1Container: PIXI.Container;
   private nextnext2Container: PIXI.Container;
+  private holderContainer: PIXI.Container;
 
   private fieldRenderer: FieldRenderer;
   private tetrominoRenderer: TetrominoRenderer;
@@ -19,13 +22,15 @@ export class GameRenderer {
   private nextRenderer: NextTetrominoRenderer;
   private nextnext1Renderer: NextTetrominoRenderer;
   private nextnext2Renderer: NextTetrominoRenderer;
+  private holderRenderer: HolderRenderer;
 
   private tetrominoQueue: Tetromino[];
 
   public constructor(
     container: PIXI.Container,
     field: Field,
-    tetrominoQueue: Tetromino[]
+    tetrominoQueue: Tetromino[],
+    holder: Holder
   ) {
     this.container = container;
 
@@ -52,10 +57,17 @@ export class GameRenderer {
     this.nextnext1Container.scale.set(0.8);
     this.nextnext2Container.scale.set(0.8);
 
+    this.holderContainer = new PIXI.Container();
+    this.holderRenderer = new HolderRenderer(this.holderContainer, holder);
+    this.holderContainer.position.x = 16 * 2 - 4;
+    this.holderContainer.position.y = 16 * 8;
+    this.holderContainer.scale.set(0.8);
+
     this.container.addChild(this.fieldContainer);
     this.container.addChild(this.nextContainer);
     this.container.addChild(this.nextnext1Container);
     this.container.addChild(this.nextnext2Container);
+    this.container.addChild(this.holderContainer);
   }
 
   public renderTetromino(tetromino: Tetromino): void {
@@ -73,7 +85,9 @@ export class GameRenderer {
   public clearRenderedGhost(): void {
     this.ghostRenderer.clearRendered();
   }
-  public renderHolder(): void {}
+  public renderHolder(): void {
+    this.holderRenderer.render();
+  }
   public renderNext(): void {
     this.nextRenderer.render(this.tetrominoQueue[0].type);
     this.nextnext1Renderer.render(this.tetrominoQueue[1].type);

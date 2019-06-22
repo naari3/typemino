@@ -13,7 +13,6 @@ export class Game {
   protected app: PIXI.Application;
   protected container: PIXI.Container;
   protected gameContainer: PIXI.Container;
-  protected holdContainer: PIXI.Container;
   protected loader: PIXI.loaders.Loader;
   protected window: { w: number; h: number };
 
@@ -68,13 +67,14 @@ export class Game {
       this.settings.blockHeight,
       this.settings.invisibleHeight
     );
-    this.holder = new Holder(this.holdContainer);
+    this.holder = new Holder();
 
     this.gameContainer = new PIXI.Container();
     this.gameRenderer = new GameRenderer(
       this.gameContainer,
       this.field,
-      this.tetrominoQueue
+      this.tetrominoQueue,
+      this.holder
     );
     this.app.stage.addChild(this.gameContainer);
 
@@ -110,17 +110,11 @@ export class Game {
     this.app.stage.addChild(this.container);
 
     const holdBackground = this.holdBackground();
-    this.holdContainer = new PIXI.Container();
     const holdPositionX = 16 * 1;
     const holdPositionY = 16 * 7;
     holdBackground.position.x = holdPositionX;
     holdBackground.position.y = holdPositionY;
-    this.holdContainer.position = holdBackground.position;
-    this.holdContainer.position.x += 16 - 4;
-    this.holdContainer.position.y += 16 * 1;
-    this.holdContainer.scale.set(this.settings.holdMinoScale);
     this.app.stage.addChild(holdBackground);
-    this.app.stage.addChild(this.holdContainer);
 
     const nextBackground = this.nextBackground();
     const nextPositionX = 16 * 18;
@@ -384,6 +378,7 @@ export class Game {
     this.isHolded = true;
 
     const previousHoldedTetrominoType = this.holder.hold(this.tetromino.type);
+    this.gameRenderer.renderHolder();
     if (previousHoldedTetrominoType !== null) {
       this.tetromino = new Tetromino(previousHoldedTetrominoType);
     } else {
