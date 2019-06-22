@@ -91,6 +91,7 @@ export class Game {
     this.rotateCount = 0;
 
     this.moveExclusionFlag = null;
+    this.gameState = null;
 
     this.initializeKeyEvents();
 
