@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
-import { Tetromino } from "./Tetromino";
-import { BlockFactory } from "./BlockFactory";
+import { Tetromino } from "../Tetromino";
+import { BlockFactory } from "../BlockFactory";
 
 export class TetrominoRenderer {
   private container: PIXI.Container;

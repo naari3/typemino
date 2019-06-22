@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
-import { Tetromino } from "./Tetromino";
-import { Field } from "./Field";
+import { Tetromino } from "../Tetromino";
+import { Field } from "../Field";
 import { TetrominoRenderer } from "./TetrominoRenderer";
 
 export class GhostRenderer {

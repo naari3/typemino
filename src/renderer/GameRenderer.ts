@@ -1,11 +1,11 @@
 import * as PIXI from "pixi.js";
-import { Field } from "./Field";
+import { Field } from "../Field";
 import { FieldRenderer } from "./FieldRenderer";
 import { TetrominoRenderer } from "./TetrominoRenderer";
-import { Tetromino } from "./Tetromino";
+import { Tetromino } from "../Tetromino";
 import { GhostRenderer } from "./GhostRenderer";
 import { NextTetrominoRenderer } from "./NextTetrominoRenderer";
-import { Holder } from "./Holder";
+import { Holder } from "../Holder";
 import { HolderRenderer } from "./HolderRenderer";
 
 export class GameRenderer {

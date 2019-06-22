@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
-import { Tetromino } from "./Tetromino";
-import { TetrominoType } from "./TetrominoData";
+import { Tetromino } from "../Tetromino";
+import { TetrominoType } from "../TetrominoData";
 import { TetrominoRenderer } from "./TetrominoRenderer";
 
 export class NextTetrominoRenderer {

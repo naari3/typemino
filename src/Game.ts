@@ -5,7 +5,7 @@ import { Keyboard } from "./Keyboard";
 import { Wallkick } from "./Wallkick";
 import { Holder } from "./Holder";
 import { SettingData } from "./Settings";
-import { GameRenderer } from "./GameRenderer";
+import { GameRenderer } from "./renderer/GameRenderer";
 import Constants from "./Constants";
 import { BlockColor } from "./BlockColor";
 

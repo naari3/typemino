@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
-import { Holder } from "./Holder";
+import { Holder } from "../Holder";
 import { TetrominoRenderer } from "./TetrominoRenderer";
-import { Tetromino } from "./Tetromino";
-import { TetrominoType } from "./TetrominoData";
+import { Tetromino } from "../Tetromino";
+import { TetrominoType } from "../TetrominoData";
 
 export class HolderRenderer {
   private container: PIXI.Container;

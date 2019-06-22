@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
-import { Field } from "./Field";
-import { BlockFactory } from "./BlockFactory";
+import { Field } from "../Field";
+import { BlockFactory } from "../BlockFactory";
 
 export class FieldRenderer {
   private container: PIXI.Container;
