@@ -4,8 +4,6 @@ const defaultSettings: SettingData = {
   blockWidth: 10,
   blockHeight: 20,
   invisibleHeight: 1,
-  holdMinoScale: 0.8,
-  nextnextMinoScale: 0.8,
   lockDelayTime: 30,
   areTime: 16,
   lineClearTime: 12,
@@ -24,5 +22,6 @@ const defaultSettings: SettingData = {
     hold: " "
   }
 };
+const settingsKey = "settings";
 
-export default { defaultSettings };
+export default { defaultSettings, settingsKey };
