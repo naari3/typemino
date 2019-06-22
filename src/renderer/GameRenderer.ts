@@ -7,9 +7,11 @@ import { GhostRenderer } from "./GhostRenderer";
 import { NextTetrominoRenderer } from "./NextTetrominoRenderer";
 import { Holder } from "../Holder";
 import { HolderRenderer } from "./HolderRenderer";
+import Constants from "../Constants";
 
 export class GameRenderer {
   private container: PIXI.Container;
+  private bgContainer: PIXI.Container;
   private fieldContainer: PIXI.Container;
   private nextContainer: PIXI.Container;
   private nextnext1Container: PIXI.Container;
@@ -33,6 +35,32 @@ export class GameRenderer {
     holder: Holder
   ) {
     this.container = container;
+
+    this.bgContainer = new PIXI.Container();
+    const fieldBackground = this.fieldBackground();
+    fieldBackground.position.x = 16 * 7;
+    fieldBackground.position.y = 16 * 3;
+    this.bgContainer.addChild(fieldBackground);
+
+    const holdBackground = this.holdBackground();
+    holdBackground.position.x = 16 * 1;
+    holdBackground.position.y = 16 * 7;
+    this.bgContainer.addChild(holdBackground);
+
+    const nextBackground = this.nextBackground();
+    nextBackground.position.x = 16 * 18;
+    nextBackground.position.y = 16 * 4;
+    this.bgContainer.addChild(nextBackground);
+
+    const nextnext1Background = this.nextnextBackground();
+    const nextnext2Background = this.nextnextBackground();
+    const nextnextPositionX = 16 * 18 + 8;
+    nextnext1Background.position.x = nextnextPositionX;
+    nextnext1Background.position.y = 16 * 10;
+    nextnext2Background.position.x = nextnextPositionX;
+    nextnext2Background.position.y = 16 * 15;
+    this.bgContainer.addChild(nextnext1Background);
+    this.bgContainer.addChild(nextnext2Background);
 
     this.fieldContainer = new PIXI.Container();
     this.fieldRenderer = new FieldRenderer(this.fieldContainer, field);
@@ -63,6 +91,7 @@ export class GameRenderer {
     this.holderContainer.position.y = 16 * 8;
     this.holderContainer.scale.set(0.8);
 
+    this.container.addChild(this.bgContainer);
     this.container.addChild(this.fieldContainer);
     this.container.addChild(this.nextContainer);
     this.container.addChild(this.nextnext1Container);
@@ -92,5 +121,67 @@ export class GameRenderer {
     this.nextRenderer.render(this.tetrominoQueue[0].type);
     this.nextnext1Renderer.render(this.tetrominoQueue[1].type);
     this.nextnext2Renderer.render(this.tetrominoQueue[2].type);
+  }
+
+  protected fieldBackground(): PIXI.Graphics {
+    const graphics = new PIXI.Graphics();
+
+    // field frame
+    graphics.lineStyle(4, 0xffffff, 1, 1);
+    graphics.beginFill(0x000000, 0.5);
+    graphics.drawRect(0, 0, 16 * 10, 16 * 20);
+    graphics.endFill();
+
+    // lattice
+    for (let x = 0; x < Constants.blockWidth; x++) {
+      graphics.lineStyle(1, 0xffffffff, 0.1);
+      graphics.moveTo(16 * (x + 1), 0);
+      graphics.lineTo(16 * (x + 1), 16 * 20);
+    }
+    for (let y = 0; y < Constants.blockHeight; y++) {
+      graphics.lineStyle(1, 0xffffffff, 0.1);
+      graphics.moveTo(0, 16 * (y + 1));
+      graphics.lineTo(16 * 10, 16 * (y + 1));
+    }
+
+    return graphics;
+  }
+
+  protected holdBackground(): PIXI.Graphics {
+    const graphics = new PIXI.Graphics();
+
+    // hold frame
+    graphics.lineStyle(4, 0xffffff, 1, 1);
+    graphics.beginFill(0x000000, 0.5);
+    graphics.drawRect(0, 0, 16 * 4, 16 * 4);
+    graphics.endFill();
+    graphics.width = 16 * 4;
+    graphics.height = 16 * 4;
+
+    return graphics;
+  }
+
+  protected nextBackground(): PIXI.Graphics {
+    const graphics = new PIXI.Graphics();
+
+    // hold frame
+    graphics.lineStyle(4, 0xffffff, 1, 1);
+    graphics.beginFill(0x000000, 0.5);
+    graphics.drawRect(0, 0, 16 * 5, 16 * 5);
+    graphics.endFill();
+
+    return graphics;
+  }
+
+  protected nextnextBackground(): PIXI.Graphics {
+    const graphics = new PIXI.Graphics();
+
+    // hold frame
+    graphics.lineStyle(4, 0xffffff, 1, 1);
+    graphics.beginFill(0x000000, 0.5);
+    graphics.drawRect(0, 0, 16 * 4, 16 * 4);
+    graphics.endFill();
+
+    return graphics;
   }
 }

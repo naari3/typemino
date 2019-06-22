@@ -15,7 +15,6 @@ type gameStateType = "playing" | "gameover";
 export class Game {
   protected app: PIXI.Application;
   protected container: PIXI.Container;
-  protected gameContainer: PIXI.Container;
   protected loader: PIXI.loaders.Loader;
   protected window: { w: number; h: number };
 
@@ -57,7 +56,6 @@ export class Game {
 
     this.settings = settings;
 
-    this.adjustFrames();
     document.querySelector("#minomino").appendChild(this.app.view);
 
     this.window = { w: w, h: h };
@@ -73,14 +71,14 @@ export class Game {
     );
     this.holder = new Holder();
 
-    this.gameContainer = new PIXI.Container();
+    this.container = new PIXI.Container();
     this.gameRenderer = new GameRenderer(
-      this.gameContainer,
+      this.container,
       this.field,
       this.tetrominoQueue,
       this.holder
     );
-    this.app.stage.addChild(this.gameContainer);
+    this.app.stage.addChild(this.container);
 
     this.tetromino = this.popTetrominoQueue();
 
@@ -101,105 +99,6 @@ export class Game {
     this.app.ticker.add((): void => {
       this.animate();
     });
-  }
-
-  protected adjustFrames(): void {
-    const fieldBackground = this.fieldBackground();
-    this.container = new PIXI.Container();
-    const fieldPositionX = 16 * 7;
-    const fieldPositionY = 16 * 3;
-    fieldBackground.position.x = fieldPositionX;
-    fieldBackground.position.y = fieldPositionY;
-    this.app.stage.addChild(fieldBackground);
-    this.app.stage.addChild(this.container);
-
-    const holdBackground = this.holdBackground();
-    const holdPositionX = 16 * 1;
-    const holdPositionY = 16 * 7;
-    holdBackground.position.x = holdPositionX;
-    holdBackground.position.y = holdPositionY;
-    this.app.stage.addChild(holdBackground);
-
-    const nextBackground = this.nextBackground();
-    const nextPositionX = 16 * 18;
-    const nextPositionY = 16 * 4;
-    nextBackground.position.x = nextPositionX;
-    nextBackground.position.y = nextPositionY;
-    this.app.stage.addChild(nextBackground);
-
-    const nextnext1Background = this.nextnextBackground();
-    const nextnext2Background = this.nextnextBackground();
-    const nextnextPositionX = 16 * 18 + 8;
-    const nextnextPosition1Y = 16 * 10;
-    const nextnextPosition2Y = 16 * 15;
-    nextnext1Background.position.x = nextnextPositionX;
-    nextnext1Background.position.y = nextnextPosition1Y;
-    nextnext2Background.x = nextnextPositionX;
-    nextnext2Background.y = nextnextPosition2Y;
-    this.app.stage.addChild(nextnext1Background);
-    this.app.stage.addChild(nextnext2Background);
-  }
-
-  protected fieldBackground(): PIXI.Graphics {
-    const graphics = new PIXI.Graphics();
-
-    // field frame
-    graphics.lineStyle(4, 0xffffff, 1, 1);
-    graphics.beginFill(0x000000, 0.5);
-    graphics.drawRect(0, 0, 16 * 10, 16 * 20);
-    graphics.endFill();
-
-    // lattice
-    for (let x = 0; x < Constants.blockWidth; x++) {
-      graphics.lineStyle(1, 0xffffffff, 0.1);
-      graphics.moveTo(16 * (x + 1), 0);
-      graphics.lineTo(16 * (x + 1), 16 * 20);
-    }
-    for (let y = 0; y < Constants.blockHeight; y++) {
-      graphics.lineStyle(1, 0xffffffff, 0.1);
-      graphics.moveTo(0, 16 * (y + 1));
-      graphics.lineTo(16 * 10, 16 * (y + 1));
-    }
-
-    return graphics;
-  }
-
-  protected holdBackground(): PIXI.Graphics {
-    const graphics = new PIXI.Graphics();
-
-    // hold frame
-    graphics.lineStyle(4, 0xffffff, 1, 1);
-    graphics.beginFill(0x000000, 0.5);
-    graphics.drawRect(0, 0, 16 * 4, 16 * 4);
-    graphics.endFill();
-    graphics.width = 16 * 4;
-    graphics.height = 16 * 4;
-
-    return graphics;
-  }
-
-  protected nextBackground(): PIXI.Graphics {
-    const graphics = new PIXI.Graphics();
-
-    // hold frame
-    graphics.lineStyle(4, 0xffffff, 1, 1);
-    graphics.beginFill(0x000000, 0.5);
-    graphics.drawRect(0, 0, 16 * 5, 16 * 5);
-    graphics.endFill();
-
-    return graphics;
-  }
-
-  protected nextnextBackground(): PIXI.Graphics {
-    const graphics = new PIXI.Graphics();
-
-    // hold frame
-    graphics.lineStyle(4, 0xffffff, 1, 1);
-    graphics.beginFill(0x000000, 0.5);
-    graphics.drawRect(0, 0, 16 * 4, 16 * 4);
-    graphics.endFill();
-
-    return graphics;
   }
 
   private renderGhost(): void {
