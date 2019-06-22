@@ -15,6 +15,7 @@ export class TetrominoRenderer {
     this.clearRendered();
     tetromino.currentShape().forEach((xList, y): void => {
       xList.forEach((b, x): void => {
+        if (tetromino.y + y < 0) return;
         if (b === 1) {
           let block: PIXI.Sprite;
           if (ghost === true) {
