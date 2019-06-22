@@ -54,7 +54,7 @@ export class Master3Game extends Game {
   public constructor(w: number, h: number, settings: SettingData) {
     super(w, h, Object.assign(settings, defaultSettings));
 
-    this.currentLevel = 0;
+    this.currentLevel = 59;
     this.currentInternalLevel = 0;
     this.sectionTimer = 0;
     this.getCoolFlag = false;
@@ -62,12 +62,12 @@ export class Master3Game extends Game {
   }
 
   protected fixMino(): void {
+    let prevLevel = this.currentLevel;
     if (this.currentLevel % 100 !== 99) {
       this.currentLevel++;
       this.currentInternalLevel++;
     }
 
-    let prevLevel = this.currentLevel;
     super.fixMino();
 
     if (
