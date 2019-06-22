@@ -208,8 +208,9 @@ export class Game {
   }
 
   private fixMino(): void {
+    let clearedLines = 0;
     this.field.putMino(this.tetromino);
-    if (this.field.transparentLines() !== 0) {
+    if ((clearedLines = this.field.transparentLines()) !== 0) {
       this.lineClearTimer = this.settings.lineClearTime;
       if (this.lineClearTimer === 0) {
         this.field.clearLines();
@@ -223,6 +224,11 @@ export class Game {
     this.isHolded = false;
     this.rotateCount = 0;
     this.gravityTimer = 0;
+    this.calcScore(clearedLines);
+  }
+
+  private calcScore(clearLines: number): void {
+    clearLines;
   }
 
   private moveLeft(): void {
