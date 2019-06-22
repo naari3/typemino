@@ -12,6 +12,9 @@ const defaultSettings = {
   ghost: true
 };
 
+const coolTimeTable    = [3120, 3120, 2940, 2700, 2700, 2520, 2520, 2280, 2280, 0]; // prettier-ignore
+const regretTimeTable = [5400, 4500, 4500, 4080, 3600, 3600, 3000, 3000, 3000, 3000]; // prettier-ignore
+
 // prettier-ignore
 const gravityChangeTable = {
   0: 1024, 30: 1536, 35: 2048, 40: 2560, 50: 3072, 60: 4096, 70: 8192, 80: 12288, 90: 16384,
@@ -44,17 +47,43 @@ const lineClearTimeChangeTable = {
 
 export class Master3Game extends Game {
   private currentLevel: number;
+  private sectionTimer: number;
 
   public constructor(w: number, h: number, settings: SettingData) {
     super(w, h, Object.assign(settings, defaultSettings));
 
     this.currentLevel = 0;
+    this.sectionTimer = 0;
     this.adjustSettingsValue(this.currentLevel);
   }
 
   protected fixMino(): void {
     if (this.currentLevel % 100 !== 99) this.currentLevel++;
+
+    let prevLevel = this.currentLevel;
     super.fixMino();
+
+    if (
+      60 <= prevLevel % 100 &&
+      prevLevel % 100 < 70 &&
+      this.currentLevel % 100 >= 70
+    ) {
+      if (
+        coolTimeTable[Math.floor(this.currentLevel / 100)] > this.sectionTimer
+      ) {
+        console.log("%cCOOL!!", "font-weight: bold;font-size: 20px;"); // eslint-disable-line no-console
+      }
+    }
+
+    // maybe level up
+    if (prevLevel % 100 > this.currentLevel % 100) {
+      if (
+        regretTimeTable[Math.floor(this.currentLevel / 100)] < this.sectionTimer
+      ) {
+        console.log("%cREGRET!!", "font-weight: bold;font-size: 20px;"); // eslint-disable-line no-console
+      }
+      this.sectionTimer = 0;
+    }
 
     this.adjustSettingsValue(this.currentLevel);
 
@@ -105,5 +134,10 @@ export class Master3Game extends Game {
     if (clearLines === 3) plusLevels = 4;
     if (clearLines === 4) plusLevels = 6;
     this.currentLevel += plusLevels;
+  }
+
+  protected tickTimer(): void {
+    super.tickTimer();
+    this.sectionTimer++;
   }
 }

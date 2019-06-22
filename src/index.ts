@@ -6,6 +6,7 @@ import Constants from "./Constants";
 import { SettingData } from "./Settings";
 
 import store from "store";
+import { Master3Game } from "./Master3Game";
 
 new Vue({
   el: "#app",
@@ -24,7 +25,10 @@ new Vue({
             type: Function,
             default: (settings: SettingData): void => {
               store.set(Constants.settingsKey, settings);
-              new Game(384, 416, settings);
+              const isMaster = !!new URL(
+                document.location.href
+              ).searchParams.get("master");
+              new (isMaster ? Master3Game : Game)(384, 416, settings);
             }
           }
         }
