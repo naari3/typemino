@@ -19,7 +19,7 @@ const regretTimeTable = [5400, 4500, 4500, 4080, 3600, 3600, 3000, 3000, 3000, 3
 const gravityChangeTable = {
   0: 1024, 30: 1536, 35: 2048, 40: 2560, 50: 3072, 60: 4096, 70: 8192, 80: 12288, 90: 16384,
   100: 20480, 120: 24576, 140: 28672,  160: 32768,  170: 36864,
-  200: 1024, 239: 40960, 243: 49152, 247: 57344, 251: 65536,
+  200: 1024, 220: 8192, 230: 16384, 233: 24576, 236: 32768, 239: 40960, 243: 49152, 247: 57344, 251: 65536,
   300: 131072, 330: 196608, 360: 262144,
   400: 327680, 420: 262144, 450: 196608,
   500: 1310720 // here comes to 20 G
@@ -55,7 +55,7 @@ export class Master3Game extends Game {
     super(w, h, Object.assign(settings, defaultSettings));
 
     this.currentLevel = 59;
-    this.currentInternalLevel = 0;
+    this.currentInternalLevel = this.currentLevel;
     this.sectionTimer = 0;
     this.getCoolFlag = false;
     this.adjustSettingsValue(this.currentLevel);
@@ -96,7 +96,7 @@ export class Master3Game extends Game {
     this.sectionTimer = 0;
     this.adjustSettingsValue(this.currentInternalLevel);
 
-    console.log(this.currentLevel); // eslint-disable-line no-console
+    console.log(this.currentLevel, this.currentInternalLevel); // eslint-disable-line no-console
   }
 
   private adjustSettingsValue(level: number): void {
@@ -143,6 +143,7 @@ export class Master3Game extends Game {
     if (clearLines === 3) plusLevels = 4;
     if (clearLines === 4) plusLevels = 6;
     this.currentLevel += plusLevels;
+    this.currentInternalLevel += plusLevels;
   }
 
   protected tickTimer(): void {
