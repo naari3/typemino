@@ -27,7 +27,7 @@ const gravityChangeTable = {
 
 // prettier-ignore
 const areTimeChangeTable = {
-  0: 25, 700: 16, 800: 12
+  0: 25, 700: 16, 800: 12, 1000: 6, 1100: 5, 1200: 4
 };
 
 // prettier-ignore
@@ -37,7 +37,7 @@ const dasTimeChangeTable = {
 
 // prettier-ignore
 const lockDelayTimeChangeTable = {
-  0: 30, 900: 17
+  0: 30, 900: 17, 1100: 15
 };
 
 // prettier-ignore
@@ -47,18 +47,23 @@ const lineClearTimeChangeTable = {
 
 export class Master3Game extends Game {
   private currentLevel: number;
+  private currentInternalLevel: number;
   private sectionTimer: number;
 
   public constructor(w: number, h: number, settings: SettingData) {
     super(w, h, Object.assign(settings, defaultSettings));
 
     this.currentLevel = 0;
+    this.currentInternalLevel = 0;
     this.sectionTimer = 0;
     this.adjustSettingsValue(this.currentLevel);
   }
 
   protected fixMino(): void {
-    if (this.currentLevel % 100 !== 99) this.currentLevel++;
+    if (this.currentLevel % 100 !== 99) {
+      this.currentLevel++;
+      this.currentInternalLevel++;
+    }
 
     let prevLevel = this.currentLevel;
     super.fixMino();
@@ -71,6 +76,7 @@ export class Master3Game extends Game {
       if (
         coolTimeTable[Math.floor(this.currentLevel / 100)] > this.sectionTimer
       ) {
+        this.currentInternalLevel += 100;
         console.log("%cCOOL!!", "font-weight: bold;font-size: 20px;"); // eslint-disable-line no-console
       }
     }
@@ -85,7 +91,7 @@ export class Master3Game extends Game {
       this.sectionTimer = 0;
     }
 
-    this.adjustSettingsValue(this.currentLevel);
+    this.adjustSettingsValue(this.currentInternalLevel);
 
     console.log(this.currentLevel); // eslint-disable-line no-console
   }
