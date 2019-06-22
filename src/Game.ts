@@ -18,34 +18,34 @@ export class Game {
   protected loader: PIXI.loaders.Loader;
   protected window: { w: number; h: number };
 
-  private settings: SettingData;
+  protected settings: SettingData;
 
-  private upKey: Keyboard;
-  private downKey: Keyboard;
-  private leftKey: Keyboard;
-  private rightKey: Keyboard;
-  private rotateLeftKey: Keyboard;
-  private rotateRightKey: Keyboard;
-  private holdKey: Keyboard;
+  protected upKey: Keyboard;
+  protected downKey: Keyboard;
+  protected leftKey: Keyboard;
+  protected rightKey: Keyboard;
+  protected rotateLeftKey: Keyboard;
+  protected rotateRightKey: Keyboard;
+  protected holdKey: Keyboard;
 
-  private field: Field;
-  private tetromino: Tetromino;
-  private tetrominoQueue: Tetromino[];
-  private holder: Holder;
-  private isHolded: boolean;
+  protected field: Field;
+  protected tetromino: Tetromino;
+  protected tetrominoQueue: Tetromino[];
+  protected holder: Holder;
+  protected isHolded: boolean;
 
-  private lockDelayTimer: number;
-  private areTimer: number;
-  private lineClearTimer: number;
-  private dasTimer: number;
-  private gravityTimer: number;
+  protected lockDelayTimer: number;
+  protected areTimer: number;
+  protected lineClearTimer: number;
+  protected dasTimer: number;
+  protected gravityTimer: number;
 
-  private rotateCount: number;
+  protected rotateCount: number;
 
-  private moveExclusionFlag: exclusionFlagType;
-  private gameState: gameStateType;
+  protected moveExclusionFlag: exclusionFlagType;
+  protected gameState: gameStateType;
 
-  private gameRenderer: GameRenderer;
+  protected gameRenderer: GameRenderer;
 
   public constructor(w: number, h: number, settings: SettingData) {
     this.app = new PIXI.Application({
@@ -102,7 +102,7 @@ export class Game {
     });
   }
 
-  private renderGhost(): void {
+  protected renderGhost(): void {
     if (this.settings.ghost)
       this.gameRenderer.renderGhost(this.tetromino, this.field);
   }
@@ -151,7 +151,7 @@ export class Game {
     this.tickTimer();
   }
 
-  private initializeKeyEvents(): void {
+  protected initializeKeyEvents(): void {
     this.upKey = new Keyboard(this.settings.controller.up);
     this.upKey.press = this.hardDrop.bind(this);
 
@@ -169,14 +169,14 @@ export class Game {
     this.holdKey.press = this.holdMino.bind(this);
   }
 
-  private setControllerExclusion(direction: exclusionFlagType): void {
+  protected setControllerExclusion(direction: exclusionFlagType): void {
     if (this.moveExclusionFlag !== direction) {
       this.moveExclusionFlag = direction;
       this.dasTimer = 0;
     }
   }
 
-  private freeFall(): void {
+  protected freeFall(): void {
     if (this.isFallOneBlock()) {
       for (
         let i = 0;
@@ -199,7 +199,7 @@ export class Game {
     this.gameRenderer.renderTetromino(this.tetromino);
   }
 
-  private hardDrop(): void {
+  protected hardDrop(): void {
     if (this.isLockTime()) return;
     while (!this.field.isCollision(this.tetromino)) {
       this.tetromino.y++;
@@ -208,7 +208,7 @@ export class Game {
     this.fixMino();
   }
 
-  private fixMino(): void {
+  protected fixMino(): void {
     let clearedLines = 0;
     this.field.putMino(this.tetromino);
     if ((clearedLines = this.field.transparentLines()) !== 0) {
@@ -228,11 +228,11 @@ export class Game {
     this.calcScore(clearedLines);
   }
 
-  private calcScore(clearLines: number): void {
+  protected calcScore(clearLines: number): void {
     clearLines;
   }
 
-  private moveLeft(): void {
+  protected moveLeft(): void {
     this.setControllerExclusion("left");
     if (this.dasTimer === 0 || this.dasTimer >= this.settings.dasTime) {
       this.tetromino.x--;
@@ -242,7 +242,7 @@ export class Game {
     }
   }
 
-  private moveRight(): void {
+  protected moveRight(): void {
     this.setControllerExclusion("right");
     if (this.dasTimer === 0 || this.dasTimer >= this.settings.dasTime) {
       this.tetromino.x++;
@@ -252,7 +252,7 @@ export class Game {
     }
   }
 
-  private rotateLeft(): void {
+  protected rotateLeft(): void {
     if (this.tetromino !== null) {
       const result = this.doRotate(
         this.tetromino.rotateLeft.bind(this.tetromino),
@@ -262,7 +262,7 @@ export class Game {
     }
   }
 
-  private rotateRight(): void {
+  protected rotateRight(): void {
     if (this.tetromino !== null) {
       const result = this.doRotate(
         this.tetromino.rotateRight.bind(this.tetromino),
@@ -272,7 +272,7 @@ export class Game {
     }
   }
 
-  private doRotate(expect: Function, recover: Function): boolean {
+  protected doRotate(expect: Function, recover: Function): boolean {
     if (this.isLockTime()) return false;
     expect();
     if (this.field.isCollision(this.tetromino)) {
@@ -287,14 +287,14 @@ export class Game {
     }
   }
 
-  private increaseRotateCount(): void {
+  protected increaseRotateCount(): void {
     if (this.isLockDelayReset()) {
       this.lockDelayTimer = 0;
     }
     this.rotateCount += 1;
   }
 
-  private holdMino(): boolean {
+  protected holdMino(): boolean {
     if (this.tetromino === null || this.isHolded || this.isLockTime())
       return false;
     this.isHolded = true;
@@ -309,7 +309,7 @@ export class Game {
     return true;
   }
 
-  private popTetrominoQueue(): Tetromino {
+  protected popTetrominoQueue(): Tetromino {
     if (this.tetrominoQueue.length < 7) {
       Array.prototype.push.apply(
         this.tetrominoQueue,
@@ -322,7 +322,7 @@ export class Game {
     return tetromino;
   }
 
-  private tickTimer(): void {
+  protected tickTimer(): void {
     if (this.tetromino !== null) {
       this.tetromino.y++;
       if (this.field.isCollision(this.tetromino)) {
@@ -362,11 +362,11 @@ export class Game {
   }
 
   // Can't move anything if this return true
-  private isLockTime(): boolean {
+  protected isLockTime(): boolean {
     return this.lineClearTimer !== 0 || this.areTimer !== 0;
   }
 
-  private isFallOneBlock(): boolean {
+  protected isFallOneBlock(): boolean {
     if (this.settings.gravity >= this.settings.gravityDenominator) return true;
     if (this.gravityTimer >= this.settings.gravityDenominator) {
       this.gravityTimer = 0;
@@ -376,7 +376,7 @@ export class Game {
     }
   }
 
-  private isLockDelayReset(): boolean {
+  protected isLockDelayReset(): boolean {
     return this.rotateCount < this.settings.rotateLockResetLimitMove;
   }
 }
