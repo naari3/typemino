@@ -30,6 +30,12 @@
         <label>frame(s)</label>
       </p>
 
+      <p>
+        <label>das time:</label>
+        <input v-model.number="settingsDasTime" type="number" min="0" />
+        <label>frame(s)</label>
+      </p>
+
       <h5>key config</h5>
 
       <p>
@@ -163,6 +169,14 @@ export default class Setting extends Vue {
 
   private set settingsLineClearTime(value: number) {
     this.inputNumber("lineClearTime", value);
+  }
+
+  private get settingsDasTime(): number {
+    return this.settings.dasTime;
+  }
+
+  private set settingsDasTime(value: number) {
+    this.inputNumber("dasTime", value);
   }
 
   private setControllerKey(key: string) {
