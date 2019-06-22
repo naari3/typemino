@@ -6,6 +6,7 @@ import { Wallkick } from "./Wallkick";
 import { Holder } from "./Holder";
 import { SettingData } from "./Settings";
 import { GameRenderer } from "./GameRenderer";
+import Constants from "./Constants";
 
 type exclusionFlagType = "left" | "right";
 
@@ -63,9 +64,9 @@ export class Game {
     );
 
     this.field = new Field(
-      this.settings.blockWidth,
-      this.settings.blockHeight,
-      this.settings.invisibleHeight
+      Constants.blockWidth,
+      Constants.blockHeight,
+      Constants.invisibleHeight
     );
     this.holder = new Holder();
 
@@ -146,12 +147,12 @@ export class Game {
     graphics.endFill();
 
     // lattice
-    for (let x = 0; x < this.settings.blockWidth; x++) {
+    for (let x = 0; x < Constants.blockWidth; x++) {
       graphics.lineStyle(1, 0xffffffff, 0.1);
       graphics.moveTo(16 * (x + 1), 0);
       graphics.lineTo(16 * (x + 1), 16 * 20);
     }
-    for (let y = 0; y < this.settings.blockHeight; y++) {
+    for (let y = 0; y < Constants.blockHeight; y++) {
       graphics.lineStyle(1, 0xffffffff, 0.1);
       graphics.moveTo(0, 16 * (y + 1));
       graphics.lineTo(16 * 10, 16 * (y + 1));

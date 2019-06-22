@@ -1,9 +1,6 @@
 import { SettingData } from "./Settings";
 
 const defaultSettings: SettingData = {
-  blockWidth: 10,
-  blockHeight: 20,
-  invisibleHeight: 1,
   lockDelayTime: 30,
   areTime: 16,
   lineClearTime: 12,
@@ -22,6 +19,11 @@ const defaultSettings: SettingData = {
     hold: " "
   }
 };
-const settingsKey = "settings";
 
-export default { defaultSettings, settingsKey };
+export default {
+  defaultSettings,
+  settingsKey: "settings",
+  blockWidth: 10,
+  blockHeight: 20,
+  invisibleHeight: 1
+};

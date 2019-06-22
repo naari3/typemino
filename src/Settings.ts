@@ -1,7 +1,4 @@
 export interface SettingData {
-  blockWidth: number;
-  blockHeight: number;
-  invisibleHeight: number;
   lockDelayTime: number;
   areTime: number;
   lineClearTime: number;

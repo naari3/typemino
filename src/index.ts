@@ -17,8 +17,7 @@ new Vue({
             type: Object,
             default: function(): SettingData {
               let settings: SettingData = store.get(Constants.settingsKey);
-              if (settings === undefined) settings = Constants.defaultSettings;
-              return settings;
+              return Object.assign(Constants.defaultSettings, settings);
             }
           },
           gameStart: {
