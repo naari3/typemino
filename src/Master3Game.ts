@@ -45,6 +45,11 @@ const lineClearTimeChangeTable = {
   0: 40, 500: 25, 600: 16, 700: 12, 800: 6
 };
 
+// prettier-ignore
+const ghostChangeTable = {
+  0: true, 100: false
+};
+
 export class Master3Game extends Game {
   private currentLevel: number;
   private currentInternalLevel: number;
@@ -125,6 +130,10 @@ export class Master3Game extends Game {
           level,
           Object.keys(lineClearTimeChangeTable).map(Number)
         )
+      ];
+    this.settings.ghost =
+      ghostChangeTable[
+        this.beforeLevel(level, Object.keys(ghostChangeTable).map(Number))
       ];
   }
 
