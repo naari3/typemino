@@ -59,7 +59,7 @@ export class Master3Game extends Game {
   public constructor(w: number, h: number, settings: SettingData) {
     super(w, h, Object.assign(settings, defaultSettings));
 
-    this.currentLevel = 59;
+    this.currentLevel = 0;
     this.currentInternalLevel = this.currentLevel;
     this.sectionTimer = 0;
     this.getCoolFlag = false;
