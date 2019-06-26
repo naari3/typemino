@@ -307,10 +307,17 @@ export class Game {
   }
 
   protected increaseRotateCount(): void {
-    if (this.isLockDelayReset()) {
+    if (this.isRotateCountExceed()) {
       this.lockDelayTimer = 0;
     }
     this.rotateCount += 1;
+  }
+
+  protected increaseMoveCount(): void {
+    if (this.isMoveCountExceed()) {
+      this.lockDelayTimer = 0;
+    }
+    this.moveCount += 1;
   }
 
   protected holdMino(): boolean {
@@ -319,6 +326,7 @@ export class Game {
     this.isHolded = true;
 
     const previousHoldedTetrominoType = this.holder.hold(this.tetromino.type);
+    this.lockDelayTimer = 0;
     this.gameRenderer.renderHolder();
     if (previousHoldedTetrominoType !== null) {
       this.tetromino = new Tetromino(previousHoldedTetrominoType);
