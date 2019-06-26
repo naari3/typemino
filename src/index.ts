@@ -8,6 +8,10 @@ import { SettingData } from "./Settings";
 import store from "store";
 import { Master3Game } from "./Master3Game";
 
+import { version } from "../package.json";
+
+document.write(`current version: v${version}`);
+
 new Vue({
   el: "#app",
   render: (h): VNode =>
