@@ -217,8 +217,11 @@ export class Game {
   protected fixMino(): void {
     let clearedLines = 0;
     this.field.putMino(this.tetromino);
+
+    this.areTimer = this.settings.areTime;
     if ((clearedLines = this.field.transparentLines()) !== 0) {
       this.lineClearTimer = this.settings.lineClearTime;
+      this.areTimer = this.settings.lineAreTime;
       if (this.lineClearTimer === 0) {
         this.field.clearLines();
       }
@@ -227,7 +230,6 @@ export class Game {
     this.gameRenderer.clearRenderedGhost();
     this.gameRenderer.renderField();
     this.tetromino = null;
-    this.areTimer = this.settings.areTime;
     this.isHolded = false;
     this.rotateCount = 0;
     this.moveCount = 0;

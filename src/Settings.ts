@@ -1,6 +1,7 @@
 export interface SettingData {
   lockDelayTime: number;
   areTime: number;
+  lineAreTime: number;
   lineClearTime: number;
   dasTime: number;
   gravity: number;

@@ -2,9 +2,10 @@ import { SettingData } from "./Settings";
 
 const defaultSettings: SettingData = {
   lockDelayTime: 30,
-  areTime: 16,
-  lineClearTime: 12,
-  dasTime: 8,
+  areTime: 27,
+  lineAreTime: 27,
+  lineClearTime: 40,
+  dasTime: 16,
   gravity: 65536 / 64, // gravity / gravityDenominator G
   gravityDenominator: 65536,
   rotateLockResetLimitMove: 8,
