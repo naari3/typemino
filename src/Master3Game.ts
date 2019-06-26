@@ -31,6 +31,11 @@ const areTimeChangeTable = {
 };
 
 // prettier-ignore
+const lineAreTimeChangeTable = {
+  0: 25, 600: 16, 700: 12, 800: 6, 1100: 5, 1200: 4
+};
+
+// prettier-ignore
 const dasTimeChangeTable = {
   0: 14, 500: 8, 900: 6
 };
@@ -112,6 +117,10 @@ export class Master3Game extends Game {
     this.settings.areTime =
       areTimeChangeTable[
         this.beforeLevel(level, Object.keys(areTimeChangeTable).map(Number))
+      ];
+    this.settings.areTime =
+      lineAreTimeChangeTable[
+        this.beforeLevel(level, Object.keys(lineAreTimeChangeTable).map(Number))
       ];
     this.settings.dasTime =
       dasTimeChangeTable[
