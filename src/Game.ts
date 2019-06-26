@@ -41,6 +41,7 @@ export class Game {
   protected gravityTimer: number;
 
   protected rotateCount: number;
+  protected moveCount: number;
 
   protected moveExclusionFlag: exclusionFlagType;
   protected gameState: gameStateType;
@@ -91,6 +92,7 @@ export class Game {
     this.gravityTimer = 0;
 
     this.rotateCount = 0;
+    this.moveCount = 0;
 
     this.moveExclusionFlag = null;
     this.gameState = null;
@@ -228,6 +230,7 @@ export class Game {
     this.areTimer = this.settings.areTime;
     this.isHolded = false;
     this.rotateCount = 0;
+    this.moveCount = 0;
     this.gravityTimer = 0;
     this.calcScore(clearedLines);
   }
@@ -239,22 +242,32 @@ export class Game {
   protected moveLeft(): void {
     this.setControllerExclusion("left");
     if (this.tetromino === null) return;
+    let moved = true;
     if (this.dasTimer === 0 || this.dasTimer >= this.settings.dasTime) {
       this.tetromino.x--;
       if (this.field.isCollision(this.tetromino)) {
         this.tetromino.x++;
+        moved = false;
       }
+    }
+    if (moved) {
+      this.increaseMoveCount();
     }
   }
 
   protected moveRight(): void {
     this.setControllerExclusion("right");
     if (this.tetromino === null) return;
+    let moved = true;
     if (this.dasTimer === 0 || this.dasTimer >= this.settings.dasTime) {
       this.tetromino.x++;
       if (this.field.isCollision(this.tetromino)) {
         this.tetromino.x--;
+        moved = false;
       }
+    }
+    if (moved) {
+      this.increaseMoveCount();
     }
   }
 
@@ -335,6 +348,7 @@ export class Game {
         this.lockDelayTimer += 1;
       } else {
         this.rotateCount = 0;
+        this.moveCount = 0;
         this.lockDelayTimer = 0;
       }
       this.tetromino.y--;
@@ -386,7 +400,11 @@ export class Game {
     }
   }
 
-  protected isLockDelayReset(): boolean {
+  protected isRotateCountExceed(): boolean {
     return this.rotateCount < this.settings.rotateLockResetLimitMove;
+  }
+
+  protected isMoveCountExceed(): boolean {
+    return this.moveCount < this.settings.moveLockResetLimitMove;
   }
 }

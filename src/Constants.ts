@@ -7,7 +7,8 @@ const defaultSettings: SettingData = {
   dasTime: 8,
   gravity: 65536 / 64, // gravity / gravityDenominator G
   gravityDenominator: 65536,
-  rotateLockResetLimitMove: 10,
+  rotateLockResetLimitMove: 8,
+  moveLockResetLimitMove: 10,
   ghost: true,
   controller: {
     up: "w",

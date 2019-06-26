@@ -6,6 +6,7 @@ export interface SettingData {
   gravity: number;
   gravityDenominator: number; // gravity / gravityDenominator G
   rotateLockResetLimitMove: number;
+  moveLockResetLimitMove: number;
   ghost: boolean;
   controller: {
     up: string;
