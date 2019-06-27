@@ -1,6 +1,6 @@
 {
   "name": "typemino",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "typemino is action puzzle game",
   "main": "index.ts",
   "scripts": {
