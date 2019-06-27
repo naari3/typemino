@@ -101,9 +101,10 @@ export class Master3Game extends Game {
         console.log("%cREGRET!!", "font-weight: bold;font-size: 20px;"); // eslint-disable-line no-console
       }
       if (this.getCoolFlag) this.currentInternalLevel += 100;
+      this.getCoolFlag = false;
+      this.sectionTimer = 0;
     }
 
-    this.sectionTimer = 0;
     this.adjustSettingsValue(this.currentInternalLevel);
 
     console.log(this.currentLevel, this.currentInternalLevel); // eslint-disable-line no-console
