@@ -73,7 +73,11 @@ export class Master3Game extends Game {
 
   protected fixMino(): void {
     let prevLevel = this.currentLevel;
-    if (this.currentLevel % 100 !== 99) {
+    if (
+      (this.currentLevel % 100 !== 99 &&
+        Math.floor(this.currentLevel / 100) !== 9) ||
+      this.currentLevel !== 998
+    ) {
       this.currentLevel++;
       this.currentInternalLevel++;
     }
@@ -105,9 +109,16 @@ export class Master3Game extends Game {
       this.sectionTimer = 0;
     }
 
+    if (this.currentLevel >= 999 && this.gameMode === "normal") {
+      this.currentLevel = 999;
+      this.gameMode = "fanfare";
+      this.sectionTimer = 0;
+      return;
+    }
+
     this.adjustSettingsValue(this.currentInternalLevel);
 
-    console.log(this.currentLevel, this.currentInternalLevel); // eslint-disable-line no-console
+    console.log(`${this.currentLevel} / 999`); // eslint-disable-line no-console
   }
 
   private adjustSettingsValue(level: number): void {
