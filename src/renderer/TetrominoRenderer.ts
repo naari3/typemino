@@ -23,13 +23,14 @@ export class TetrominoRenderer {
               tetromino.x + x,
               tetromino.y + y,
               tetromino.data.color,
-              true
+              0.5
             );
           } else {
             block = BlockFactory(
               tetromino.x + x,
               tetromino.y + y,
-              tetromino.data.color
+              tetromino.data.color,
+              1
             );
           }
           this.container.addChild(block);

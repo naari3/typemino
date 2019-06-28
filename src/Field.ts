@@ -3,6 +3,7 @@ import { Tetromino } from "./Tetromino";
 
 export class Field {
   public blockColors: BlockColor[][];
+  public transparencies: number[][];
   public blockWidth: number;
   public blockHeight: number;
   public invisibleHeight: number; // if block is setted above this, it will be ignored
@@ -20,6 +21,11 @@ export class Field {
       new Array(this.actualBlockHeight),
       (): (BlockColor | null)[] => new Array(this.blockWidth).fill(null)
     );
+
+    this.transparencies = Array.from(
+      new Array(this.actualBlockHeight),
+      (): (number)[] => new Array(this.blockWidth).fill(null)
+    );
   }
 
   public putMino(tetromino: Tetromino): void {
@@ -32,6 +38,9 @@ export class Field {
             this.blockColors[tetromino.y + this.invisibleHeight + y][
               tetromino.x + x
             ] = tetromino.data.color;
+            this.transparencies[tetromino.y + this.invisibleHeight + y][
+              tetromino.x + x
+            ] = 1;
           }
         });
       }
@@ -68,6 +77,9 @@ export class Field {
       if (xList.every((x): boolean => !!x)) {
         this.blockColors.splice(y, 1);
         this.blockColors.unshift(Array(this.blockWidth).fill(null));
+
+        this.transparencies.splice(y, 1);
+        this.transparencies.unshift(Array(this.blockWidth).fill(null));
         clearCount++;
       }
     });
@@ -80,9 +92,7 @@ export class Field {
     let clearCount = 0;
     this.blockColors.forEach((xList, y): void => {
       if (xList.every((x): boolean => !!x)) {
-        this.blockColors[y] = new Array(this.blockWidth).fill(
-          BlockColor.Invisible
-        );
+        this.transparencies[y] = new Array(this.blockWidth).fill(0);
         clearCount++;
       }
     });
@@ -98,5 +108,13 @@ export class Field {
         }
       );
     });
+    this.transparencies = this.transparencies.map((xList): number[] => {
+      return xList.map((color): number => {
+        if (color !== null) return 1;
+        else return null;
+      });
+    });
   }
+
+  public tickTimer(): void {}
 }

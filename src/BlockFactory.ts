@@ -23,16 +23,12 @@ const BlockFactory = (
   x: number,
   y: number,
   color: BlockColor,
-  ghost?: boolean
+  alpha: number
 ): PIXI.Sprite => {
-  if (color === BlockColor.Invisible) return new PIXI.Sprite();
-
   const sprite = new PIXI.Sprite(getBlockTexture(color));
   sprite.x = x * blockSize;
   sprite.y = y * blockSize;
-  if (ghost === true) {
-    sprite.alpha = 0.5;
-  }
+  sprite.alpha = alpha;
   return sprite;
 };
 export { BlockFactory };

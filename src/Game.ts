@@ -50,7 +50,12 @@ export class Game {
 
   protected gameRenderer: GameRenderer;
 
-  public constructor(w: number, h: number, settings: SettingData) {
+  public constructor(
+    w: number,
+    h: number,
+    settings: SettingData,
+    field?: Field
+  ) {
     this.app = new PIXI.Application({
       width: w,
       height: h,
@@ -67,11 +72,13 @@ export class Game {
       Tetromino.getRandomQueue()
     );
 
-    this.field = new Field(
-      Constants.blockWidth,
-      Constants.blockHeight,
-      Constants.invisibleHeight
-    );
+    this.field =
+      field ||
+      new Field(
+        Constants.blockWidth,
+        Constants.blockHeight,
+        Constants.invisibleHeight
+      );
     this.holder = new Holder();
 
     this.container = new PIXI.Container();

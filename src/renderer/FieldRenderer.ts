@@ -3,9 +3,10 @@ import { Field } from "../Field";
 import { BlockFactory } from "../BlockFactory";
 
 export class FieldRenderer {
-  private container: PIXI.Container;
-  private field: Field;
-  private blockSprites: PIXI.Sprite[][];
+  protected container: PIXI.Container;
+  protected field: Field;
+  protected blockSprites: PIXI.Sprite[][];
+  protected hideOuts: number[][];
 
   public constructor(contaienr: PIXI.Container, field: Field) {
     this.container = contaienr;
@@ -13,6 +14,10 @@ export class FieldRenderer {
     this.blockSprites = Array.from(
       new Array(field.actualBlockHeight),
       (): (PIXI.Sprite | null)[] => new Array(field.blockWidth).fill(null)
+    );
+    this.hideOuts = Array.from(
+      new Array(field.actualBlockHeight),
+      (): (null)[] => new Array(field.blockWidth).fill(null)
     );
   }
 
@@ -24,7 +29,8 @@ export class FieldRenderer {
             const block = BlockFactory(
               x,
               y - this.field.invisibleHeight,
-              color
+              color,
+              this.field.transparencies[y][x]
             );
             this.container.addChild(block);
             if (this.blockSprites[y][x]) {
