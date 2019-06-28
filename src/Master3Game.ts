@@ -60,6 +60,7 @@ export class Master3Game extends Game {
   private currentInternalLevel: number;
   private sectionTimer: number;
   private getCoolFlag: boolean;
+  private endTime: Date;
 
   public constructor(w: number, h: number, settings: SettingData) {
     super(w, h, Object.assign(settings, defaultSettings));
@@ -68,6 +69,7 @@ export class Master3Game extends Game {
     this.currentInternalLevel = this.currentLevel;
     this.sectionTimer = 0;
     this.getCoolFlag = false;
+    this.endTime = null;
     this.adjustSettingsValue(this.currentLevel);
   }
 
@@ -113,6 +115,7 @@ export class Master3Game extends Game {
       this.currentLevel = 999;
       this.gameMode = "fanfare";
       this.sectionTimer = 0;
+      this.endTime = new Date();
       return;
     }
 
@@ -179,5 +182,18 @@ export class Master3Game extends Game {
   protected tickTimer(): void {
     super.tickTimer();
     this.sectionTimer++;
+
+  protected renderTimer(): void {
+    if (this.endTime !== null) {
+      this.gameRenderer.renderTimer(
+        new Date(+this.endTime - +this.startTime).toJSON().substr(11, 11)
+      );
+    } else {
+      this.gameRenderer.renderTimer(
+        new Date(+new Date() - +this.startTime).toJSON().substr(11, 11)
+      );
+    }
+  }
+
   }
 }

@@ -397,6 +397,10 @@ export class Game {
       }
     }
 
+    this.renderTimer();
+  }
+
+  protected renderTimer(): void {
     this.gameRenderer.renderTimer(
       new Date(+new Date() - +this.startTime).toJSON().substr(11, 11)
     );
