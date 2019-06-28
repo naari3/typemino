@@ -90,11 +90,21 @@ export class Master3Game extends Game {
   }
 
   protected animate(): void {
-    if (this.staffrollTimer > 3600) {
-      console.log("%cCONGRATULATIONS!!!", "font-weight: bold;font-size: 50px;"); // eslint-disable-line no-console
-      if (this.tetromino !== null) this.congrats();
-      this.tetromino = null;
-      return;
+    if (this.gameMode === "staffroll") {
+      if (this.staffrollTimer > 3270) {
+        // prettier-ignore
+        console.log( // eslint-disable-line no-console
+          "%cCONGRATULATIONS!!!",
+          "font-weight: bold;font-size: 40px;"
+        );
+        if (this.tetromino !== null) this.congrats();
+        this.tetromino = null;
+        return;
+      } else {
+        if ((3270 - this.staffrollTimer) % 60 === 0) {
+          console.log(`${(3270 - this.staffrollTimer) / 60} sec(s) remaining`); // eslint-disable-line no-console
+        }
+      }
     }
     if (this.gameMode === "normal") {
       super.animate();
