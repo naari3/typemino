@@ -64,7 +64,7 @@ export class Game {
 
     this.settings = settings;
 
-    document.querySelector("#minomino").appendChild(this.app.view);
+    document.querySelector("#typemino").appendChild(this.app.view);
 
     this.window = { w: w, h: h };
 
