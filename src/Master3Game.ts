@@ -92,12 +92,9 @@ export class Master3Game extends Game {
   protected animate(): void {
     if (this.gameMode === "staffroll") {
       if (this.staffrollTimer > 3270) {
-        // prettier-ignore
-        console.log( // eslint-disable-line no-console
-          "%cCONGRATULATIONS!!!",
-          "font-weight: bold;font-size: 40px;"
-        );
-        if (this.tetromino !== null) this.congrats();
+        if (this.tetromino !== null) {
+          this.congrats();
+        }
         this.tetromino = null;
         return;
       } else {
@@ -270,6 +267,7 @@ export class Master3Game extends Game {
   }
 
   private congrats(): void {
+    console.log("%cCONGRATULATIONS!!!", "font-weight: bold;font-size: 40px;"); // eslint-disable-line no-console
     for (let y = 0; y < this.field.transparencies.length; y++) {
       for (let x = 0; x < this.field.transparencies[y].length; x++) {
         this.field.transparencies[y][x] = 1;
