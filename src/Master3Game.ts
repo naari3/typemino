@@ -1,5 +1,7 @@
 import { Game } from "./Game";
 import { SettingData } from "./Settings";
+import { Master3Field } from "./Master3Field";
+import Constants from "./Constants";
 
 const defaultSettings = {
   lockDelayTime: 30,
@@ -55,25 +57,51 @@ const ghostChangeTable = {
   0: true, 100: false
 };
 
+type gameModeType = "normal" | "fanfare" | "staffroll";
+
 export class Master3Game extends Game {
+  protected field: Master3Field;
   private currentLevel: number;
   private currentInternalLevel: number;
   private sectionTimer: number;
+  private fanfareTimer: number;
   private getCoolFlag: boolean;
+  private gameMode: gameModeType;
   private endTime: Date;
 
   public constructor(w: number, h: number, settings: SettingData) {
-    super(w, h, Object.assign(settings, defaultSettings));
+    const field = new Master3Field(
+      Constants.blockWidth,
+      Constants.blockHeight,
+      Constants.invisibleHeight
+    );
+    super(w, h, Object.assign(settings, defaultSettings), field);
 
-    this.currentLevel = 0;
+    this.currentLevel = 998;
     this.currentInternalLevel = this.currentLevel;
     this.sectionTimer = 0;
     this.getCoolFlag = false;
+    this.gameMode = "normal";
+    this.fanfareTimer = 0;
     this.endTime = null;
     this.adjustSettingsValue(this.currentLevel);
   }
 
+  protected animate(): void {
+    if (this.gameMode === "normal") {
+      super.animate();
+    } else if (this.gameMode === "fanfare") {
+      if (this.fanfareTimer++ > 180) {
+        this.setStaffRollMode();
+      }
+    } else if (this.gameMode === "staffroll") {
+      super.animate();
+    }
+  }
+
   protected fixMino(): void {
+    if (this.gameMode === "staffroll") return super.fixMino();
+
     let prevLevel = this.currentLevel;
     if (
       (this.currentLevel % 100 !== 99 &&
@@ -182,6 +210,9 @@ export class Master3Game extends Game {
   protected tickTimer(): void {
     super.tickTimer();
     this.sectionTimer++;
+    this.field.tickTimer();
+    if (this.gameMode === "staffroll") this.gameRenderer.renderField();
+  }
 
   protected renderTimer(): void {
     if (this.endTime !== null) {
@@ -195,5 +226,25 @@ export class Master3Game extends Game {
     }
   }
 
+  private setStaffRollMode(): void {
+    this.field.blockColors.forEach((xList, y): void => {
+      xList.forEach((color, x): void => {
+        if (color !== null) {
+          this.field.blockColors[y][x] = null;
+        }
+      });
+    });
+
+    this.field.transparencies.forEach((xList, y): void => {
+      xList.forEach((tp, x): void => {
+        if (tp !== null) {
+          this.field.transparencies[y][x] = null;
+        }
+      });
+    });
+    this.gameRenderer.renderField();
+    this.gameMode = "staffroll";
+    this.field.gameMode = "staffroll";
+    this.field.hideTime = 300;
   }
 }
