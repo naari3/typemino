@@ -92,6 +92,7 @@ export class Master3Game extends Game {
   protected animate(): void {
     if (this.staffrollTimer > 3600) {
       console.log("%cCONGRATULATIONS!!!", "font-weight: bold;font-size: 50px;"); // eslint-disable-line no-console
+      if (this.tetromino !== null) this.congrats();
       this.tetromino = null;
       return;
     }
@@ -256,5 +257,14 @@ export class Master3Game extends Game {
     this.gameMode = "staffroll";
     this.field.gameMode = "staffroll";
     this.field.hideTime = 300;
+  }
+
+  private congrats(): void {
+    for (let y = 0; y < this.field.transparencies.length; y++) {
+      for (let x = 0; x < this.field.transparencies[y].length; x++) {
+        this.field.transparencies[y][x] = 1;
+      }
+    }
+    this.gameRenderer.renderField();
   }
 }
