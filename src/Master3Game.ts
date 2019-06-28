@@ -78,7 +78,7 @@ export class Master3Game extends Game {
     );
     super(w, h, Object.assign(settings, defaultSettings), field);
 
-    this.currentLevel = 998;
+    this.currentLevel = 0;
     this.currentInternalLevel = this.currentLevel;
     this.sectionTimer = 0;
     this.getCoolFlag = false;
