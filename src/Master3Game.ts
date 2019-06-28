@@ -65,6 +65,7 @@ export class Master3Game extends Game {
   private currentInternalLevel: number;
   private sectionTimer: number;
   private fanfareTimer: number;
+  private staffrollTimer: number;
   private getCoolFlag: boolean;
   private gameMode: gameModeType;
   private endTime: Date;
@@ -83,11 +84,17 @@ export class Master3Game extends Game {
     this.getCoolFlag = false;
     this.gameMode = "normal";
     this.fanfareTimer = 0;
+    this.staffrollTimer = 0;
     this.endTime = null;
     this.adjustSettingsValue(this.currentLevel);
   }
 
   protected animate(): void {
+    if (this.staffrollTimer > 3600) {
+      console.log("%cCONGRATULATIONS!!!", "font-weight: bold;font-size: 50px;"); // eslint-disable-line no-console
+      this.tetromino = null;
+      return;
+    }
     if (this.gameMode === "normal") {
       super.animate();
     } else if (this.gameMode === "fanfare") {
@@ -211,7 +218,10 @@ export class Master3Game extends Game {
     super.tickTimer();
     this.sectionTimer++;
     this.field.tickTimer();
-    if (this.gameMode === "staffroll") this.gameRenderer.renderField();
+    if (this.gameMode === "staffroll") {
+      this.staffrollTimer++;
+      this.gameRenderer.renderField();
+    }
   }
 
   protected renderTimer(): void {
