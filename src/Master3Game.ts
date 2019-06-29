@@ -121,7 +121,7 @@ export class Master3Game extends Game {
     if (
       (this.currentLevel % 100 !== 99 &&
         Math.floor(this.currentLevel / 100) !== 9) ||
-      this.currentLevel !== 998
+      (Math.floor(this.currentLevel / 100) === 9 && this.currentLevel !== 998)
     ) {
       this.currentLevel++;
       this.currentInternalLevel++;
