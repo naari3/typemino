@@ -164,7 +164,14 @@ export class Master3Game extends Game {
 
     this.adjustSettingsValue(this.currentInternalLevel);
 
-    console.log(`${this.currentLevel} / 999`); // eslint-disable-line no-console
+    // eslint-disable-next-line no-console
+    console.log(
+      `${this.currentLevel} / ${
+        this.currentLevel === 999
+          ? 999
+          : Math.ceil((this.currentLevel + 1) / 100) * 100
+      }`
+    );
   }
 
   private adjustSettingsValue(level: number): void {
