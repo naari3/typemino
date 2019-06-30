@@ -9,6 +9,8 @@ import { GameRenderer } from "./renderer/GameRenderer";
 import Constants from "./Constants";
 import { BlockColor } from "./BlockColor";
 import { FieldRenderer } from "./renderer/FieldRenderer";
+import { TetrominoQueue } from "./TetrominoQueue";
+import { TetrominoQueueRenderer } from "./renderer/TetrominoQueueRenderer";
 
 type exclusionFlagType = "left" | "right";
 type gameStateType = "playing" | "gameover";
@@ -31,7 +33,7 @@ export class Game {
 
   protected field: Field;
   protected tetromino: Tetromino;
-  protected tetrominoQueue: Tetromino[];
+  protected tetrominoQueue: TetrominoQueue;
   protected holder: Holder;
   protected isHolded: boolean;
 
@@ -69,10 +71,6 @@ export class Game {
 
     this.window = { w: w, h: h };
 
-    this.tetrominoQueue = Tetromino.getRandomQueue().concat(
-      Tetromino.getRandomQueue()
-    );
-
     this.field =
       field ||
       new Field(
@@ -85,18 +83,37 @@ export class Game {
     fc.position.x = 16 * 7;
     fc.position.y = 16 * 3;
     this.holder = new Holder();
+    this.tetrominoQueue = new TetrominoQueue();
+
+    const nextContainer = new PIXI.Container();
+    const nextnext1Container = new PIXI.Container();
+    const nextnext2Container = new PIXI.Container();
+    const tetrominoQueueRenderer = new TetrominoQueueRenderer(
+      nextContainer,
+      nextnext1Container,
+      nextnext2Container
+    );
+    nextContainer.position.x = 16 * 19;
+    nextContainer.position.y = 16 * 5 + 8;
+    nextnext1Container.position.x = 16 * 19 + 4;
+    nextnext1Container.position.y = 16 * 11;
+    nextnext2Container.position.x = 16 * 19 + 4;
+    nextnext2Container.position.y = 16 * 16;
+    nextnext1Container.scale.set(0.8);
+    nextnext2Container.scale.set(0.8);
+    this.tetrominoQueue.on(tetrominoQueueRenderer);
 
     this.container = new PIXI.Container();
-    this.gameRenderer = new GameRenderer(
-      this.container,
-      this.field,
-      this.tetrominoQueue,
-      this.holder
-    );
+    this.gameRenderer = new GameRenderer(this.container, this.holder);
     this.app.stage.addChild(this.container);
     this.app.stage.addChild(fc);
+    [nextContainer, nextnext1Container, nextnext2Container].forEach(
+      (container): void => {
+        this.app.stage.addChild(container);
+      }
+    );
 
-    this.tetromino = this.popTetrominoQueue();
+    this.tetromino = this.tetrominoQueue.pop();
 
     this.lockDelayTimer = 0;
     this.areTimer = 0;
@@ -131,7 +148,7 @@ export class Game {
     if (this.tetromino !== null) {
       this.freeFall();
     } else if (!this.isLockTime()) {
-      this.tetromino = this.popTetrominoQueue();
+      this.tetromino = this.tetrominoQueue.pop();
       // initial hold system
       if (this.holdKey.isDown) {
         this.holdMino();
@@ -346,22 +363,9 @@ export class Game {
     if (previousHoldedTetrominoType !== null) {
       this.tetromino = new Tetromino(previousHoldedTetrominoType);
     } else {
-      this.tetromino = this.popTetrominoQueue();
+      this.tetromino = this.tetrominoQueue.pop();
     }
     return true;
-  }
-
-  protected popTetrominoQueue(): Tetromino {
-    if (this.tetrominoQueue.length < 7) {
-      Array.prototype.push.apply(
-        this.tetrominoQueue,
-        Tetromino.getRandomQueue()
-      );
-    }
-    const tetromino = this.tetrominoQueue.shift();
-    this.lockDelayTimer = 0;
-    this.gameRenderer.renderNext();
-    return tetromino;
   }
 
   protected tickTimer(): void {
