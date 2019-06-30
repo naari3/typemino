@@ -1,9 +1,11 @@
 import { TetrominoType } from "./TetrominoData";
+import { Observable } from "./Observable";
 
-export class Holder {
+export class Holder extends Observable {
   public holdedTetrominoType: TetrominoType;
 
   public constructor() {
+    super();
     this.holdedTetrominoType = null;
   }
 
@@ -13,6 +15,7 @@ export class Holder {
       previousTetrominoType = this.holdedTetrominoType;
     }
     this.holdedTetrominoType = type;
+    this.notify();
     return previousTetrominoType;
   }
 }

@@ -3,28 +3,31 @@ import { Holder } from "../Holder";
 import { TetrominoRenderer } from "./TetrominoRenderer";
 import { Tetromino } from "../Tetromino";
 import { TetrominoType } from "../TetrominoData";
+import { Observer } from "../Observer";
 
-export class HolderRenderer {
+export class HolderRenderer implements Observer<Holder> {
   private container: PIXI.Container;
-  private holder: Holder;
   private tetrominoRenderer: TetrominoRenderer;
 
-  public constructor(container: PIXI.Container, holder: Holder) {
+  public constructor(container: PIXI.Container) {
     this.container = container;
-    this.holder = holder;
     this.tetrominoRenderer = new TetrominoRenderer(this.container);
   }
 
-  public render(): void {
-    const holdedTetromino = new Tetromino(this.holder.holdedTetrominoType);
-    if (this.holder.holdedTetrominoType === TetrominoType.I) {
+  public render(holder: Holder): void {
+    const holdedTetromino = new Tetromino(holder.holdedTetrominoType);
+    if (holder.holdedTetrominoType === TetrominoType.I) {
       holdedTetromino.y = -0.5;
       holdedTetromino.x = -0.5;
-    } else if (this.holder.holdedTetrominoType === TetrominoType.O) {
+    } else if (holder.holdedTetrominoType === TetrominoType.O) {
       holdedTetromino.x = 0.5;
     } else {
       holdedTetromino.x = 0.0;
     }
     this.tetrominoRenderer.render(holdedTetromino);
+  }
+
+  public update(holder: Holder): void {
+    this.render(holder);
   }
 }

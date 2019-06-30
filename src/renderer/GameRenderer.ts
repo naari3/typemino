@@ -3,23 +3,19 @@ import { Field } from "../Field";
 import { TetrominoRenderer } from "./TetrominoRenderer";
 import { Tetromino } from "../Tetromino";
 import { GhostRenderer } from "./GhostRenderer";
-import { Holder } from "../Holder";
-import { HolderRenderer } from "./HolderRenderer";
 import Constants from "../Constants";
 
 export class GameRenderer {
   private container: PIXI.Container;
   private bgContainer: PIXI.Container;
   private fieldContainer: PIXI.Container;
-  private holderContainer: PIXI.Container;
   private timerContainer: PIXI.Container;
 
   private tetrominoRenderer: TetrominoRenderer;
   private ghostRenderer: GhostRenderer;
-  private holderRenderer: HolderRenderer;
   private timerText: PIXI.Text;
 
-  public constructor(container: PIXI.Container, holder: Holder) {
+  public constructor(container: PIXI.Container) {
     this.container = container;
 
     this.bgContainer = new PIXI.Container();
@@ -54,12 +50,6 @@ export class GameRenderer {
     this.fieldContainer.position.x = 16 * 7;
     this.fieldContainer.position.y = 16 * 3;
 
-    this.holderContainer = new PIXI.Container();
-    this.holderRenderer = new HolderRenderer(this.holderContainer, holder);
-    this.holderContainer.position.x = 16 * 2 - 4;
-    this.holderContainer.position.y = 16 * 8;
-    this.holderContainer.scale.set(0.8);
-
     this.timerContainer = new PIXI.Container();
     this.timerContainer.position.x = 16 * 18;
     this.timerContainer.position.y = 16 * 22;
@@ -67,7 +57,6 @@ export class GameRenderer {
 
     this.container.addChild(this.bgContainer);
     this.container.addChild(this.fieldContainer);
-    this.container.addChild(this.holderContainer);
     this.container.addChild(this.timerContainer);
   }
 
@@ -82,9 +71,6 @@ export class GameRenderer {
   }
   public clearRenderedGhost(): void {
     this.ghostRenderer.clearRendered();
-  }
-  public renderHolder(): void {
-    this.holderRenderer.render();
   }
   public renderTimer(time: string): void {
     if (this.timerText !== null) this.timerText.destroy();

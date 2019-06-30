@@ -11,6 +11,7 @@ import { BlockColor } from "./BlockColor";
 import { FieldRenderer } from "./renderer/FieldRenderer";
 import { TetrominoQueue } from "./TetrominoQueue";
 import { TetrominoQueueRenderer } from "./renderer/TetrominoQueueRenderer";
+import { HolderRenderer } from "./renderer/HolderRenderer";
 
 type exclusionFlagType = "left" | "right";
 type gameStateType = "playing" | "gameover";
@@ -82,9 +83,16 @@ export class Game {
     this.field.on(new FieldRenderer(fc));
     fc.position.x = 16 * 7;
     fc.position.y = 16 * 3;
-    this.holder = new Holder();
-    this.tetrominoQueue = new TetrominoQueue();
 
+    this.holder = new Holder();
+    const holderContainer = new PIXI.Container();
+    const holderRenderer = new HolderRenderer(holderContainer);
+    holderContainer.position.x = 16 * 2 - 4;
+    holderContainer.position.y = 16 * 8;
+    holderContainer.scale.set(0.8);
+    this.holder.on(holderRenderer);
+
+    this.tetrominoQueue = new TetrominoQueue();
     const nextContainer = new PIXI.Container();
     const nextnext1Container = new PIXI.Container();
     const nextnext2Container = new PIXI.Container();
@@ -104,9 +112,10 @@ export class Game {
     this.tetrominoQueue.on(tetrominoQueueRenderer);
 
     this.container = new PIXI.Container();
-    this.gameRenderer = new GameRenderer(this.container, this.holder);
+    this.gameRenderer = new GameRenderer(this.container);
     this.app.stage.addChild(this.container);
     this.app.stage.addChild(fc);
+    this.app.stage.addChild(holderContainer);
     [nextContainer, nextnext1Container, nextnext2Container].forEach(
       (container): void => {
         this.app.stage.addChild(container);
@@ -359,7 +368,6 @@ export class Game {
 
     const previousHoldedTetrominoType = this.holder.hold(this.tetromino.type);
     this.lockDelayTimer = 0;
-    this.gameRenderer.renderHolder();
     if (previousHoldedTetrominoType !== null) {
       this.tetromino = new Tetromino(previousHoldedTetrominoType);
     } else {
