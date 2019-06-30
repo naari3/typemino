@@ -8,6 +8,7 @@ import { SettingData } from "./Settings";
 import { GameRenderer } from "./renderer/GameRenderer";
 import Constants from "./Constants";
 import { BlockColor } from "./BlockColor";
+import { FieldRenderer } from "./renderer/FieldRenderer";
 
 type exclusionFlagType = "left" | "right";
 type gameStateType = "playing" | "gameover";
@@ -79,6 +80,10 @@ export class Game {
         Constants.blockHeight,
         Constants.invisibleHeight
       );
+    const fc = new PIXI.Container();
+    this.field.on(new FieldRenderer(fc));
+    fc.position.x = 16 * 7;
+    fc.position.y = 16 * 3;
     this.holder = new Holder();
 
     this.container = new PIXI.Container();
@@ -89,6 +94,7 @@ export class Game {
       this.holder
     );
     this.app.stage.addChild(this.container);
+    this.app.stage.addChild(fc);
 
     this.tetromino = this.popTetrominoQueue();
 
@@ -145,7 +151,7 @@ export class Game {
         this.field.fillAllBlock(BlockColor.Glay);
         this.gameRenderer.clearRenderedGhost();
         this.gameRenderer.clearRenderedTetromino();
-        this.gameRenderer.renderField();
+
         return;
       }
     }
@@ -235,7 +241,7 @@ export class Game {
     }
     this.gameRenderer.clearRenderedTetromino();
     this.gameRenderer.clearRenderedGhost();
-    this.gameRenderer.renderField();
+
     this.tetromino = null;
     this.isHolded = false;
     this.rotateCount = 0;
@@ -374,7 +380,6 @@ export class Game {
     if (this.lineClearTimer > 0) {
       if (this.lineClearTimer === 1) {
         this.field.clearLines();
-        this.gameRenderer.renderField();
       }
       this.lineClearTimer -= 1;
     } else {

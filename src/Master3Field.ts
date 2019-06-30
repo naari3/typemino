@@ -19,53 +19,52 @@ export class Master3Field extends Field {
   }
 
   public putMino(tetromino: Tetromino): void {
-    super.putMino(tetromino);
-
-    if (this.gameMode !== "staffroll") return;
-    tetromino.currentShape().forEach((xList, y): void => {
-      xList.forEach((b, x): void => {
-        if (b === 1) {
-          if (this.hideTime > 0) {
-            this.hideTimers[tetromino.y + this.invisibleHeight + y][
-              tetromino.x + x
-            ] = this.hideTime;
-          } else if (this.hideTime <= 0) {
-            this.transparencies[tetromino.y + this.invisibleHeight + y][
-              tetromino.x + x
-            ] = 0;
+    if (this.gameMode === "staffroll") {
+      tetromino.currentShape().forEach((xList, y): void => {
+        xList.forEach((b, x): void => {
+          if (b === 1) {
+            if (this.hideTime > 0) {
+              this.hideTimers[tetromino.y + this.invisibleHeight + y][
+                tetromino.x + x
+              ] = this.hideTime;
+            } else if (this.hideTime <= 0) {
+              this.transparencies[tetromino.y + this.invisibleHeight + y][
+                tetromino.x + x
+              ] = 0;
+            }
           }
-        }
+        });
       });
-    });
+    }
+
+    super.putMino(tetromino);
   }
 
   public clearLines(): number {
-    let clearCount = 0;
     this.blockColors.forEach((xList, y): void => {
       if (xList.every((x): boolean => !!x)) {
-        this.blockColors.splice(y, 1);
-        this.blockColors.unshift(Array(this.blockWidth).fill(null));
-        this.transparencies.splice(y, 1);
-        this.transparencies.unshift(Array(this.blockWidth).fill(null));
         this.hideTimers.splice(y, 1);
         this.hideTimers.unshift(Array(this.blockWidth).fill(null));
-        clearCount++;
       }
     });
-    return clearCount;
+    return super.clearLines();
   }
 
   public tickTimer(): void {
+    let changed = false;
     if (this.gameMode !== "staffroll") return;
     for (let y = 0; y < this.hideTimers.length; y++) {
       for (let x = 0; x < this.hideTimers[y].length; x++) {
         if (this.hideTimers[y][x] > 0) {
+          changed = true;
           this.hideTimers[y][x]--;
         }
         if (this.hideTimers[y][x] < 60) {
+          changed = true;
           this.transparencies[y][x] = this.hideTimers[y][x] / 60;
         }
       }
     }
+    if (changed) this.notify();
   }
 }

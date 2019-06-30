@@ -1,6 +1,5 @@
 import * as PIXI from "pixi.js";
 import { Field } from "../Field";
-import { FieldRenderer } from "./FieldRenderer";
 import { TetrominoRenderer } from "./TetrominoRenderer";
 import { Tetromino } from "../Tetromino";
 import { GhostRenderer } from "./GhostRenderer";
@@ -19,7 +18,6 @@ export class GameRenderer {
   private holderContainer: PIXI.Container;
   private timerContainer: PIXI.Container;
 
-  private fieldRenderer: FieldRenderer;
   private tetrominoRenderer: TetrominoRenderer;
   private ghostRenderer: GhostRenderer;
   private nextRenderer: NextTetrominoRenderer;
@@ -65,7 +63,6 @@ export class GameRenderer {
     this.bgContainer.addChild(nextnext2Background);
 
     this.fieldContainer = new PIXI.Container();
-    this.fieldRenderer = new FieldRenderer(this.fieldContainer, field);
     this.tetrominoRenderer = new TetrominoRenderer(this.fieldContainer);
     this.ghostRenderer = new GhostRenderer(this.fieldContainer);
     this.fieldContainer.position.x = 16 * 7;
@@ -112,9 +109,6 @@ export class GameRenderer {
   }
   public clearRenderedTetromino(): void {
     this.tetrominoRenderer.clearRendered();
-  }
-  public renderField(): void {
-    this.fieldRenderer.render();
   }
   public renderGhost(tetromino: Tetromino, field: Field): void {
     this.ghostRenderer.render(tetromino, field);

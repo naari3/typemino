@@ -1,13 +1,17 @@
 import { BlockColor } from "./BlockColor";
 import { Tetromino } from "./Tetromino";
+import { Observable } from "./Observable";
+import { Observer } from "./Observer";
 
-export class Field {
+export class Field implements Observable {
   public blockColors: BlockColor[][];
   public transparencies: number[][];
   public blockWidth: number;
   public blockHeight: number;
   public invisibleHeight: number; // if block is setted above this, it will be ignored
   public actualBlockHeight: number;
+
+  private observers: Observer<this>[];
 
   public constructor(width: number, height: number, invisibleHeight: number) {
     this.blockWidth = width;
@@ -26,6 +30,8 @@ export class Field {
       new Array(this.actualBlockHeight),
       (): (number)[] => new Array(this.blockWidth).fill(null)
     );
+
+    this.observers = [];
   }
 
   public putMino(tetromino: Tetromino): void {
@@ -45,6 +51,7 @@ export class Field {
         });
       }
     });
+    this.notify();
   }
 
   public isCollision(tetromino: Tetromino): boolean {
@@ -83,6 +90,7 @@ export class Field {
         clearCount++;
       }
     });
+    this.notify();
     return clearCount;
   }
 
@@ -96,6 +104,7 @@ export class Field {
         clearCount++;
       }
     });
+    this.notify();
     return clearCount;
   }
 
@@ -114,7 +123,18 @@ export class Field {
         else return null;
       });
     });
+    this.notify();
   }
 
   public tickTimer(): void {}
+
+  public on(reader: Observer<this>): void {
+    this.observers.push(reader);
+  }
+
+  public notify(): void {
+    this.observers.forEach((reader): void => {
+      reader.update(this);
+    });
+  }
 }

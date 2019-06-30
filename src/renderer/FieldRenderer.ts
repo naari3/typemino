@@ -1,36 +1,27 @@
 import * as PIXI from "pixi.js";
 import { Field } from "../Field";
 import { BlockFactory } from "../BlockFactory";
+import { Observer } from "../Observer";
 
-export class FieldRenderer {
+export class FieldRenderer implements Observer<Field> {
   protected container: PIXI.Container;
   protected field: Field;
   protected blockSprites: PIXI.Sprite[][];
-  protected hideOuts: number[][];
 
-  public constructor(contaienr: PIXI.Container, field: Field) {
+  public constructor(contaienr: PIXI.Container) {
     this.container = contaienr;
-    this.field = field;
-    this.blockSprites = Array.from(
-      new Array(field.actualBlockHeight),
-      (): (PIXI.Sprite | null)[] => new Array(field.blockWidth).fill(null)
-    );
-    this.hideOuts = Array.from(
-      new Array(field.actualBlockHeight),
-      (): (null)[] => new Array(field.blockWidth).fill(null)
-    );
   }
 
-  public render(): void {
-    this.field.blockColors.forEach((xList, y): void => {
+  public render(field: Field): void {
+    field.blockColors.forEach((xList, y): void => {
       xList.forEach((color, x): void => {
-        if (!(this.field.actualBlockHeight - y > this.field.blockHeight)) {
+        if (!(field.actualBlockHeight - y > field.blockHeight)) {
           if (color != null) {
             const block = BlockFactory(
               x,
-              y - this.field.invisibleHeight,
+              y - field.invisibleHeight,
               color,
-              this.field.transparencies[y][x]
+              field.transparencies[y][x]
             );
             this.container.addChild(block);
             if (this.blockSprites[y][x]) {
@@ -46,5 +37,15 @@ export class FieldRenderer {
         }
       });
     });
+  }
+
+  public update(field: Field): void {
+    this.blockSprites =
+      this.blockSprites ||
+      Array.from(
+        new Array(field.actualBlockHeight),
+        (): (PIXI.Sprite | null)[] => new Array(field.blockWidth).fill(null)
+      );
+    this.render(field);
   }
 }

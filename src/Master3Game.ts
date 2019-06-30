@@ -235,7 +235,6 @@ export class Master3Game extends Game {
     this.field.tickTimer();
     if (this.gameMode === "staffroll") {
       this.staffrollTimer++;
-      this.gameRenderer.renderField();
     }
   }
 
@@ -267,7 +266,8 @@ export class Master3Game extends Game {
         }
       });
     });
-    this.gameRenderer.renderField();
+    this.field.notify();
+
     this.gameMode = "staffroll";
     this.field.gameMode = "staffroll";
     this.field.hideTime = 300;
@@ -280,6 +280,6 @@ export class Master3Game extends Game {
         this.field.transparencies[y][x] = 1;
       }
     }
-    this.gameRenderer.renderField();
+    this.field.notify();
   }
 }
