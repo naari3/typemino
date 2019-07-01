@@ -5,13 +5,13 @@ import { Keyboard } from "./Keyboard";
 import { Wallkick } from "./Wallkick";
 import { Holder } from "./Holder";
 import { SettingData } from "./Settings";
-import { GameRenderer } from "./renderer/GameRenderer";
+import { GameRenderer } from "./renderers/GameRenderer";
 import Constants from "./Constants";
 import { BlockColor } from "./BlockColor";
-import { FieldRenderer } from "./renderer/FieldRenderer";
+import { FieldRenderer } from "./renderers/FieldRenderer";
 import { TetrominoQueue } from "./TetrominoQueue";
-import { TetrominoQueueRenderer } from "./renderer/TetrominoQueueRenderer";
-import { HolderRenderer } from "./renderer/HolderRenderer";
+import { TetrominoQueueRenderer } from "./renderers/TetrominoQueueRenderer";
+import { HolderRenderer } from "./renderers/HolderRenderer";
 
 type exclusionFlagType = "left" | "right";
 type gameStateType = "playing" | "gameover";
