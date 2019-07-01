@@ -38,6 +38,8 @@ export class Game {
   protected holder: Holder;
   protected isHolded: boolean;
 
+  protected wallkick: Wallkick;
+
   protected lockDelayTimer: number;
   protected areTimer: number;
   protected lineClearTimer: number;
@@ -123,6 +125,8 @@ export class Game {
     );
 
     this.tetromino = this.tetrominoQueue.pop();
+
+    this.wallkick = new Wallkick();
 
     this.lockDelayTimer = 0;
     this.areTimer = 0;
@@ -336,7 +340,7 @@ export class Game {
     if (this.isLockTime()) return false;
     expect();
     if (this.field.isCollision(this.tetromino)) {
-      if (!new Wallkick().executeWallkick(this.tetromino, this.field)) {
+      if (!this.wallkick.executeWallkick(this.tetromino, this.field)) {
         recover();
         return false;
       } else {
