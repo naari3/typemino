@@ -18,8 +18,11 @@ export class DigGame extends Game {
       Constants.blockHeight,
       Constants.invisibleHeight
     );
+    let prevHole: number;
+    let hole: number;
     field.blockColors = field.blockColors.map((xList, y): BlockColor[] => {
-      let hole = Math.floor(Math.random() * xList.length);
+      while ((hole = Math.floor(Math.random() * xList.length)) === prevHole);
+      prevHole = hole;
       return xList.map(
         (_, x): BlockColor => {
           if (hole === x) return null;
