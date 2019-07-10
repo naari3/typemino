@@ -9,6 +9,7 @@ import store from "store";
 import { Master3Game } from "./Master3Game";
 
 import { version } from "../package.json";
+import { DigGame } from "./DigGame";
 
 document.write(`current version: v${version}`);
 
@@ -29,10 +30,20 @@ new Vue({
             type: Function,
             default: (settings: SettingData): void => {
               store.set(Constants.settingsKey, settings);
-              const isMaster = !!new URL(
-                document.location.href
-              ).searchParams.get("master");
-              new (isMaster ? Master3Game : Game)(384, 416, settings);
+
+              switch (
+                new URL(document.location.href).searchParams.get("mode")
+              ) {
+                case "master":
+                  new Master3Game(384, 416, settings);
+                  break;
+                case "dig":
+                  new DigGame(384, 416, settings);
+                  break;
+                default:
+                  new Game(384, 416, settings);
+                  break;
+              }
             }
           }
         }

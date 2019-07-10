@@ -13,6 +13,7 @@
   "author": "naari3 <naari.named@gmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "@types/clone": "^0.1.30",
     "@types/storejs": "^2.0.3",
     "@typescript-eslint/eslint-plugin": "^1.10.2",
     "@typescript-eslint/parser": "^1.10.2",
@@ -30,9 +31,10 @@
     "vue-template-compiler": "^2.6.10"
   },
   "dependencies": {
-    "vue": "^2.6.10",
-    "store": "^2.0.12",
+    "clone": "^2.1.2",
     "pixi.js": "^5.0.4",
+    "store": "^2.0.12",
+    "vue": "^2.6.10",
     "vue-hot-reload-api": "^2.3.3"
   }
 }
