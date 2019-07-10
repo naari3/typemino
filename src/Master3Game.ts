@@ -2,6 +2,7 @@ import { Game } from "./Game";
 import { SettingData } from "./Settings";
 import { Master3Field } from "./Master3Field";
 import Constants from "./Constants";
+import { Master3InfoRenderer } from "./renderers/Master3InfoRenderer";
 
 const defaultSettings = {
   lockDelayTime: 30,
@@ -60,6 +61,7 @@ const ghostChangeTable = {
 type gameModeType = "normal" | "fanfare" | "staffroll";
 
 export class Master3Game extends Game {
+  private master3InfoRenderer: Master3InfoRenderer;
   protected field: Master3Field;
   private currentLevel: number;
   private currentInternalLevel: number;
@@ -77,6 +79,7 @@ export class Master3Game extends Game {
       Constants.invisibleHeight
     );
     super(w, h, Object.assign(settings, defaultSettings), field);
+    this.master3InfoRenderer = new Master3InfoRenderer(this.container);
 
     this.currentLevel = 0;
     this.currentInternalLevel = this.currentLevel;
@@ -87,6 +90,8 @@ export class Master3Game extends Game {
     this.staffrollTimer = 0;
     this.endTime = null;
     this.adjustSettingsValue(this.currentLevel);
+
+    this.master3InfoRenderer.renderLevel(this.currentLevel);
   }
 
   protected animate(): void {
@@ -144,15 +149,15 @@ export class Master3Game extends Game {
 
     // maybe level up
     if (prevLevel % 100 > this.currentLevel % 100) {
-      if (
-        regretTimeTable[Math.floor(this.currentLevel / 100)] < this.sectionTimer
-      ) {
+      if (regretTimeTable[Math.floor(prevLevel / 100)] < this.sectionTimer) {
         console.log("%cREGRET!!", "font-weight: bold;font-size: 20px;"); // eslint-disable-line no-console
       }
       if (this.getCoolFlag) this.currentInternalLevel += 100;
       this.getCoolFlag = false;
       this.sectionTimer = 0;
     }
+
+    this.master3InfoRenderer.renderLevel(this.currentLevel);
 
     if (this.currentLevel >= 999 && this.gameMode === "normal") {
       this.currentLevel = 999;
@@ -163,15 +168,6 @@ export class Master3Game extends Game {
     }
 
     this.adjustSettingsValue(this.currentInternalLevel);
-
-    // eslint-disable-next-line no-console
-    console.log(
-      `${this.currentLevel} / ${
-        this.currentLevel === 999
-          ? 999
-          : Math.ceil((this.currentLevel + 1) / 100) * 100
-      }`
-    );
   }
 
   private adjustSettingsValue(level: number): void {
