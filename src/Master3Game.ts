@@ -68,6 +68,8 @@ export class Master3Game extends Game {
   private sectionTimer: number;
   private fanfareTimer: number;
   private staffrollTimer: number;
+  private skillDisplayTimer: number;
+  private coolDisplayed: boolean;
   private getCoolFlag: boolean;
   private gameMode: gameModeType;
   private endTime: Date;
@@ -88,6 +90,8 @@ export class Master3Game extends Game {
     this.gameMode = "normal";
     this.fanfareTimer = 0;
     this.staffrollTimer = 0;
+    this.skillDisplayTimer = 0;
+    this.coolDisplayed = false;
     this.endTime = null;
     this.adjustSettingsValue(this.currentLevel);
 
@@ -143,17 +147,28 @@ export class Master3Game extends Game {
         coolTimeTable[Math.floor(this.currentLevel / 100)] > this.sectionTimer
       ) {
         this.getCoolFlag = true;
-        console.log("%cCOOL!!", "font-weight: bold;font-size: 20px;"); // eslint-disable-line no-console
       }
+    }
+
+    if (
+      this.currentLevel % 100 >= 82 &&
+      this.getCoolFlag &&
+      !this.coolDisplayed
+    ) {
+      this.master3InfoRenderer.renderSkill("COOL!!");
+      this.skillDisplayTimer = 180;
+      this.coolDisplayed = true;
     }
 
     // maybe level up
     if (prevLevel % 100 > this.currentLevel % 100) {
       if (regretTimeTable[Math.floor(prevLevel / 100)] < this.sectionTimer) {
-        console.log("%cREGRET!!", "font-weight: bold;font-size: 20px;"); // eslint-disable-line no-console
+        this.master3InfoRenderer.renderSkill("REGRET");
+        this.skillDisplayTimer = 180;
       }
       if (this.getCoolFlag) this.currentInternalLevel += 100;
       this.getCoolFlag = false;
+      this.coolDisplayed = false;
       this.sectionTimer = 0;
     }
 
@@ -231,6 +246,12 @@ export class Master3Game extends Game {
     this.field.tickTimer();
     if (this.gameMode === "staffroll") {
       this.staffrollTimer++;
+    }
+    if (this.skillDisplayTimer > 0) {
+      this.skillDisplayTimer--;
+      if (this.skillDisplayTimer === 0) {
+        this.master3InfoRenderer.renderSkill("");
+      }
     }
   }
 
