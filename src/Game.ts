@@ -60,7 +60,8 @@ export class Game {
     w: number,
     h: number,
     settings: SettingData,
-    field?: Field
+    field?: Field,
+    queue?: TetrominoQueue
   ) {
     this.app = new PIXI.Application({
       width: w,
@@ -94,7 +95,7 @@ export class Game {
     holderContainer.scale.set(0.8);
     this.holder.on(holderRenderer);
 
-    this.tetrominoQueue = new TetrominoQueue();
+    this.tetrominoQueue = queue || new TetrominoQueue();
     const nextContainer = new PIXI.Container();
     const nextnext1Container = new PIXI.Container();
     const nextnext2Container = new PIXI.Container();

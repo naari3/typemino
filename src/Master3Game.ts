@@ -3,6 +3,7 @@ import { SettingData } from "./Settings";
 import { Master3Field } from "./Master3Field";
 import Constants from "./Constants";
 import { Master3InfoRenderer } from "./renderers/Master3InfoRenderer";
+import { Master3TetrominoQueue } from "./Master3TetrominoQueue";
 
 const defaultSettings = {
   lockDelayTime: 30,
@@ -63,6 +64,7 @@ type gameModeType = "normal" | "fanfare" | "staffroll";
 export class Master3Game extends Game {
   private master3InfoRenderer: Master3InfoRenderer;
   protected field: Master3Field;
+  protected tetrominoQueue: Master3TetrominoQueue;
   private currentLevel: number;
   private currentInternalLevel: number;
   private sectionTimer: number;
@@ -80,7 +82,8 @@ export class Master3Game extends Game {
       Constants.blockHeight,
       Constants.invisibleHeight
     );
-    super(w, h, Object.assign(settings, defaultSettings), field);
+    const queue = new Master3TetrominoQueue();
+    super(w, h, Object.assign(settings, defaultSettings), field, queue);
     this.master3InfoRenderer = new Master3InfoRenderer(this.container);
 
     this.currentLevel = 0;
