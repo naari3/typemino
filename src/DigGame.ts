@@ -3,7 +3,7 @@ import { SettingData } from "./Settings";
 import { Field } from "./Field";
 import Constants from "./Constants";
 import { BlockColor } from "./BlockColor";
-import clone from "clone";
+import deepcopy from "deepcopy";
 
 const noAre = {
   areTime: 0,
@@ -47,7 +47,7 @@ export class DigGame extends Game {
       this.field.blockHeight,
       this.field.invisibleHeight
     );
-    field.blockColors = clone(this.field.blockColors);
+    field.blockColors = deepcopy(this.field.blockColors);
     field.putMino(this.tetromino);
 
     const clearedLastLine = field.blockColors[
