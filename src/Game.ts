@@ -169,9 +169,9 @@ export class Game {
       }
 
       // initial rotate system
-      if (this.rotateLeftKey.isDown) {
+      if (this.rotateLeftKey.isDown && this.settings.areTime !== 0) {
         this.rotateLeft();
-      } else if (this.rotateRightKey.isDown) {
+      } else if (this.rotateRightKey.isDown && this.settings.areTime !== 0) {
         this.rotateRight();
       }
 
