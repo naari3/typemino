@@ -10,6 +10,7 @@ import { Master3Game } from "./Master3Game";
 
 import { version } from "../package.json";
 import { DigGame } from "./DigGame";
+import { LineGame } from "./LineGame";
 
 document.write(`current version: v${version}`);
 
@@ -39,6 +40,9 @@ new Vue({
                   break;
                 case "dig":
                   new DigGame(384, 416, settings);
+                  break;
+                case "line":
+                  new LineGame(384, 416, settings);
                   break;
                 default:
                   new Game(384, 416, settings);

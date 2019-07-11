@@ -5,6 +5,7 @@
 ### Added
 
 - this changelog
+- Implement line mode
 
 ### Changed
 
