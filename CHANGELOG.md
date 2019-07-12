@@ -10,6 +10,7 @@
 ### Changed
 
 - Implement gameProcess method and Moved implementation from animate
+- Set the initial position for each mode
 
 ## [0.0.9]
 

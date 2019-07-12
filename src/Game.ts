@@ -131,7 +131,7 @@ export class Game {
       }
     );
 
-    this.tetromino = this.tetrominoQueue.pop();
+    this.tetromino = this.popTetromino();
 
     this.wallkick = new Wallkick();
 
@@ -183,7 +183,7 @@ export class Game {
     if (this.tetromino !== null) {
       this.freeFall();
     } else if (!this.isLockTime()) {
-      this.tetromino = this.tetrominoQueue.pop();
+      this.tetromino = this.popTetromino();
       // initial hold system
       if (this.holdKey.isDown) {
         this.holdMino();
@@ -397,7 +397,7 @@ export class Game {
     if (previousHoldedTetrominoType !== null) {
       this.tetromino = new Tetromino(previousHoldedTetrominoType);
     } else {
-      this.tetromino = this.tetrominoQueue.pop();
+      this.tetromino = this.popTetromino();
     }
     return true;
   }
@@ -488,5 +488,9 @@ export class Game {
 
   protected isMoveCountExceed(): boolean {
     return this.moveCount < this.settings.moveLockResetLimitMove;
+  }
+
+  protected popTetromino(): Tetromino {
+    return this.tetrominoQueue.pop();
   }
 }

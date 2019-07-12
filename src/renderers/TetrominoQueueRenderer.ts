@@ -20,13 +20,13 @@ export class TetrominoQueueRenderer implements Observer<TetrominoQueue> {
     for (let i = 0; i < this.containers.length; i++) {
       const type = queue.queue[i].type;
       const mino = new Tetromino(type);
+      mino.x = 0.0;
+      mino.y = 0.0;
       if (type === TetrominoType.I) {
         mino.x = -0.5;
         mino.y = -0.25;
       } else if (type === TetrominoType.O) {
         mino.x = 0.5;
-      } else {
-        mino.x = 0.0;
       }
       this.tetrominoRenderers[i].render(mino);
     }

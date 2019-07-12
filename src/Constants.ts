@@ -27,5 +27,5 @@ export default {
   settingsKey: "settings",
   blockWidth: 10,
   blockHeight: 20,
-  invisibleHeight: 1
+  invisibleHeight: 3
 };
