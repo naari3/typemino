@@ -5,6 +5,7 @@
 ### Added
 
 - Implement dig challenge mode
+- Implement Ready and Go
 
 ### Changed
 

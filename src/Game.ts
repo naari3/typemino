@@ -12,9 +12,10 @@ import { FieldRenderer } from "./renderers/FieldRenderer";
 import { TetrominoQueue } from "./TetrominoQueue";
 import { TetrominoQueueRenderer } from "./renderers/TetrominoQueueRenderer";
 import { HolderRenderer } from "./renderers/HolderRenderer";
+import { StateRenderer } from "./renderers/StateRenderer";
 
 type exclusionFlagType = "left" | "right";
-type gameStateType = "playing" | "gameover";
+type gameStateType = "ready" | "go" | "playing" | "gameover";
 
 export class Game {
   protected app: PIXI.Application;
@@ -52,9 +53,13 @@ export class Game {
   protected moveExclusionFlag: exclusionFlagType;
   protected gameState: gameStateType;
 
+  protected readyTimer: number;
+  protected goTimer: number;
+
   protected startTime: Date;
 
   protected gameRenderer: GameRenderer;
+  protected stateRenderer: StateRenderer;
 
   public constructor(
     w: number,
@@ -116,6 +121,7 @@ export class Game {
 
     this.container = new PIXI.Container();
     this.gameRenderer = new GameRenderer(this.container);
+    this.stateRenderer = new StateRenderer(this.container);
     this.app.stage.addChild(this.container);
     this.app.stage.addChild(fc);
     this.app.stage.addChild(holderContainer);
@@ -139,9 +145,10 @@ export class Game {
     this.moveCount = 0;
 
     this.moveExclusionFlag = null;
-    this.gameState = null;
+    this.gameState = "ready";
 
-    this.startTime = new Date();
+    this.readyTimer = 60;
+    this.goTimer = 60;
 
     this.initializeKeyEvents();
 
@@ -158,11 +165,21 @@ export class Game {
   }
 
   protected animate(): void {
+    if (this.gameState === "ready") {
+      this.stateRenderer.renderState("Ready");
+    }
+    if (this.gameState === "go") {
+      this.stateRenderer.renderState("  Go");
+    }
     if (this.gameState === "gameover") return;
     this.gameProcess();
   }
 
   protected gameProcess(): void {
+    if (["ready", "go"].includes(this.gameState)) {
+      return this.tickTimer();
+    }
+
     if (this.tetromino !== null) {
       this.freeFall();
     } else if (!this.isLockTime()) {
@@ -386,6 +403,24 @@ export class Game {
   }
 
   protected tickTimer(): void {
+    if (["ready", "go"].includes(this.gameState)) {
+      if (this.readyTimer > 0) {
+        this.readyTimer--;
+        if (this.readyTimer === 0) {
+          this.gameState = "go";
+        }
+      }
+      if (this.readyTimer === 0 && this.goTimer > 0) {
+        this.goTimer--;
+        if (this.goTimer === 0) {
+          this.gameState = "playing";
+          this.startTime = new Date();
+          this.stateRenderer.renderState("");
+        }
+      }
+      return;
+    }
+
     if (this.tetromino !== null) {
       this.tetromino.y++;
       if (this.field.isCollision(this.tetromino)) {
