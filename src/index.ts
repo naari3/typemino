@@ -11,6 +11,7 @@ import { Master3Game } from "./Master3Game";
 import { version } from "../package.json";
 import { DigGame } from "./DigGame";
 import { LineGame } from "./LineGame";
+import { DigChallengeGame } from "./DigChallengeGame";
 
 document.write(`current version: v${version}`);
 
@@ -40,6 +41,9 @@ new Vue({
                   break;
                 case "dig":
                   new DigGame(384, 416, settings);
+                  break;
+                case "digChallenge":
+                  new DigChallengeGame(384, 416, settings);
                   break;
                 case "line":
                   new LineGame(384, 416, settings);

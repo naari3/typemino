@@ -1,5 +1,11 @@
 # Change log
 
+## [Unreleased]
+
+### Added
+
+- Implement dig challenge mode
+
 ## [0.0.9]
 
 ### Added
