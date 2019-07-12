@@ -6,6 +6,10 @@
 
 - Implement dig challenge mode
 
+### Changed
+
+- Implement gameProcess method and Moved implementation from animate
+
 ## [0.0.9]
 
 ### Added

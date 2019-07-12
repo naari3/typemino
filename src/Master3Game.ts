@@ -101,7 +101,7 @@ export class Master3Game extends Game {
     this.master3InfoRenderer.renderLevel(this.currentLevel);
   }
 
-  protected animate(): void {
+  protected gameProcess(): void {
     if (this.gameMode === "staffroll") {
       if (this.staffrollTimer > 3270) {
         if (this.tetromino !== null) {
@@ -116,13 +116,13 @@ export class Master3Game extends Game {
       }
     }
     if (this.gameMode === "normal") {
-      super.animate();
+      super.gameProcess();
     } else if (this.gameMode === "fanfare") {
       if (this.fanfareTimer++ > 180) {
         this.setStaffRollMode();
       }
     } else if (this.gameMode === "staffroll") {
-      super.animate();
+      super.gameProcess();
     }
   }
 

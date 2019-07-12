@@ -17,10 +17,6 @@ export class DigChallengeGame extends Game {
     this.fieldUpTimer = 180;
   }
 
-  protected animate(): void {
-    super.animate();
-  }
-
   protected tickTimer(): void {
     super.tickTimer();
     if (this.fieldUpTimer > 0) {

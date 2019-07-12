@@ -159,6 +159,10 @@ export class Game {
 
   protected animate(): void {
     if (this.gameState === "gameover") return;
+    this.gameProcess();
+  }
+
+  protected gameProcess(): void {
     if (this.tetromino !== null) {
       this.freeFall();
     } else if (!this.isLockTime()) {
