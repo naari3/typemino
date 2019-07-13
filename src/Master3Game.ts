@@ -74,7 +74,6 @@ export class Master3Game extends Game {
   private coolDisplayed: boolean;
   private getCoolFlag: boolean;
   private gameMode: gameModeType;
-  private endTime: Date;
 
   public constructor(w: number, h: number, settings: SettingData) {
     const field = new Master3Field(
@@ -95,7 +94,6 @@ export class Master3Game extends Game {
     this.staffrollTimer = 0;
     this.skillDisplayTimer = 0;
     this.coolDisplayed = false;
-    this.endTime = null;
     this.adjustSettingsValue(this.currentLevel);
 
     this.master3InfoRenderer.renderLevel(this.currentLevel);
@@ -188,7 +186,8 @@ export class Master3Game extends Game {
       this.currentLevel = 999;
       this.gameMode = "fanfare";
       this.sectionTimer = 0;
-      this.endTime = new Date();
+      this.playTimer = 0;
+      this.areTimer = 0;
       return;
     }
 
@@ -270,18 +269,6 @@ export class Master3Game extends Game {
       if (this.skillDisplayTimer === 0) {
         this.master3InfoRenderer.renderSkill("");
       }
-    }
-  }
-
-  protected renderTimer(): void {
-    if (this.endTime !== null) {
-      this.gameRenderer.renderTimer(
-        new Date(+this.endTime - +this.startTime).toJSON().substr(11, 11)
-      );
-    } else {
-      this.gameRenderer.renderTimer(
-        new Date(+new Date() - +this.startTime).toJSON().substr(11, 11)
-      );
     }
   }
 

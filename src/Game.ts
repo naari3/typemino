@@ -49,6 +49,8 @@ export class Game {
 
   protected wallkick: Wallkick;
 
+  protected playTimer: number;
+
   protected lockDelayTimer: number;
   protected areTimer: number;
   protected lineClearTimer: number;
@@ -63,8 +65,6 @@ export class Game {
 
   protected readyTimer: number;
   protected goTimer: number;
-
-  protected startTime: Date;
 
   protected gameRenderer: GameRenderer;
   protected stateRenderer: StateRenderer;
@@ -142,6 +142,8 @@ export class Game {
     this.tetromino = this.popTetromino();
 
     this.wallkick = new Wallkick();
+
+    this.playTimer = 0;
 
     this.lockDelayTimer = 0;
     this.areTimer = 0;
@@ -486,12 +488,13 @@ export class Game {
         this.goTimer--;
         if (this.goTimer === 0) {
           this.gameState = "playing";
-          this.startTime = new Date();
           this.stateRenderer.renderState("");
         }
       }
       return;
     }
+
+    this.playTimer++;
 
     if (this.tetromino !== null) {
       this.tetromino.y++;
@@ -535,7 +538,7 @@ export class Game {
 
   protected renderTimer(): void {
     this.gameRenderer.renderTimer(
-      new Date(+new Date() - +this.startTime).toJSON().substr(11, 11)
+      new Date((this.playTimer / 60) * 1000).toJSON().substr(11, 11)
     );
   }
 

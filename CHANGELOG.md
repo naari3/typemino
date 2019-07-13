@@ -8,6 +8,10 @@
 - Implement paused menu
 - Implement restart
 
+### Changed
+
+- Changed logic for playing timer
+
 ## Fixed
 
 - Fix initial holded position
