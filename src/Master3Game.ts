@@ -243,6 +243,14 @@ export class Master3Game extends Game {
     this.currentInternalLevel += plusLevels;
   }
 
+  protected holdMino(): boolean {
+    if (super.holdMino()) {
+      this.tetromino.y += 2;
+      return true;
+    }
+    return false;
+  }
+
   protected tickTimer(): void {
     super.tickTimer();
     this.sectionTimer++;

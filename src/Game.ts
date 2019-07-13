@@ -397,7 +397,7 @@ export class Game {
     if (previousHoldedTetrominoType !== null) {
       this.tetromino = new Tetromino(previousHoldedTetrominoType);
     } else {
-      this.tetromino = this.popTetromino();
+      this.tetromino = this.tetrominoQueue.pop();
     }
     return true;
   }

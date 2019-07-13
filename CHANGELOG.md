@@ -1,5 +1,11 @@
 # Change log
 
+## [Unreleased]
+
+## Fixed
+
+- Fix initial holded position
+
 ## [0.0.10]
 
 ### Added
