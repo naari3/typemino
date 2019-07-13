@@ -1,6 +1,6 @@
 # Change log
 
-## [Unreleased]
+## [0.0.11]
 
 ## Added
 
