@@ -13,6 +13,7 @@ import { TetrominoQueue } from "./TetrominoQueue";
 import { TetrominoQueueRenderer } from "./renderers/TetrominoQueueRenderer";
 import { HolderRenderer } from "./renderers/HolderRenderer";
 import { StateRenderer } from "./renderers/StateRenderer";
+import { SelectList } from "./SelectList";
 
 type exclusionFlagType = "left" | "right";
 type gameStateType = "ready" | "go" | "playing" | "gameover";
@@ -25,6 +26,9 @@ export class Game {
 
   protected settings: SettingData;
 
+  protected paused: boolean;
+  protected pauseMenu: SelectList;
+
   protected upKey: Keyboard;
   protected downKey: Keyboard;
   protected leftKey: Keyboard;
@@ -32,6 +36,10 @@ export class Game {
   protected rotateLeftKey: Keyboard;
   protected rotateRightKey: Keyboard;
   protected holdKey: Keyboard;
+  protected pauseKey: Keyboard;
+  protected menuUpKey: Keyboard;
+  protected menuDownKey: Keyboard;
+  protected menuOkKey: Keyboard;
 
   protected field: Field;
   protected tetromino: Tetromino;
@@ -150,6 +158,21 @@ export class Game {
     this.readyTimer = 60;
     this.goTimer = 60;
 
+    this.paused = false;
+    this.pauseMenu = new SelectList([
+      {
+        label: "resume",
+        callback: (): void => {
+          this.paused = false;
+        }
+      },
+      {
+        label: "restart",
+        callback: (): void => {
+          this.restart(w, h, settings, field, queue)();
+        }
+      }
+    ]);
     this.initializeKeyEvents();
 
     this.loader = new PIXI.Loader();
@@ -159,17 +182,27 @@ export class Game {
     });
   }
 
+  protected restart(
+    w: number,
+    h: number,
+    settings: SettingData,
+    field?: Field,
+    queue?: TetrominoQueue
+  ): Function {
+    return (): void => {
+      this.app.destroy(true);
+      new Game(w, h, settings, field, queue);
+    };
+  }
+
   protected renderGhost(): void {
     if (this.settings.ghost)
       this.gameRenderer.renderGhost(this.tetromino, this.field);
   }
 
   protected animate(): void {
-    if (this.gameState === "ready") {
-      this.stateRenderer.renderState("Ready");
-    }
-    if (this.gameState === "go") {
-      this.stateRenderer.renderState("  Go");
+    if (this.paused) {
+      return;
     }
     if (this.gameState === "gameover") return;
     this.gameProcess();
@@ -177,6 +210,12 @@ export class Game {
 
   protected gameProcess(): void {
     if (["ready", "go"].includes(this.gameState)) {
+      if (this.gameState === "ready") {
+        this.stateRenderer.renderState("Ready");
+      }
+      if (this.gameState === "go") {
+        this.stateRenderer.renderState("  Go");
+      }
       return this.tickTimer();
     }
 
@@ -231,13 +270,46 @@ export class Game {
     this.rightKey = new Keyboard(this.settings.controller.right);
 
     this.rotateLeftKey = new Keyboard(this.settings.controller.rotateLeft);
-    this.rotateLeftKey.press = this.rotateLeft.bind(this);
+    this.rotateLeftKey.press = this.pausedWrapper(
+      this.rotateLeft.bind(this)
+    ).bind(this);
 
     this.rotateRightKey = new Keyboard(this.settings.controller.rotateRight);
-    this.rotateRightKey.press = this.rotateRight.bind(this);
-
+    this.rotateRightKey.press = this.pausedWrapper(
+      this.rotateRight.bind(this)
+    ).bind(this);
     this.holdKey = new Keyboard(this.settings.controller.hold);
-    this.holdKey.press = this.holdMino.bind(this);
+    this.holdKey.press = this.pausedWrapper(this.holdMino.bind(this)).bind(
+      this
+    );
+
+    this.pauseKey = new Keyboard("Escape");
+    this.pauseKey.press = (): void => {
+      this.paused = !this.paused;
+    };
+
+    this.menuUpKey = new Keyboard("ArrowUp");
+    this.menuUpKey.press = (): void => {
+      if (!this.paused) return;
+      this.pauseMenu.selectUp();
+    };
+    this.menuDownKey = new Keyboard("ArrowDown");
+    this.menuDownKey.press = (): void => {
+      if (!this.paused) return;
+      this.pauseMenu.selectDown();
+    };
+    this.menuOkKey = new Keyboard("Enter");
+    this.menuOkKey.press = (): void => {
+      if (!this.paused) return;
+      this.pauseMenu.select();
+    };
+  }
+
+  protected pausedWrapper(func: Function): Function {
+    return (): void => {
+      if (this.paused) return;
+      func();
+    };
   }
 
   protected setControllerExclusion(direction: exclusionFlagType): void {

@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## Added
+
+- Implement pause
+- Implement paused menu
+- Implement restart
+
 ## Fixed
 
 - Fix initial holded position

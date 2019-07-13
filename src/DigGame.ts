@@ -41,6 +41,14 @@ export class DigGame extends Game {
     super(w, h, Object.assign(settings, noAre), field);
     field.notify();
   }
+
+  protected restart(w: number, h: number, settings: SettingData): Function {
+    return (): void => {
+      this.app.destroy(true);
+      new DigGame(w, h, settings);
+    };
+  }
+
   protected fixMino(): void {
     const field = new Field(
       this.field.blockWidth,

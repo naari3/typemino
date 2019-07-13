@@ -101,6 +101,13 @@ export class Master3Game extends Game {
     this.master3InfoRenderer.renderLevel(this.currentLevel);
   }
 
+  protected restart(w: number, h: number, settings: SettingData): Function {
+    return (): void => {
+      this.app.destroy(true);
+      new Master3Game(w, h, settings);
+    };
+  }
+
   protected gameProcess(): void {
     if (this.gameMode === "staffroll") {
       if (this.staffrollTimer > 3270) {

@@ -19,6 +19,13 @@ export class LineGame extends Game {
     this.lineInfoRenderer.renderRemains(this.remains);
   }
 
+  protected restart(w: number, h: number, settings: SettingData): Function {
+    return (): void => {
+      this.app.destroy(true);
+      new LineGame(w, h, settings);
+    };
+  }
+
   protected calcScore(clearLines: number): void {
     this.remains -= clearLines;
 

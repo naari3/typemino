@@ -28,6 +28,13 @@ export class DigChallengeGame extends Game {
     }
   }
 
+  protected restart(w: number, h: number, settings: SettingData): Function {
+    return (): void => {
+      this.app.destroy(true);
+      new DigChallengeGame(w, h, settings);
+    };
+  }
+
   private fieldUp(): void {
     const colorLine = this.field.blockColors.shift();
     this.field.transparencies.shift();

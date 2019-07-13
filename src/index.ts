@@ -33,25 +33,27 @@ new Vue({
             default: (settings: SettingData): void => {
               store.set(Constants.settingsKey, settings);
 
+              let game: typeof Game = Game;
               switch (
                 new URL(document.location.href).searchParams.get("mode")
               ) {
                 case "master":
-                  new Master3Game(384, 416, settings);
+                  game = Master3Game;
                   break;
                 case "dig":
-                  new DigGame(384, 416, settings);
+                  game = DigGame;
                   break;
                 case "digChallenge":
-                  new DigChallengeGame(384, 416, settings);
+                  game = DigChallengeGame;
                   break;
                 case "line":
-                  new LineGame(384, 416, settings);
+                  game = LineGame;
                   break;
                 default:
-                  new Game(384, 416, settings);
+                  game = Game;
                   break;
               }
+              new game(384, 416, settings);
             }
           }
         }
