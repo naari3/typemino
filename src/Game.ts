@@ -15,6 +15,7 @@ import { HolderRenderer } from "./renderers/HolderRenderer";
 import { StateRenderer } from "./renderers/StateRenderer";
 import { SelectList } from "./SelectList";
 import HoldContext from "./contexts/HoldContext";
+import TetrominoQueueContext from "./contexts/TetrominoQueueContext";
 
 type exclusionFlagType = "left" | "right";
 type gameStateType = "ready" | "go" | "playing" | "gameover";
@@ -75,7 +76,7 @@ export class Game {
     h: number,
     settings: SettingData,
     field?: Field,
-    queue?: TetrominoQueue
+    queueType?: typeof TetrominoQueue
   ) {
     this.app = new PIXI.Application({
       width: w,
@@ -109,11 +110,15 @@ export class Game {
     holderContainer.position.y = 16 * 8;
     holderContainer.scale.set(0.8);
 
-    this.tetrominoQueue = queue || new TetrominoQueue();
+    const tetrominoQueueContext = new TetrominoQueueContext();
+    this.tetrominoQueue = new (queueType || TetrominoQueue)(
+      tetrominoQueueContext
+    );
     const nextContainer = new PIXI.Container();
     const nextnext1Container = new PIXI.Container();
     const nextnext2Container = new PIXI.Container();
-    const tetrominoQueueRenderer = new TetrominoQueueRenderer(
+    new TetrominoQueueRenderer(
+      tetrominoQueueContext,
       nextContainer,
       nextnext1Container,
       nextnext2Container
@@ -126,7 +131,6 @@ export class Game {
     nextnext2Container.position.y = 16 * 16;
     nextnext1Container.scale.set(0.8);
     nextnext2Container.scale.set(0.8);
-    this.tetrominoQueue.on(tetrominoQueueRenderer);
 
     this.container = new PIXI.Container();
     this.gameRenderer = new GameRenderer(this.container);
@@ -172,7 +176,7 @@ export class Game {
       {
         label: "restart",
         callback: (): void => {
-          this.restart(w, h, settings, field, queue)();
+          this.restart(w, h, settings, field, queueType)();
         }
       }
     ]);
@@ -190,11 +194,11 @@ export class Game {
     h: number,
     settings: SettingData,
     field?: Field,
-    queue?: TetrominoQueue
+    queueType?: typeof TetrominoQueue
   ): Function {
     return (): void => {
       this.app.destroy(true);
-      new Game(w, h, settings, field, queue);
+      new Game(w, h, settings, field, queueType);
     };
   }
 

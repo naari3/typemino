@@ -2,23 +2,33 @@ import * as PIXI from "pixi.js";
 import { Tetromino } from "../Tetromino";
 import { TetrominoType } from "../TetrominoData";
 import { TetrominoRenderer } from "./TetrominoRenderer";
-import { TetrominoQueue } from "../TetrominoQueue";
-import { Observer } from "../Observer";
+import TetrominoQueueContext from "../contexts/TetrominoQueueContext";
+import TetrominoQueueStore from "../stores/TetrominoQueueStore";
 
-export class TetrominoQueueRenderer implements Observer<TetrominoQueue> {
+export class TetrominoQueueRenderer {
   public containers: PIXI.Container[];
   private tetrominoRenderers: TetrominoRenderer[];
+  private store: TetrominoQueueStore;
 
-  public constructor(...containers: PIXI.Container[]) {
+  public constructor(
+    context: TetrominoQueueContext,
+    ...containers: PIXI.Container[]
+  ) {
+    this.store = context.tetrominoQueueStore;
     this.containers = containers;
     this.tetrominoRenderers = containers.map(
       (container): TetrominoRenderer => new TetrominoRenderer(container)
     );
+    this.store.onChange(this._onChange.bind(this));
   }
 
-  public render(queue: TetrominoQueue): void {
+  public _onChange(): void {
+    this.render(this.store.getTetrominoQueue());
+  }
+
+  public render(queue: Tetromino[]): void {
     for (let i = 0; i < this.containers.length; i++) {
-      const type = queue.queue[i].type;
+      const type = queue[i].type;
       const mino = new Tetromino(type);
       mino.x = 0.0;
       mino.y = 0.0;
@@ -30,9 +40,5 @@ export class TetrominoQueueRenderer implements Observer<TetrominoQueue> {
       }
       this.tetrominoRenderers[i].render(mino);
     }
-  }
-
-  public update(queue: TetrominoQueue): void {
-    this.render(queue);
   }
 }

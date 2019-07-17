@@ -1,20 +1,23 @@
-import { Observable } from "./Observable";
 import { Tetromino } from "./Tetromino";
+import TetrominoQueueContext from "./contexts/TetrominoQueueContext";
 
-export class TetrominoQueue extends Observable {
-  public queue: Tetromino[];
+export class TetrominoQueue {
+  protected context: TetrominoQueueContext;
 
-  public constructor() {
-    super();
-    this.queue = Tetromino.getRandomQueue().concat(Tetromino.getRandomQueue());
+  public constructor(context: TetrominoQueueContext) {
+    this.context = context;
+    this.context.tetrominoQueueAction.doUpdate(
+      Tetromino.getRandomQueue().concat(Tetromino.getRandomQueue())
+    );
   }
 
   public pop(): Tetromino {
-    if (this.queue.length < 7) {
-      Array.prototype.push.apply(this.queue, Tetromino.getRandomQueue());
+    let queue = this.context.tetrominoQueueStore.getTetrominoQueue();
+    const tetromino = queue.shift();
+    if (queue.length < 7) {
+      queue = queue.concat(Tetromino.getRandomQueue());
     }
-    const tetromino = this.queue.shift();
-    this.notify();
+    this.context.tetrominoQueueAction.doUpdate(queue);
     return tetromino;
   }
 }
