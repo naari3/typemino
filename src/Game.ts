@@ -14,6 +14,7 @@ import { TetrominoQueueRenderer } from "./renderers/TetrominoQueueRenderer";
 import { HolderRenderer } from "./renderers/HolderRenderer";
 import { StateRenderer } from "./renderers/StateRenderer";
 import { SelectList } from "./SelectList";
+import HoldContext from "./contexts/HoldContext";
 
 type exclusionFlagType = "left" | "right";
 type gameStateType = "ready" | "go" | "playing" | "gameover";
@@ -100,13 +101,13 @@ export class Game {
     fc.position.x = 16 * 7;
     fc.position.y = 16 * 3;
 
-    this.holder = new Holder();
+    const holdContext = new HoldContext();
+    this.holder = new Holder(holdContext);
     const holderContainer = new PIXI.Container();
-    const holderRenderer = new HolderRenderer(holderContainer);
+    new HolderRenderer(holderContainer, holdContext);
     holderContainer.position.x = 16 * 2 - 4;
     holderContainer.position.y = 16 * 8;
     holderContainer.scale.set(0.8);
-    this.holder.on(holderRenderer);
 
     this.tetrominoQueue = queue || new TetrominoQueue();
     const nextContainer = new PIXI.Container();
