@@ -144,7 +144,7 @@ export class Game {
       }
     );
 
-    this.tetromino = this.popTetromino();
+    this.tetromino = null;
 
     this.wallkick = new Wallkick();
 

@@ -20,6 +20,7 @@ export class TetrominoQueueRenderer {
       (container): TetrominoRenderer => new TetrominoRenderer(container)
     );
     this.store.onChange(this._onChange.bind(this));
+    this._onChange();
   }
 
   public _onChange(): void {
