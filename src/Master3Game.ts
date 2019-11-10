@@ -81,8 +81,13 @@ export class Master3Game extends Game {
       Constants.blockHeight,
       Constants.invisibleHeight
     );
-    const queue = new Master3TetrominoQueue();
-    super(w, h, Object.assign(settings, defaultSettings), field, queue);
+    super(
+      w,
+      h,
+      Object.assign(settings, defaultSettings),
+      field,
+      Master3TetrominoQueue
+    );
     this.master3InfoRenderer = new Master3InfoRenderer(this.container);
 
     this.currentLevel = 0;

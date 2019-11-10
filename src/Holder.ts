@@ -1,21 +1,16 @@
 import { TetrominoType } from "./TetrominoData";
-import { Observable } from "./Observable";
+import HoldContext from "./contexts/HoldContext";
 
-export class Holder extends Observable {
-  public holdedTetrominoType: TetrominoType;
+export class Holder {
+  public context: HoldContext;
 
-  public constructor() {
-    super();
-    this.holdedTetrominoType = null;
+  public constructor(context) {
+    this.context = context;
   }
 
   public hold(type: TetrominoType): TetrominoType | null {
-    let previousTetrominoType = null;
-    if (this.holdedTetrominoType !== null) {
-      previousTetrominoType = this.holdedTetrominoType;
-    }
-    this.holdedTetrominoType = type;
-    this.notify();
+    let previousTetrominoType = this.context.holdStore.getTetrominoType();
+    this.context.holdAction.doUpdate(type);
     return previousTetrominoType;
   }
 }

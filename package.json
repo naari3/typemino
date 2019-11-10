@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "deepcopy": "^2.0.0",
+    "material-flux": "^1.4.0",
     "pixi.js": "^5.0.4",
     "store": "^2.0.12",
     "vue": "^2.6.10",

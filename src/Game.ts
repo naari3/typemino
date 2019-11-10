@@ -14,6 +14,8 @@ import { TetrominoQueueRenderer } from "./renderers/TetrominoQueueRenderer";
 import { HolderRenderer } from "./renderers/HolderRenderer";
 import { StateRenderer } from "./renderers/StateRenderer";
 import { SelectList } from "./SelectList";
+import HoldContext from "./contexts/HoldContext";
+import TetrominoQueueContext from "./contexts/TetrominoQueueContext";
 
 type exclusionFlagType = "left" | "right";
 type gameStateType = "ready" | "go" | "playing" | "gameover";
@@ -74,7 +76,7 @@ export class Game {
     h: number,
     settings: SettingData,
     field?: Field,
-    queue?: TetrominoQueue
+    queueType?: typeof TetrominoQueue
   ) {
     this.app = new PIXI.Application({
       width: w,
@@ -100,19 +102,23 @@ export class Game {
     fc.position.x = 16 * 7;
     fc.position.y = 16 * 3;
 
-    this.holder = new Holder();
+    const holdContext = new HoldContext();
+    this.holder = new Holder(holdContext);
     const holderContainer = new PIXI.Container();
-    const holderRenderer = new HolderRenderer(holderContainer);
+    new HolderRenderer(holderContainer, holdContext);
     holderContainer.position.x = 16 * 2 - 4;
     holderContainer.position.y = 16 * 8;
     holderContainer.scale.set(0.8);
-    this.holder.on(holderRenderer);
 
-    this.tetrominoQueue = queue || new TetrominoQueue();
+    const tetrominoQueueContext = new TetrominoQueueContext();
+    this.tetrominoQueue = new (queueType || TetrominoQueue)(
+      tetrominoQueueContext
+    );
     const nextContainer = new PIXI.Container();
     const nextnext1Container = new PIXI.Container();
     const nextnext2Container = new PIXI.Container();
-    const tetrominoQueueRenderer = new TetrominoQueueRenderer(
+    new TetrominoQueueRenderer(
+      tetrominoQueueContext,
       nextContainer,
       nextnext1Container,
       nextnext2Container
@@ -125,7 +131,6 @@ export class Game {
     nextnext2Container.position.y = 16 * 16;
     nextnext1Container.scale.set(0.8);
     nextnext2Container.scale.set(0.8);
-    this.tetrominoQueue.on(tetrominoQueueRenderer);
 
     this.container = new PIXI.Container();
     this.gameRenderer = new GameRenderer(this.container);
@@ -139,7 +144,7 @@ export class Game {
       }
     );
 
-    this.tetromino = this.popTetromino();
+    this.tetromino = null;
 
     this.wallkick = new Wallkick();
 
@@ -171,10 +176,11 @@ export class Game {
       {
         label: "restart",
         callback: (): void => {
-          this.restart(w, h, settings, field, queue)();
+          this.restart(w, h, settings, field, queueType)();
         }
       }
     ]);
+
     this.initializeKeyEvents();
 
     this.loader = new PIXI.Loader();
@@ -189,11 +195,11 @@ export class Game {
     h: number,
     settings: SettingData,
     field?: Field,
-    queue?: TetrominoQueue
+    queueType?: typeof TetrominoQueue
   ): Function {
     return (): void => {
       this.app.destroy(true);
-      new Game(w, h, settings, field, queue);
+      new Game(w, h, settings, field, queueType);
     };
   }
 
@@ -264,27 +270,6 @@ export class Game {
   }
 
   protected initializeKeyEvents(): void {
-    this.upKey = new Keyboard(this.settings.controller.up);
-    this.upKey.press = this.hardDrop.bind(this);
-
-    this.downKey = new Keyboard(this.settings.controller.down);
-    this.leftKey = new Keyboard(this.settings.controller.left);
-    this.rightKey = new Keyboard(this.settings.controller.right);
-
-    this.rotateLeftKey = new Keyboard(this.settings.controller.rotateLeft);
-    this.rotateLeftKey.press = this.pausedWrapper(
-      this.rotateLeft.bind(this)
-    ).bind(this);
-
-    this.rotateRightKey = new Keyboard(this.settings.controller.rotateRight);
-    this.rotateRightKey.press = this.pausedWrapper(
-      this.rotateRight.bind(this)
-    ).bind(this);
-    this.holdKey = new Keyboard(this.settings.controller.hold);
-    this.holdKey.press = this.pausedWrapper(this.holdMino.bind(this)).bind(
-      this
-    );
-
     this.pauseKey = new Keyboard("Escape");
     this.pauseKey.press = (): void => {
       this.paused = !this.paused;
@@ -305,6 +290,29 @@ export class Game {
       if (!this.paused) return;
       this.pauseMenu.select();
     };
+  }
+
+  protected initializeGameKeyEvents(): void {
+    this.upKey = new Keyboard(this.settings.controller.up);
+    this.upKey.press = this.hardDrop.bind(this);
+
+    this.downKey = new Keyboard(this.settings.controller.down);
+    this.leftKey = new Keyboard(this.settings.controller.left);
+    this.rightKey = new Keyboard(this.settings.controller.right);
+
+    this.rotateLeftKey = new Keyboard(this.settings.controller.rotateLeft);
+    this.rotateLeftKey.press = this.pausedWrapper(
+      this.rotateLeft.bind(this)
+    ).bind(this);
+
+    this.rotateRightKey = new Keyboard(this.settings.controller.rotateRight);
+    this.rotateRightKey.press = this.pausedWrapper(
+      this.rotateRight.bind(this)
+    ).bind(this);
+    this.holdKey = new Keyboard(this.settings.controller.hold);
+    this.holdKey.press = this.pausedWrapper(this.holdMino.bind(this)).bind(
+      this
+    );
   }
 
   protected pausedWrapper(func: Function): Function {
@@ -489,6 +497,7 @@ export class Game {
         if (this.goTimer === 0) {
           this.gameState = "playing";
           this.stateRenderer.renderState("");
+          this.initializeGameKeyEvents();
         }
       }
       return;
